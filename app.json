@@ -1,13 +1,13 @@
 {
   "expo": {
-    "name": "biatexApp",
-    "slug": "biatexApp",
+    "name": "Bivalut",
+    "slug": "bivalut",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./src/assets/icon.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./src/assets/splash.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -19,12 +19,19 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./src/assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.jonele_umka.bivalut"
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./src/assets/favicon.png"
+    },
+    "owner": "jonele_umka",
+    "extra": {
+      "eas": {
+        "projectId": "3090da21-81bd-4cfc-8a12-779a0b7025f6"
+      }
     }
   }
 }
