@@ -6,12 +6,6 @@
     "orientation": "portrait",
     "icon": "./src/assets/icon.png",
     "userInterfaceStyle": "light",
-    "splash": {
-      "image": "./src/assets/logo3.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#140A4F"
-    },
-    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true
     },
@@ -20,13 +14,11 @@
         "foregroundImage": "./src/assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-
       "package": "com.jonele_umka.bivalut"
     },
     "web": {
       "favicon": "./src/assets/favicon.png"
     },
-    "owner": "jonele_umka",
     "extra": {
       "eas": {
         "projectId": "3090da21-81bd-4cfc-8a12-779a0b7025f6"
