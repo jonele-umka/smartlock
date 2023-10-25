@@ -137,14 +137,14 @@ const PaymentsScreen = ({ navigation }) => {
                 // isDarkModeEnabled && { backgroundColor: "#272727" },
               ]}
             >
-              <Ionicons name="search" size={25} color={"#7a7a7a"} />
+              <Ionicons name="search" size={25} color={"#9c9c9c"} />
               <TextInput
                 style={[
                   styles.searchInput,
                   // isDarkModeEnabled && { backgroundColor: "#272727" },
                 ]}
                 placeholder="Поиск"
-                placeholderTextColor={"#7a7a7a"}
+                placeholderTextColor={"#9c9c9c"}
               />
             </View>
           </View>

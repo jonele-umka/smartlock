@@ -62,8 +62,8 @@ function TransactionTabsRoute() {
     backgroundColor: "#000",
   };
 
-  const tabBarActiveTintColor = "rgba(93, 0, 230, 0.6)";
-  const tabBarInactiveTintColor = "#fff";
+  const tabBarActiveTintColor = "#fff";
+  const tabBarInactiveTintColor = "#9c9c9c";
 
   return (
     <Tab.Navigator
@@ -75,8 +75,9 @@ function TransactionTabsRoute() {
         },
         tabBarStyle,
         tabBarIndicatorStyle: {
-          backgroundColor: "rgba(93, 0, 230, 0.6)",
+          backgroundColor: "#fff",
         },
+
         tabBarActiveTintColor: tabBarActiveTintColor,
         tabBarInactiveTintColor: tabBarInactiveTintColor,
       }}

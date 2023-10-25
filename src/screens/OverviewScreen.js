@@ -88,48 +88,39 @@ export const OverviewScreen = () => {
       >
         <ScrollView refreshControl={<RefreshControl onRefresh={onRefresh} />}>
           <View style={styles.header}>
+            <TouchableOpacity
+              onPress={() =>
+                navigation.navigate("Уведомления", {
+                  transactions: transactions,
+                })
+              }
+            >
+              <Ionicons
+                name="notifications-outline"
+                style={[
+                  { fontSize: 30, color: "#fff", position: "relative" },
+                  isDarkModeEnabled && { color: "#fff" },
+                ]}
+              />
+              <Badge
+                status="primary"
+                value={transactions.length > 100 ? "99+" : transactions.length}
+                containerStyle={{ position: "absolute", top: 0, left: 15 }}
+              />
+            </TouchableOpacity>
             <Image
               style={styles.logo}
               source={require("../assets/logo3.png")}
             />
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                columnGap: 20,
-              }}
-            >
-              <TouchableOpacity
-                onPress={() =>
-                  navigation.navigate("Уведомления", {
-                    transactions: transactions,
-                  })
-                }
-              >
-                <Ionicons
-                  name="notifications-outline"
-                  style={[
-                    { fontSize: 25, color: "#fff", position: "relative" },
-                    isDarkModeEnabled && { color: "#fff" },
-                  ]}
-                />
-                <Badge
-                  status="primary"
-                  value={
-                    transactions.length > 100 ? "99+" : transactions.length
-                  }
-                  containerStyle={{ position: "absolute", top: 0, left: 15 }}
-                />
-              </TouchableOpacity>
-              <TouchableOpacity onPress={logout}>
-                <Image
-                  source={require("../assets/avatar.png")}
-                  style={{ width: 30, height: 30 }}
-                />
-              </TouchableOpacity>
-              {/* <Avatar bgColor="#241270" size="sm" borderRadius="$full">
+            <TouchableOpacity onPress={logout}>
+              <Image
+                source={require("../assets/avatar.png")}
+                style={{ width: 30, height: 30 }}
+              />
+            </TouchableOpacity>
+
+            {/* <Avatar bgColor="#241270" size="sm" borderRadius="$full">
               </Avatar> */}
-            </View>
           </View>
 
           <View>
@@ -381,11 +372,10 @@ export const OverviewScreen = () => {
               Переводы
             </Text>
             {loading ? (
-              <ActivityIndicator
-                size="large"
-                style={{ marginVertical: 30 }}
-                color={"#fff"}
-              />
+              <View style={{ flexDirection: "column", rowGap: 20 }}>
+                <Skeleton animation="pulse" style={styles.skeletonItem} />
+                <Skeleton animation="pulse" style={styles.skeletonItem} />
+              </View>
             ) : (
               <TransactionsCrypto
                 transactions={transactions}
@@ -442,6 +432,12 @@ const styles = StyleSheet.create({
     color: "#fff",
     marginTop: 10,
     fontSize: 12,
+  },
+  skeletonItem: {
+    width: "100%",
+    height: 80,
+    backgroundColor: "#333",
+    borderRadius: 10,
   },
 });
 export default OverviewScreen;

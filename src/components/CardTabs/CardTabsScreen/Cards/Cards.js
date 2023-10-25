@@ -187,7 +187,7 @@ function Cards() {
                         borderLeftColor: "#f4f4f4",
                         paddingLeft: 12,
                       },
-                      isDarkModeEnabled && { borderLeftColor: "#767676" },
+                      isDarkModeEnabled && { borderLeftColor: "#9c9c9c" },
                     ]}
                   >
                     <Text
@@ -202,8 +202,8 @@ function Cards() {
                     </Text>
                     <Text
                       style={[
-                        { fontSize: 12, color: "#767676" },
-                        isDarkModeEnabled && { color: "#767676" },
+                        { fontSize: 12, color: "#9c9c9c" },
+                        isDarkModeEnabled && { color: "#9c9c9c" },
                       ]}
                     >
                       {transactions.data}

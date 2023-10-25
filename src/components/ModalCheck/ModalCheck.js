@@ -13,7 +13,7 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import Entypo from "react-native-vector-icons/Entypo";
 import { useNavigation } from "@react-navigation/native";
  
-import file from "../../assets/card/card.png";
+// import file from "../../assets/card/card.png";
 const ModalCheck = ({
   showModal,
   selectedTransaction,
@@ -21,7 +21,7 @@ const ModalCheck = ({
   outgoing,
 }) => {
   const navigation = useNavigation();
-  const [showPdf, setShowPdf] = useState(false);
+  // const [showPdf, setShowPdf] = useState(false);
 
   // const sharePDF = async () => {
   //   try {

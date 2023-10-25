@@ -16,6 +16,7 @@ const AnalyticsPage = () => {
   const { transactions, loading } = route.params;
 
   const [monthlyExpenses, setMonthlyExpenses] = useState([]);
+  const [selectedExpense, setSelectedExpense] = useState(null);
 
   useEffect(() => {
     const groupedExpenses = transactions.reduce((result, transaction) => {
@@ -242,11 +243,17 @@ const AnalyticsPage = () => {
                 >
                   {Object.keys(expense.days).map((day, index) => (
                     <View key={index}>
+                      <View>
+                        {selectedExpense && (
+                          <Text style={{ color: "#fff" }}>
+                            Выбранный расход: {selectedExpense}
+                          </Text>
+                        )}
+                      </View>
                       <View
                         style={{
                           width: 20,
                           marginHorizontal: 2,
-
                           borderRadius: 5,
                           height:
                             (expense.days[day].totalAmount / maxExpense) * 450,
@@ -259,6 +266,9 @@ const AnalyticsPage = () => {
                           color: "#fff",
                           fontSize: 12,
                           textAlign: "center",
+                        }}
+                        onPress={() => {
+                          setSelectedExpense(transactions[index]);
                         }}
                       >
                         {day.split("-")[2]}

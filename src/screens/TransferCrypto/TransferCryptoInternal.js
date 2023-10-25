@@ -15,7 +15,7 @@ import { useSelector } from "react-redux";
 import { SafeAreaView as SafeAreaViewContext } from "react-native-safe-area-context";
 import { useNavigation } from "@react-navigation/native";
 import Toast from "react-native-toast-message";
-import card from "../../assets/card/card.png";
+import card from "../../assets/card/cards.png";
 import {
   Box,
   Actionsheet,
@@ -548,7 +548,7 @@ export const TransferCryptoInternal = () => {
           </Text>
           <View
             style={{
-              backgroundColor: "rgba(93, 0, 230, 0.2)",
+              backgroundColor: "rgba(93, 0, 230, 0.6)",
               borderRadius: 10,
               borderBottomLeftRadius:
                 selectedType === "По номеру телефона" ? 0 : 10,
@@ -629,7 +629,7 @@ export const TransferCryptoInternal = () => {
                   <TouchableOpacity
                     onPress={handleClose}
                     style={{
-                      backgroundColor: "rgba(93, 0, 230, 0.2)",
+                      backgroundColor: "rgba(93, 0, 230, 0.6)",
                       justifyContent: "center",
                       paddingHorizontal: 10,
                       paddingVertical: 20,
@@ -665,7 +665,7 @@ export const TransferCryptoInternal = () => {
                       {wallet.map((item, index) => (
                         <ActionsheetItem
                           padding={15}
-                          backgroundColor={"rgba(93, 0, 230, 0.2)"}
+                          backgroundColor={"#fff"}
                           marginBottom={15}
                           borderRadius={10}
                           key={index}
@@ -695,7 +695,7 @@ export const TransferCryptoInternal = () => {
           {selectedType === "По адресу кошелька" && (
             <View
               style={{
-                backgroundColor: "rgba(93, 0, 230, 0.2)",
+                backgroundColor: "rgba(93, 0, 230, 0.6)",
                 borderRadius: 10,
                 marginTop: 25,
                 borderBottomLeftRadius: addressType === "Внутренний" ? 0 : 10,
@@ -755,7 +755,7 @@ export const TransferCryptoInternal = () => {
               <View
                 style={{
                   marginTop: 25,
-                  backgroundColor: "rgba(93, 0, 230, 0.2)",
+                  backgroundColor: "rgba(93, 0, 230, 0.6)",
                   paddingHorizontal: 10,
                   paddingVertical: 15,
                   borderRadius: 10,
@@ -764,7 +764,7 @@ export const TransferCryptoInternal = () => {
                   borderColor:
                     errors.phone_number || error === "record not found"
                       ? "red"
-                      : "rgba(93, 0, 230, 0.2)",
+                      : "#fff",
                 }}
               >
                 <Text style={{ marginBottom: 10, color: "#fff" }}>
@@ -776,7 +776,7 @@ export const TransferCryptoInternal = () => {
                   rules={{ required: true, pattern: /^[0-9]*$/ }}
                   render={({ field }) => (
                     <TextInput
-                      placeholderTextColor={"#767676"}
+                      placeholderTextColor={"#9c9c9c"}
                       placeholder="996"
                       onChangeText={(value) => {
                         if (/^[0-9]*$/.test(value)) {
@@ -826,7 +826,7 @@ export const TransferCryptoInternal = () => {
               <View
                 style={{
                   marginTop: 25,
-                  backgroundColor: "rgba(93, 0, 230, 0.2)",
+                  backgroundColor: "rgba(93, 0, 230, 0.6)",
                   paddingHorizontal: 10,
                   paddingVertical: 15,
                   borderRadius: 10,
@@ -837,7 +837,7 @@ export const TransferCryptoInternal = () => {
                   borderColor:
                     errors.receiver_requisites || error === "record not found"
                       ? "red"
-                      : "rgba(93, 0, 230, 0.2)",
+                      : "#fff",
                 }}
               >
                 <Text style={{ marginBottom: 10, color: "#fff" }}>
@@ -850,7 +850,7 @@ export const TransferCryptoInternal = () => {
                   rules={{ required: true, pattern: /^[0-9]*$/ }}
                   render={({ field }) => (
                     <TextInput
-                      placeholderTextColor={"#767676"}
+                      placeholderTextColor={"#9c9c9c"}
                       placeholder="XXXXXXXXXXXXXXXX"
                       onChangeText={(value) => {
                         if (/^[0-9]*$/.test(value)) {
@@ -900,7 +900,7 @@ export const TransferCryptoInternal = () => {
               <View
                 style={{
                   marginTop: 25,
-                  backgroundColor: "rgba(93, 0, 230, 0.2)",
+                  backgroundColor: "rgba(93, 0, 230, 0.6)",
                   paddingHorizontal: 10,
                   paddingVertical: 15,
                   borderRadius: 10,
@@ -909,7 +909,7 @@ export const TransferCryptoInternal = () => {
                   borderColor:
                     errors.address || error === "record not found"
                       ? "red"
-                      : "rgba(93, 0, 230, 0.2)",
+                      : "#fff",
                 }}
               >
                 <Text style={{ marginBottom: 10, color: "#fff" }}>
@@ -922,7 +922,7 @@ export const TransferCryptoInternal = () => {
                   rules={{ required: true }}
                   render={({ field }) => (
                     <TextInput
-                      placeholderTextColor={"#767676"}
+                      placeholderTextColor={"#9c9c9c"}
                       placeholder="XXXXXXXXXXXXXXXXXXXXX"
                       onChangeText={(value) => {
                         field.onChange(value);
@@ -978,20 +978,18 @@ export const TransferCryptoInternal = () => {
                     borderRadius: 10,
                     paddingVertical: 20,
                     paddingHorizontal: 10,
-                    backgroundColor: "rgba(93, 0, 230, 0.2)",
+                    backgroundColor: "rgba(93, 0, 230, 0.6)",
                     flexDirection: "row",
                     alignItems: "center",
                     justifyContent: "center",
                     columnGap: 10,
                     borderWidth: errors.sum || parseInt(error) === 400 ? 1 : 0,
                     borderColor:
-                      errors.sum || parseInt(error) === 400
-                        ? "red"
-                        : "rgba(93, 0, 230, 0.2)",
+                      errors.sum || parseInt(error) === 400 ? "red" : "#fff",
                   }}
                 >
                   <TextInput
-                    placeholderTextColor={"#767676"}
+                    placeholderTextColor={"#9c9c9c"}
                     placeholder="0"
                     value={field.value}
                     onChangeText={(value) => {

@@ -26,7 +26,6 @@ const Outgoing = () => {
   const transactions = useSelector((state) => state.transactions.transactions);
   const loading = useSelector((state) => state.transactions.loading);
   const token = useSelector((state) => state.signIn.token);
-  const outgoing = useSelector((state) => state.transactions.transactions);
   // Группировка транзакций по датам
   const groupedTransactions = transactions.reduce((result, transaction) => {
     const date = new Date(transaction.CreatedAt);
@@ -48,7 +47,7 @@ const Outgoing = () => {
     result[formattedDate].push(transaction);
     return result;
   }, {});
-  console.log(transactions[0]);
+
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     const year = date.getFullYear();
@@ -121,11 +120,13 @@ const Outgoing = () => {
 
   if (loading) {
     return (
-      <ActivityIndicator
-        size="large"
-        style={{ marginTop: 30 }}
-        color={"#0268EC"}
-      />
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <ActivityIndicator
+          size="large"
+          style={{ marginTop: 30 }}
+          color={"#0268EC"}
+        />
+      </View>
     );
   } else {
     return (
@@ -179,11 +180,12 @@ const Outgoing = () => {
                   {groupedTransactions[date].map(
                     (transactions, index, array) => (
                       <TouchableOpacity
-                        onPress={() => {
-                          console.log(transactions);
+                      onPress={() => {
+                        if (transactions.Status !== "Performed") {
                           setSelectedTransaction(transactions);
                           setShowModal(true);
-                        }}
+                        }
+                      }}
                         key={`${transactions.ID}_${transactions.Type}_${index}`}
                         style={[
                           styles.transactionListView,
@@ -226,7 +228,7 @@ const Outgoing = () => {
                             </Text>
                             <Text
                               style={[
-                                { fontSize: 12, color: "#7A7A7A" },
+                                { fontSize: 12, color: "#9c9c9c" },
                                 // isDarkModeEnabled && { color: "#7A7A7A" },
                               ]}
                             >
@@ -304,9 +306,8 @@ const Outgoing = () => {
           <ModalCheck
             selectedTransaction={selectedTransaction}
             setShowModal={setShowModal}
-            transactions={transactions}
+            outgoing={transactions}
             showModal={showModal}
-            outgoing={outgoing}
           />
         </ScrollView>
       </LinearGradient>

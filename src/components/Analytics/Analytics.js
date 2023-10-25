@@ -13,6 +13,7 @@ const Analytics = ({ transactions, loading }) => {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [totalAmount, setTotalAmount] = useState("");
+
   useEffect(() => {
     let totalAmount = 0;
     const currentDate = new Date();

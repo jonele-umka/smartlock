@@ -98,11 +98,13 @@ const Chat = () => {
         end={{ x: 0, y: 0 }}
         colors={["#241270", "#140A4F", "#000"]}
       >
+        <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
         <ActivityIndicator
           size="large"
           style={{ marginTop: 30 }}
           color={"#0268EC"}
         />
+      </View>
       </LinearGradient>
     );
   } else {

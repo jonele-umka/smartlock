@@ -23,7 +23,7 @@ const Navigator = () => {
   return (
     <>
       <NavigationContainer>
-        <Stack.Navigator initialRouteName="Welcome">
+        <Stack.Navigator initialRouteName="Войти">
           <Stack.Screen
             name="Main"
             component={NavBar}

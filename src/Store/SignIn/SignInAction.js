@@ -117,13 +117,12 @@ export const loginUser = (userData) => async (dispatch) => {
     });
     if (response.ok) {
       const data = await response.json();
-      const token = data.data.access_token;
+      const token = data?.data?.access_token;
       await AsyncStorage.setItem("token", token);
       dispatch(loginSuccess(token));
 
       return data;
     } else if (response.status >= 400) {
-      console.log(response.status);
       throw new Error("Некорректные данные");
     } else if (response.status >= 500) {
       throw new Error("Ошибка с сервером");
@@ -131,6 +130,7 @@ export const loginUser = (userData) => async (dispatch) => {
       throw new Error("Неизвестная ошибка");
     }
   } catch (error) {
+    console.log(error)
     dispatch(loginFailure(error));
     Toast.show({
       type: "error",

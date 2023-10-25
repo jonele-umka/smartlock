@@ -116,8 +116,10 @@ const TransactionsCrypto = ({ transactions, incoming, outgoing }) => {
               <TouchableOpacity
                 key={`${transactions.ID}_${transactions.Type}_${index}`}
                 onPress={() => {
-                  setSelectedTransaction(transactions);
-                  setShowModal(true);
+                  if (transactions.Status !== "Performed") {
+                    setSelectedTransaction(transactions);
+                    setShowModal(true);
+                  }
                 }}
               >
                 <View
@@ -163,7 +165,7 @@ const TransactionsCrypto = ({ transactions, incoming, outgoing }) => {
                       </Text>
                       <Text
                         style={[
-                          { fontSize: 12, color: "#7A7A7A" },
+                          { fontSize: 12, color: "#9c9c9c" },
                           // isDarkModeEnabled && { color: "#7A7A7A" },
                         ]}
                       >
@@ -248,6 +250,7 @@ const TransactionsCrypto = ({ transactions, incoming, outgoing }) => {
           </View>
         </View>
       ))}
+
       <ModalCheck
         selectedTransaction={selectedTransaction}
         setShowModal={setShowModal}

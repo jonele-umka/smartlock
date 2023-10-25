@@ -54,14 +54,14 @@ const SignIn = () => {
     try {
       const data = await dispatch(loginUser(userData));
 
-      if (data.data.access_token) {
+      if (data && data?.data && data?.data?.access_token) {
         // await AsyncStorage.setItem("token", data.data.access_token);
         navigation.navigate("Main");
       } else {
         console.error("Ошибка при входе");
       }
     } catch (error) {
-      console.error("Ошибка при входе", error);
+      console.error("Ошибка при входе:", error);
     }
   };
 
@@ -129,7 +129,7 @@ const SignIn = () => {
                 render={({ field }) => (
                   <TextInput
                     placeholder="Введите Email"
-                    placeholderTextColor="#7a7a7a"
+                    placeholderTextColor="#9c9c9c"
                     onChangeText={field.onChange}
                     value={field.value}
                     style={{
@@ -181,7 +181,7 @@ const SignIn = () => {
                   <TextInput
                     type="Пароль"
                     placeholder="Введите пароль"
-                    placeholderTextColor="#7a7a7a"
+                    placeholderTextColor="#9c9c9c"
                     onChangeText={field.onChange}
                     value={field.value}
                     style={{

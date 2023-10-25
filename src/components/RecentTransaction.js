@@ -64,7 +64,7 @@ const RecentTransaction = () => {
         <View style={{ marginBottom: 40 }}>
           <View
             style={{
-              backgroundColor: "#767676",
+              backgroundColor: "#9c9c9c",
             }}
           >
             <ImageBackground
@@ -112,7 +112,7 @@ const RecentTransaction = () => {
                 style={{
                   fontSize: 12,
                   fontWeight: 400,
-                  color: "#767676",
+                  color: "#9c9c9c",
                 }}
               >
                 Current value
@@ -149,7 +149,7 @@ const RecentTransaction = () => {
                     style={{
                       fontSize: 14,
                       fontWeight: 400,
-                      color: "#767676",
+                      color: "#9c9c9c",
                     }}
                   >
                     4 accounts
@@ -166,7 +166,7 @@ const RecentTransaction = () => {
                   style={{
                     fontSize: 14,
                     fontWeight: 400,
-                    color: "#767676",
+                    color: "#9c9c9c",
                   }}
                 >
                   100%

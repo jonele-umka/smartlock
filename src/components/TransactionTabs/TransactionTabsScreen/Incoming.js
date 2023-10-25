@@ -120,11 +120,13 @@ const Incoming = () => {
 
   if (loading) {
     return (
-      <ActivityIndicator
-        size="large"
-        style={{ marginTop: 30 }}
-        color={"#0268EC"}
-      />
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <ActivityIndicator
+          size="large"
+          style={{ marginTop: 30 }}
+          color={"#0268EC"}
+        />
+      </View>
     );
   } else {
     return (
@@ -178,9 +180,10 @@ const Incoming = () => {
                       <TouchableOpacity
                         key={`${transactions.ID}_${transactions.Type}_${index}`}
                         onPress={() => {
-                          console.log(transactions);
-                          setSelectedTransaction(transactions);
-                          setShowModal(true);
+                          if (transactions.Status !== "Performed") {
+                            setSelectedTransaction(transactions);
+                            setShowModal(true);
+                          }
                         }}
                         style={[
                           styles.transactionListView,
@@ -228,7 +231,7 @@ const Incoming = () => {
                             </Text>
                             <Text
                               style={[
-                                { fontSize: 12, color: "#7A7A7A" },
+                                { fontSize: 12, color: "#9c9c9c" },
                                 // isDarkModeEnabled && { color: "#7A7A7A" },
                               ]}
                             >
