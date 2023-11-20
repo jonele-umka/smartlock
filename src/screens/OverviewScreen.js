@@ -11,6 +11,7 @@ import {
   ScrollView,
   ActivityIndicator,
   RefreshControl,
+  ImageBackground,
 } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import { SafeAreaView as SafeAreaViewContext } from "react-native-safe-area-context";
@@ -126,7 +127,234 @@ export const OverviewScreen = () => {
           <View>
             <CryptoCard />
           </View>
-          <View style={{ marginBottom: 30 }}>
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              columnGap: 20,
+              paddingHorizontal: 10,
+              marginBottom: 30,
+            }}
+          >
+            <View style={{ flex: 1, rowGap: 20 }}>
+              <TouchableOpacity
+                style={{ flex: 1, height: 120 }}
+                onPress={() => navigation.navigate("Перевести")}
+              >
+                <LinearGradient
+                  style={[
+                    { flex: 1, borderRadius: 15, padding: 10 },
+                    // isDarkModeEnabled && { backgroundColor: "#191a1d" },
+                  ]}
+                  start={{ x: 0, y: 1 }}
+                  end={{ x: 0, y: 0 }}
+                  colors={["#6902EC", "#C40EC8"]}
+                >
+                  <View
+                    style={{ flex: 1, flexDirection: "column", rowGap: 10 }}
+                  >
+                    <View
+                      style={{
+                        padding: 5,
+                        borderRadius: 10,
+                        flexDirection: "row",
+                        alignItems: "center",
+                        justifyContent: "flex-start",
+                        columnGap: 5,
+                        backgroundColor: "rgba(0,0,0,0.2)",
+                      }}
+                    >
+                      <Feather
+                        name="send"
+                        style={{ color: "#fff", fontSize: 15 }}
+                      />
+                      <Text
+                        style={{
+                          color: "#fff",
+                        }}
+                      >
+                        Перевести
+                      </Text>
+                    </View>
+                    <View style={{ flex: 1 }}>
+                      <Image
+                        style={{
+                          width: 100,
+                          height: "100%",
+                          marginLeft: "auto",
+                          resizeMode: "contain",
+                          flex: 1,
+                        }}
+                        source={require("../assets/overview/transfer.png")}
+                      />
+                    </View>
+                  </View>
+                </LinearGradient>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={{ flex: 1, height: 120 }}
+                onPress={() => navigation.navigate("Перевести")}
+              >
+                <LinearGradient
+                  style={[
+                    { flex: 1, borderRadius: 15, padding: 10 },
+                    // isDarkModeEnabled && { backgroundColor: "#191a1d" },
+                  ]}
+                  start={{ x: 0, y: 1 }}
+                  end={{ x: 0, y: 0 }}
+                  colors={["#0A53B2", "#0298EC"]}
+                >
+                  <View
+                    style={{ flex: 1, flexDirection: "column", rowGap: 10 }}
+                  >
+                    <View
+                      style={{
+                        padding: 5,
+                        borderRadius: 10,
+                        flexDirection: "row",
+                        alignItems: "center",
+                        justifyContent: "flex-start",
+                        columnGap: 5,
+                        backgroundColor: "rgba(0,0,0,0.2)",
+                      }}
+                    >
+                      <MaterialCommunityIcons
+                        name="qrcode-scan"
+                        style={{ color: "#fff", fontSize: 15 }}
+                      />
+                      <Text
+                        style={{
+                          color: "#fff",
+                        }}
+                      >
+                        Сканировать
+                      </Text>
+                    </View>
+                    <View style={{ flex: 1 }}>
+                      <Image
+                        style={{
+                          width: 100,
+                          height: "100%",
+                          marginLeft: "auto",
+                          resizeMode: "contain",
+                          flex: 1,
+                        }}
+                        source={require("../assets/overview/scan.png")}
+                      />
+                    </View>
+                  </View>
+                </LinearGradient>
+              </TouchableOpacity>
+            </View>
+            <View style={{ flex: 1, rowGap: 20 }}>
+              <TouchableOpacity
+                style={{ flex: 1, height: 120 }}
+                onPress={() => navigation.navigate("История переводов")}
+              >
+                <LinearGradient
+                  style={[
+                    { flex: 1, borderRadius: 15, padding: 10 },
+                    // isDarkModeEnabled && { backgroundColor: "#191a1d" },
+                  ]}
+                  start={{ x: 0, y: 1 }}
+                  end={{ x: 0, y: 0 }}
+                  colors={["#0EC879", "#0AD5C2"]}
+                >
+                  <View
+                    style={{ flex: 1, flexDirection: "column", rowGap: 10 }}
+                  >
+                    <View
+                      style={{
+                        padding: 5,
+                        borderRadius: 10,
+                        flexDirection: "row",
+                        alignItems: "center",
+                        justifyContent: "flex-start",
+                        columnGap: 5,
+                        backgroundColor: "rgba(0,0,0,0.2)",
+                      }}
+                    >
+                      <MaterialCommunityIcons
+                        name="history"
+                        style={{ fontSize: 15, color: "#fff" }}
+                      />
+                      <Text
+                        style={{
+                          color: "#fff",
+                        }}
+                      >
+                        История
+                      </Text>
+                    </View>
+                    <View style={{ flex: 1 }}>
+                      <Image
+                        style={{
+                          width: 100,
+                          height: "100%",
+                          marginLeft: "auto",
+                          resizeMode: "contain",
+                          flex: 1,
+                        }}
+                        source={require("../assets/overview/history.png")}
+                      />
+                    </View>
+                  </View>
+                </LinearGradient>
+              </TouchableOpacity>
+              <TouchableOpacity style={{ flex: 1, height: 120 }}>
+                <LinearGradient
+                  style={[
+                    { flex: 1, borderRadius: 15, padding: 10 },
+                    // isDarkModeEnabled && { backgroundColor: "#191a1d" },
+                  ]}
+                  start={{ x: 0, y: 1 }}
+                  end={{ x: 0, y: 0 }}
+                  colors={["#EC6402", "#EC0256"]}
+                >
+                  <View
+                    style={{ flex: 1, flexDirection: "column", rowGap: 10 }}
+                  >
+                    <View
+                      style={{
+                        padding: 5,
+                        borderRadius: 10,
+                        flexDirection: "row",
+                        alignItems: "center",
+                        justifyContent: "flex-start",
+                        columnGap: 5,
+                        backgroundColor: "rgba(0,0,0,0.2)",
+                      }}
+                    >
+                      <MaterialCommunityIcons
+                        name="plus"
+                        style={{ fontSize: 15, color: "#fff" }}
+                      />
+                      <Text
+                        style={{
+                          color: "#fff",
+                        }}
+                      >
+                        Заказать карту
+                      </Text>
+                    </View>
+                    <View style={{ flex: 1 }}>
+                      <Image
+                        style={{
+                          width: 100,
+                          height: "100%",
+                          marginLeft: "auto",
+                          resizeMode: "contain",
+                          flex: 1,
+                        }}
+                        source={require("../assets/overview/cardadd.png")}
+                      />
+                    </View>
+                  </View>
+                </LinearGradient>
+              </TouchableOpacity>
+            </View>
+          </View>
+          {/* <View style={{ marginBottom: 30 }}>
             <View
               style={{
                 flexDirection: "row",
@@ -258,7 +486,7 @@ export const OverviewScreen = () => {
                 </Text>
               </View>
             </View>
-          </View>
+          </View> */}
           <View
             style={{
               paddingHorizontal: 10,
@@ -339,7 +567,7 @@ export const OverviewScreen = () => {
                   alignItems: "center",
                   justifyContent: "center",
                   columnGap: 10,
-                  backgroundColor: "rgba(93, 0, 230, 0.6)",
+                  backgroundColor: "#4600c8",
                   borderRadius: 10,
                   paddingVertical: 20,
                   marginTop: 20,
@@ -390,7 +618,7 @@ export const OverviewScreen = () => {
                   alignItems: "center",
                   justifyContent: "center",
                   columnGap: 10,
-                  backgroundColor: "rgba(93, 0, 230, 0.6)",
+                  backgroundColor: "rgb(70, 0, 200)",
                   borderRadius: 10,
                   paddingVertical: 20,
                   marginTop: 10,
@@ -423,8 +651,8 @@ const styles = StyleSheet.create({
   },
 
   cardBottomView: {
-    backgroundColor: "rgba(93, 0, 230, 0.6)",
-    padding: 20,
+    backgroundColor: "rgba(255,255,255,0.2)",
+    padding: 15,
     borderRadius: 10,
   },
 

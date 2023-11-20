@@ -55,7 +55,7 @@ const SignIn = () => {
       const data = await dispatch(loginUser(userData));
 
       if (data && data?.data && data?.data?.access_token) {
-        // await AsyncStorage.setItem("token", data.data.access_token);
+        await AsyncStorage.setItem("token", data.data.access_token);
         navigation.navigate("Main");
       } else {
         console.error("Ошибка при входе");
@@ -90,10 +90,10 @@ const SignIn = () => {
           }}
         >
           <Image
-            style={{ width: "100%", height: 70, marginBottom: 20 }}
-            source={require("../../assets/logo3.png")}
+            style={{ width: "100%", height: 150, marginBottom: 20 }}
+            source={require("../../assets/CRYPTONLogo.png")}
           />
-          <Text
+          {/* <Text
             style={{
               fontSize: 20,
               maxWidth: "60%",
@@ -104,7 +104,7 @@ const SignIn = () => {
             }}
           >
             С возвращением, по вам скучали!
-          </Text>
+          </Text> */}
 
           <View
             style={{
@@ -137,7 +137,7 @@ const SignIn = () => {
                       color: "#fff",
                       fontSize: 14,
                       height: 50,
-                      backgroundColor: "rgba(93, 0, 230, 0.2)",
+                     backgroundColor: "rgba(255,255,255,0.2)",
                       paddingHorizontal: 10,
                       borderRadius: 10,
                       borderWidth: errors.UserName ? 1 : 0,
@@ -189,7 +189,7 @@ const SignIn = () => {
                       color: "#fff",
                       fontSize: 14,
                       height: 50,
-                      backgroundColor: "rgba(93, 0, 230, 0.2)",
+                     backgroundColor: "rgba(255,255,255,0.2)",
                       paddingHorizontal: 10,
                       borderRadius: 10,
                       borderWidth: errors.UserPassword ? 1 : 0,
@@ -240,11 +240,11 @@ const SignIn = () => {
               onPress={handleSubmit(onSubmit)}
               style={{
                 padding: 15,
-                backgroundColor: "rgba(93, 0, 230, 0.6)",
+                backgroundColor: "rgb(70, 0, 200)",
                 marginTop: 30,
                 marginBottom: 20,
                 borderRadius: 10,
-                shadowColor: "rgba(93, 0, 230, 0.6)",
+                shadowColor: "rgb(70, 0, 200)",
                 shadowOffset: {
                   width: 0,
                   height: 10,
@@ -311,7 +311,7 @@ const SignIn = () => {
               <TouchableOpacity
                 style={{
                   padding: 10,
-                  backgroundColor: "rgba(93, 0, 230, 0.6)",
+                  backgroundColor: "rgb(70, 0, 200)",
                   borderRadius: 10,
                   marginHorizontal: 10,
                 }}
@@ -328,7 +328,7 @@ const SignIn = () => {
               <TouchableOpacity
                 style={{
                   padding: 10,
-                  backgroundColor: "rgba(93, 0, 230, 0.6)",
+                  backgroundColor: "rgb(70, 0, 200)",
                   borderRadius: 10,
                   marginHorizontal: 10,
                 }}
@@ -345,7 +345,7 @@ const SignIn = () => {
               <TouchableOpacity
                 style={{
                   padding: 10,
-                  backgroundColor: "rgba(93, 0, 230, 0.6)",
+                  backgroundColor: "rgb(70, 0, 200)",
                   borderRadius: 10,
                   marginHorizontal: 10,
                 }}

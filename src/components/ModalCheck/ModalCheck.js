@@ -12,7 +12,8 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import Ionicons from "react-native-vector-icons/Ionicons";
 import Entypo from "react-native-vector-icons/Entypo";
 import { useNavigation } from "@react-navigation/native";
- 
+import { BlurView } from "expo-blur";
+
 // import file from "../../assets/card/card.png";
 const ModalCheck = ({
   showModal,
@@ -73,8 +74,8 @@ const ModalCheck = ({
   };
 
   return (
-    <Modal isOpen={showModal}>
-      <ModalBackdrop />
+    <Modal style={{position: 'relative'}} isOpen={showModal}>
+      <BlurView tint="light" intensity={10} style={{height: '100%',width: '100%', position: 'absolute',}} />
       <ModalContent
         width={"95%"}
         backgroundColor={"#140A4F"}
