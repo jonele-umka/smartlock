@@ -138,8 +138,8 @@ const CryptoCard = () => {
                   }}
                 >
                   <Image
-                    source={require("../../../../assets/logo2.png")}
-                    style={{ flex: 0.3, height: "100%" }}
+                    source={require("../../../../assets/CRYPTONLogo5.png")}
+                    style={{ width: 100, height: 15 }}
                   />
                   <Entypo
                     onPress={() => {

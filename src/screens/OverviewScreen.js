@@ -109,10 +109,10 @@ export const OverviewScreen = () => {
                 containerStyle={{ position: "absolute", top: 0, left: 15 }}
               />
             </TouchableOpacity>
-            <Image
+            {/* <Image
               style={styles.logo}
               source={require("../assets/logo3.png")}
-            />
+            /> */}
             <TouchableOpacity onPress={logout}>
               <Image
                 source={require("../assets/avatar.png")}
