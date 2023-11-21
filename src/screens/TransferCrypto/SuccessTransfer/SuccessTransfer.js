@@ -367,7 +367,7 @@ const SuccessTransfer = () => {
                 style={{
                   color: "#fff",
                   fontSize: 30,
-                  color: "rgba(93, 0, 230, 0.6)",
+                  color: "#5d00e6",
                 }}
               />
               <View>
@@ -401,7 +401,7 @@ const SuccessTransfer = () => {
                 style={{
                   color: "#fff",
                   fontSize: 30,
-                  color: "rgba(93, 0, 230, 0.6)",
+                  color: "#5d00e6",
                 }}
               />
 
@@ -433,14 +433,14 @@ const SuccessTransfer = () => {
             </View>
           </View>
           <TouchableOpacity
-            onPress={() => navigation.navigate("Main")}
+            onPress={() => navigation.navigate("Главная")}
             style={{
               marginTop: 25,
               borderRadius: 10,
               padding: 20,
-              backgroundColor: "rgba(93, 0, 230, 0.6)",
+              backgroundColor: "#5d00e6",
               marginTop: 30,
-              shadowColor: "rgba(93, 0, 230, 0.6)",
+              shadowColor: "#5d00e6",
               shadowOffset: {
                 width: 0,
                 height: 10,
@@ -473,10 +473,10 @@ const SuccessTransfer = () => {
           <ModalHeader paddingTop={0} paddingHorizontal={0} marginBottom={20}>
             <Image
               style={{
-                width: "70%",
+                width: "50%",
                 height: "100%",
               }}
-              source={require("../../../assets/logo3.png")}
+              source={require("../../../assets/CRYPTONLogo.png")}
             />
             <ModalCloseButton>
               <MaterialCommunityIcons
@@ -542,6 +542,7 @@ const SuccessTransfer = () => {
                         style={{
                           flexDirection: "row",
                           justifyContent: "space-between",
+                          columnGap: 20
                         }}
                       >
                         <Text style={{ color: "#fff" }}>Имя получателя</Text>
@@ -553,12 +554,14 @@ const SuccessTransfer = () => {
                       style={{
                         flexDirection: "row",
                         justifyContent: "space-between",
+                        columnGap: 20
                       }}
                     >
                       <Text style={{ color: "#fff" }}>
                         Реквизиты получателя
                       </Text>
-                      <Text style={{ color: "#fff", width: 128 }}>
+
+                      <Text style={{ color: "#fff", textAlign: "right" }}>
                         {requisites}
                       </Text>
                     </View>
@@ -567,6 +570,7 @@ const SuccessTransfer = () => {
                       style={{
                         flexDirection: "row",
                         justifyContent: "space-between",
+                        columnGap: 20
                       }}
                     >
                       <Text style={{ color: "#fff" }}>Отправлено со счета</Text>
@@ -578,6 +582,7 @@ const SuccessTransfer = () => {
                       style={{
                         flexDirection: "row",
                         justifyContent: "space-between",
+                        columnGap: 20
                       }}
                     >
                       <Text style={{ color: "#fff" }}>Комиссия</Text>
@@ -590,6 +595,7 @@ const SuccessTransfer = () => {
                       style={{
                         flexDirection: "row",
                         justifyContent: "space-between",
+                        columnGap: 20
                       }}
                     >
                       <Text style={{ color: "#fff" }}>Дата операции</Text>
@@ -601,6 +607,7 @@ const SuccessTransfer = () => {
                       style={{
                         flexDirection: "row",
                         justifyContent: "space-between",
+                        columnGap: 20
                       }}
                     >
                       <Text style={{ color: "#fff" }}>Номер квитанции</Text>
@@ -622,7 +629,7 @@ const SuccessTransfer = () => {
 };
 const styles = StyleSheet.create({
   cardBottomView: {
-    backgroundColor: "rgba(93, 0, 230, 0.6)",
+    backgroundColor: "#5d00e6",
     padding: 20,
     borderRadius: 10,
   },

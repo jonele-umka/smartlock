@@ -203,12 +203,12 @@ const AnalyticsPage = () => {
           }}
           horizontal={true}
         >
-          <View style={{ flexDirection: "row", columnGap: 40 }}>
+          <View style={{ flexDirection: "row", columnGap: 100 }}>
             {monthlyExpenses.map((expense, index) => (
               <View
                 style={{
-                  width: "100%",
-                  flexDirection: "column",
+                  // width: "100%",
+                  // flexDirection: "column",
                   justifyContent: "space-between",
                 }}
                 key={index}
@@ -237,11 +237,11 @@ const AnalyticsPage = () => {
                   style={{
                     flexDirection: "row-reverse",
                     alignItems: "flex-end",
-                    justifyContent: "center",
+                    justifyContent: "flex-end",
                   }}
                 >
                   {Object.keys(expense.days).map((day, index) => (
-                    <View key={index}>
+                    <View style={{ flexDirection: "column" }} key={index}>
                       <View
                         style={{
                           width: 20,

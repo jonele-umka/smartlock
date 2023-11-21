@@ -415,9 +415,9 @@ const ConfirmationUser = () => {
                 marginTop: 25,
                 borderRadius: 10,
                 padding: 20,
-                backgroundColor: "rgba(93, 0, 230, 0.6)",
+                backgroundColor: "#5d00e6",
                 marginTop: 30,
-                shadowColor: "rgba(93, 0, 230, 0.6)",
+                shadowColor: "#5d00e6",
                 shadowOffset: {
                   width: 0,
                   height: 10,

@@ -42,7 +42,7 @@ export const AddFavorites = () => {
       console.log("New Favorite: ", newFavorite); 
       dispatch(addToFavorites(newFavorite));
       console.log("Added to favorites");
-      navigation.navigate("Main");
+      navigation.navigate("Главная");
     }
   };
 

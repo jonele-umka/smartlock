@@ -28,7 +28,7 @@ const WelcomeScreen = () => {
         <View style={styles.imageContainer}>
           <Image
             style={styles.logoImage}
-            source={require("../assets/logo3.png")}
+            source={require("../assets/CRYPTONLogo.png")}
           />
         </View>
       </SafeAreaView>

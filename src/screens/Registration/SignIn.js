@@ -39,13 +39,13 @@ const SignIn = () => {
   // submit
   // const onSubmit = (userData) => {
   //   console.log(userData);
-  //   dispatch(loginUser(userData)).then(() => navigation.navigate("Main"));
+  //   dispatch(loginUser(userData)).then(() => navigation.navigate("Главная"));
   // };
 
   // const onSubmit = async (userData) => {
   //   try {
   //     await dispatch(loginUser(userData));
-  //     navigation.navigate("Main");
+  //     navigation.navigate("Главная");
   //   } catch (error) {
   //     setError(error);
   //   }
@@ -56,7 +56,7 @@ const SignIn = () => {
 
       if (data && data?.data && data?.data?.access_token) {
         await AsyncStorage.setItem("token", data.data.access_token);
-        navigation.navigate("Main");
+        navigation.navigate("Главная");
       } else {
         console.error("Ошибка при входе");
       }
@@ -90,7 +90,7 @@ const SignIn = () => {
           }}
         >
           <Image
-            style={{ width: "100%", height: 150, marginBottom: 20 }}
+            style={{ width: "100%", height: 80, marginBottom: 50 }}
             source={require("../../assets/CRYPTONLogo.png")}
           />
           {/* <Text
@@ -240,11 +240,11 @@ const SignIn = () => {
               onPress={handleSubmit(onSubmit)}
               style={{
                 padding: 15,
-                backgroundColor: "rgb(70, 0, 200)",
+                backgroundColor: "#5d00e6",
                 marginTop: 30,
                 marginBottom: 20,
                 borderRadius: 10,
-                shadowColor: "rgb(70, 0, 200)",
+                shadowColor: "#5d00e6",
                 shadowOffset: {
                   width: 0,
                   height: 10,
@@ -311,7 +311,7 @@ const SignIn = () => {
               <TouchableOpacity
                 style={{
                   padding: 10,
-                  backgroundColor: "rgb(70, 0, 200)",
+                  backgroundColor: "#5d00e6",
                   borderRadius: 10,
                   marginHorizontal: 10,
                 }}
@@ -328,7 +328,7 @@ const SignIn = () => {
               <TouchableOpacity
                 style={{
                   padding: 10,
-                  backgroundColor: "rgb(70, 0, 200)",
+                  backgroundColor: "#5d00e6",
                   borderRadius: 10,
                   marginHorizontal: 10,
                 }}
@@ -345,7 +345,7 @@ const SignIn = () => {
               <TouchableOpacity
                 style={{
                   padding: 10,
-                  backgroundColor: "rgb(70, 0, 200)",
+                  backgroundColor: "#5d00e6",
                   borderRadius: 10,
                   marginHorizontal: 10,
                 }}

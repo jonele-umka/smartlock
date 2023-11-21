@@ -20,7 +20,7 @@ const NavBar = () => {
       screenOptions={({ route }) => ({
         headerShown: false,
         // tabBarShowLabel: tr,
-        tabBarActiveTintColor: "#7041DE",
+        tabBarActiveTintColor: "#5d00e6",
         tabBarInactiveTintColor: "grey",
         tabBarStyle: [
           // isDarkModeEnabled

@@ -90,7 +90,7 @@ const FavoritesScreen = () => {
         }}
       >
         <View>
-          <Ionicons name="star-outline" size={200} color="rgba(93, 0, 230, 0.6)" />
+          <Ionicons name="star-outline" size={200} color="#5d00e6" />
           <Text
             style={{
               color: "#fff",
@@ -142,7 +142,7 @@ const FavoritesScreen = () => {
                     <View>
                       <View
                         style={{
-                          backgroundColor: "rgba(93, 0, 230, 0.6)",
+                          backgroundColor: "#5d00e6",
                           borderRadius: 10,
                           padding: 5,
                         }}

@@ -25,7 +25,7 @@ const Navigator = () => {
       <NavigationContainer>
         <Stack.Navigator initialRouteName="Войти">
           <Stack.Screen
-            name="Main"
+            name="Главная"
             component={NavBar}
             options={{ headerShown: false }}
           />

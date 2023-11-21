@@ -109,10 +109,10 @@ export const OverviewScreen = () => {
                 containerStyle={{ position: "absolute", top: 0, left: 15 }}
               />
             </TouchableOpacity>
-            {/* <Image
+            <Image
               style={styles.logo}
-              source={require("../assets/logo3.png")}
-            /> */}
+              source={require("../assets/CRYPTONLogo.png")}
+            />
             <TouchableOpacity onPress={logout}>
               <Image
                 source={require("../assets/avatar.png")}
@@ -346,7 +346,7 @@ export const OverviewScreen = () => {
                           resizeMode: "contain",
                           flex: 1,
                         }}
-                        source={require("../assets/overview/cardadd.png")}
+                        source={require("../assets/overview/card.png")}
                       />
                     </View>
                   </View>
@@ -567,7 +567,7 @@ export const OverviewScreen = () => {
                   alignItems: "center",
                   justifyContent: "center",
                   columnGap: 10,
-                  backgroundColor: "#4600c8",
+                  backgroundColor: "#5d00e6",
                   borderRadius: 10,
                   paddingVertical: 20,
                   marginTop: 20,
@@ -618,7 +618,7 @@ export const OverviewScreen = () => {
                   alignItems: "center",
                   justifyContent: "center",
                   columnGap: 10,
-                  backgroundColor: "rgb(70, 0, 200)",
+                  backgroundColor: "#5d00e6",
                   borderRadius: 10,
                   paddingVertical: 20,
                   marginTop: 10,
@@ -646,8 +646,8 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   logo: {
-    flex: 0.5,
-    height: "100%",
+    width: 120,
+    height: 30,
   },
 
   cardBottomView: {

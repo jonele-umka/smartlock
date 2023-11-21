@@ -74,8 +74,8 @@ const ModalCheck = ({
   };
 
   return (
-    <Modal style={{position: 'relative'}} isOpen={showModal}>
-      <BlurView tint="light" intensity={10} style={{height: '100%',width: '100%', position: 'absolute',}} />
+    <Modal isOpen={showModal}>
+      <ModalBackdrop />
       <ModalContent
         width={"95%"}
         backgroundColor={"#140A4F"}
@@ -86,10 +86,10 @@ const ModalCheck = ({
         <ModalHeader paddingTop={0} paddingHorizontal={0} marginBottom={20}>
           <Image
             style={{
-              width: "70%",
+              width: "50%",
               height: "100%",
             }}
-            source={require("../../assets/logo3.png")}
+            source={require("../../assets/CRYPTONLogo.png")}
           />
           <ModalCloseButton>
             <MaterialCommunityIcons
@@ -180,7 +180,7 @@ const ModalCheck = ({
                           <Text style={{ color: "#fff" }}>
                             Реквизиты получателя
                           </Text>
-                          <Text style={{ color: "#fff", width: 128 }}>
+                          <Text style={{ color: "#fff", textAlign: "right" }}>
                             {selectedTransaction.ReceiverRequisites}
                           </Text>
                         </View>
@@ -460,7 +460,7 @@ const ModalCheck = ({
 };
 const styles = StyleSheet.create({
   cardBottomView: {
-    backgroundColor: "rgba(93, 0, 230, 0.6)",
+    backgroundColor: "#5d00e6",
     padding: 10,
     borderRadius: 10,
   },

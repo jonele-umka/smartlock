@@ -28,7 +28,7 @@ const ListCard = ({ items, title, clickHandler }) => {
       >
         <View
           style={{
-            backgroundColor: "rgba(93, 0, 230, 0.6)",
+            backgroundColor: "#5d00e6",
             borderRadius: 10,
             padding: 5,
           }}

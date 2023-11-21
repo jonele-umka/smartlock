@@ -79,7 +79,7 @@ const SignUpForm = () => {
 
         if (data && data.data && data.data.access_token) {
           // await AsyncStorage.setItem("token", data.data.access_token);
-          navigation.navigate("Main");
+          navigation.navigate("Главная");
         } else {
           console.error("Ошибка при входе");
         }
