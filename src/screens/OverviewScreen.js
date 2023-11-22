@@ -63,11 +63,11 @@ export const OverviewScreen = () => {
 
   // const [showActionsheet, setShowActionsheet] = React.useState(false);
   // const handleClose = () => setShowActionsheet(!showActionsheet);
-  const logout = () => {
-    // Очистить токен из хранилища
-    AsyncStorage.removeItem("token");
-    navigation.navigate("Войти");
-  };
+  // const logout = () => {
+  //   // Очистить токен из хранилища
+  //   AsyncStorage.removeItem("token");
+  //   navigation.navigate("Войти");
+  // };
   const SafeAreaWrapper =
     Platform.OS === "android" ? SafeAreaViewContext : SafeAreaView;
 
@@ -113,7 +113,7 @@ export const OverviewScreen = () => {
               style={styles.logo}
               source={require("../assets/CRYPTONLogo.png")}
             />
-            <TouchableOpacity onPress={logout}>
+            <TouchableOpacity >
               <Image
                 source={require("../assets/avatar.png")}
                 style={{ width: 30, height: 30 }}

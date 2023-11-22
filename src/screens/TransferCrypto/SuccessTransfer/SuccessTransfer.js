@@ -433,7 +433,7 @@ const SuccessTransfer = () => {
             </View>
           </View>
           <TouchableOpacity
-            onPress={() => navigation.navigate("Главная")}
+            onPress={() => navigation.navigate("Главная страница")}
             style={{
               marginTop: 25,
               borderRadius: 10,

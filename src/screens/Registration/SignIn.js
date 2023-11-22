@@ -56,7 +56,7 @@ const SignIn = () => {
 
       if (data && data?.data && data?.data?.access_token) {
         await AsyncStorage.setItem("token", data.data.access_token);
-        navigation.navigate("Главная");
+        navigation.navigate("Главная страница");
       } else {
         console.error("Ошибка при входе");
       }

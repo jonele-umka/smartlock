@@ -67,7 +67,7 @@ const PaymentsScreen = ({ navigation }) => {
   const isDarkModeEnabled = useSelector(
     (state) => state.theme.isDarkModeEnabled
   );
-  const clickHandler = (page) => navigation.push("Главная", { screen: page });
+  const clickHandler = (page) => navigation.push("Главная страница", { screen: page });
 
   const SafeAreaWrapper =
     Platform.OS === "android" ? SafeAreaViewContext : SafeAreaView;
