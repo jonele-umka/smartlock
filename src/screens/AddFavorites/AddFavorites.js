@@ -6,7 +6,6 @@ import {
   TextInput,
   TouchableOpacity,
   SafeAreaView,
-  ActivityIndicator,
   Platform,
   StyleSheet,
 } from "react-native";
@@ -105,9 +104,9 @@ export const AddFavorites = () => {
             marginTop: 25,
             borderRadius: 10,
             padding: 20,
-            backgroundColor: "#0268EC",
+            backgroundColor: "#5d00e6",
             marginTop: 30,
-            shadowColor: "#0268EC",
+            shadowColor: "#5d00e6",
             shadowOffset: {
               width: 0,
               height: 10,

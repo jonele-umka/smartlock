@@ -17,15 +17,15 @@ import {
 } from "../Store/Favorites/FavoritesAction";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-import {
-  Actionsheet,
-  ActionsheetBackdrop,
-  ActionsheetContent,
-  ActionsheetDragIndicatorWrapper,
-  ActionsheetDragIndicator,
-  ActionsheetItem,
-  ActionsheetItemText,
-} from "@gluestack-ui/themed";
+// import {
+//   Actionsheet,
+//   ActionsheetBackdrop,
+//   ActionsheetContent,
+//   ActionsheetDragIndicatorWrapper,
+//   ActionsheetDragIndicator,
+//   ActionsheetItem,
+//   ActionsheetItemText,
+// } from "@gluestack-ui/themed";
 import { LinearGradient } from "expo-linear-gradient";
 
 const FavoritesScreen = () => {
@@ -178,7 +178,7 @@ const FavoritesScreen = () => {
                       }}
                     />
                   </View>
-                  {selectedFavorite && selectedFavorite.id === favorite.id && (
+                  {/* {selectedFavorite && selectedFavorite.id === favorite.id && (
                     <Actionsheet
                       isOpen={showActionsheet}
                       onClose={handleClose}
@@ -204,7 +204,7 @@ const FavoritesScreen = () => {
                         </ActionsheetItem>
                       </ActionsheetContent>
                     </Actionsheet>
-                  )}
+                  )} */}
                 </TouchableOpacity>
               ))}
           </View>

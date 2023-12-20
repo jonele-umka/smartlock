@@ -12,6 +12,8 @@ import { useSelector } from "react-redux";
 import Toast from "react-native-toast-message";
 import { LinearGradient } from "expo-linear-gradient";
 import { API_URL } from "../../../constants";
+import * as Notifications from "expo-notifications";
+
 const ConfirmationUser = () => {
   const { navigate } = useNavigation();
   const route = useRoute();
@@ -30,9 +32,48 @@ const ConfirmationUser = () => {
     id,
   } = route.params;
   const [loading, setLoading] = useState(false);
-  console.log("phone_number", phone_number);
+
   const [error, setError] = useState(null);
   const token = useSelector((state) => state.signIn.token);
+
+  const sendNotification = async (notificationData) => {
+    const intSum = parseFloat(notificationData?.data?.data?.TransferSum);
+    const intCommission = parseFloat(
+      notificationData?.data?.data?.CommissionSum
+    );
+
+    const createdAtDate = new Date(notificationData?.data?.data?.TransferDate);
+    const formattedCreatedAt = createdAtDate.toLocaleString("ru-RU", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: false,
+    });
+console.log(notificationData)
+    const notification = {
+      title: "Отправка средств",
+      body: `
+         Отправлено: ${notificationData?.data?.data?.TransferSum} ${
+        notificationData.Currency
+      }
+         Комиссия: ${notificationData?.data?.data?.CommissionSum}
+         Со счёта: ${notificationData?.data?.data?.WalletSender}
+         На счёт: ${notificationData?.data?.data?.WalletReceiver}
+         Дата: ${formattedCreatedAt}
+         Общая сумма ${intSum + intCommission} `,
+      android: {
+        channelId: "default",
+      },
+    };
+
+    await Notifications.scheduleNotificationAsync({
+      content: notification,
+      trigger: null,
+    });
+  };
   // transfer
   const currencySymbols = {
     USD: "$",
@@ -68,8 +109,10 @@ const ConfirmationUser = () => {
         })
 
         .then((data) => {
-          console.log(data);
           setLoading(false);
+          sendNotification({
+            data,
+          });
           navigate("SuccessTransfer", {
             sum: sum,
             currencyCode: currencyCode,
@@ -82,7 +125,7 @@ const ConfirmationUser = () => {
         })
         .catch((error) => {
           setError(error.message);
-          console.log("errorsss:", error.message);
+
           setLoading(false);
           Toast.show({
             type: "error",
@@ -116,6 +159,9 @@ const ConfirmationUser = () => {
           return response.json();
         })
         .then((data) => {
+          sendNotification({
+            data,
+          });
           setLoading(false);
           navigate("SuccessTransfer", {
             sum: sum,
@@ -165,6 +211,9 @@ const ConfirmationUser = () => {
           return response.json();
         })
         .then((data) => {
+          sendNotification({
+            data,
+          });
           setLoading(false);
           navigate("SuccessTransfer", {
             sum: sum,
@@ -213,7 +262,7 @@ const ConfirmationUser = () => {
         <View
           style={{
             paddingHorizontal: 10,
-            paddingVertical: Platform.OS === "android" ? 0 : 20,
+            paddingVertical: 10,
           }}
         >
           <Text
@@ -406,7 +455,7 @@ const ConfirmationUser = () => {
             <ActivityIndicator
               size="large"
               style={{ marginTop: 30 }}
-              color={"#0268EC"}
+              color={"#fff"}
             />
           ) : (
             <TouchableOpacity

@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { toggleDarkMode } from "../Store/DarkTheme/themeAction";
 import {
@@ -11,11 +11,16 @@ import {
   Image,
   SafeAreaView,
   Platform,
+  Switch,
 } from "react-native";
+import { useNavigation } from "@react-navigation/native";
 import { SafeAreaView as SafeAreaViewContext } from "react-native-safe-area-context";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-import Dark from "react-native-vector-icons/Ionicons";
+import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { LinearGradient } from "expo-linear-gradient";
+import Ionicons from "react-native-vector-icons/Ionicons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as LocalAuthentication from "expo-local-authentication";
 
 // link
 const Link = ({ title, onClick, icon, disabled = false }) => {
@@ -38,14 +43,21 @@ const Link = ({ title, onClick, icon, disabled = false }) => {
           <View
             style={[
               {
-                backgroundColor: "#0268EC",
+                backgroundColor: "#5d00e6",
                 borderRadius: 50,
                 padding: 10,
               },
               // isDarkModeEnabled && { backgroundColor: "#fff" },
             ]}
           >
-            <Icon name={icon} size={20} color={"#fff"} />
+            {icon === "pin" ? (
+              <Image
+                source={require("../assets/pin.png")}
+                style={{ width: 20, height: 20 }}
+              />
+            ) : (
+              <Icon name={icon} size={20} color={"#fff"} />
+            )}
           </View>
           <View>
             <Text
@@ -63,7 +75,7 @@ const Link = ({ title, onClick, icon, disabled = false }) => {
           </View>
         </View>
         <View>
-          <Icon name={"chevron-right"} size={20} color={"#0268EC"} />
+          <Icon name={"chevron-right"} size={20} color={"#5d00e6"} />
         </View>
       </View>
     </TouchableOpacity>
@@ -71,6 +83,78 @@ const Link = ({ title, onClick, icon, disabled = false }) => {
 };
 
 const SettingsScreen = () => {
+  const navigation = useNavigation();
+  // switch biometric
+  const [isEnabled, setIsEnabled] = useState(false);
+
+  const toggleSwitch = async () => {
+    // Если включаем, то запрашиваем отпечаток
+    if (!isEnabled) {
+      try {
+        const result = await LocalAuthentication.authenticateAsync({
+          promptMessage:
+            "Подтвердите отпечатком пальца для включения входа по биометрии",
+        });
+
+        if (result.success) {
+          // Если отпечаток подтвержден, меняем состояние и сохраняем в AsyncStorage
+          const newIsEnabled = !isEnabled;
+          setIsEnabled(newIsEnabled);
+
+          AsyncStorage.setItem(
+            "biometricEnabled",
+            newIsEnabled ? "true" : "false"
+          )
+            .then(() => {
+              console.log("Информация о входе по биометрии сохранена");
+            })
+            .catch((error) => {
+              console.error(
+                "Ошибка при сохранении предпочтений по биометрии:",
+                error
+              );
+            });
+        } else {
+          console.log("Пользователь отказался от входа по биометрии");
+        }
+      } catch (error) {
+        console.error("Ошибка при запросе отпечатка пальца:", error);
+      }
+    } else {
+      // Если выключаем, меняем состояние и сохраняем в AsyncStorage
+      const newIsEnabled = !isEnabled;
+      setIsEnabled(newIsEnabled);
+
+      AsyncStorage.setItem("biometricEnabled", newIsEnabled ? "true" : "false")
+        .then(() => {
+          console.log("Информация о входе по биометрии сохранена");
+        })
+        .catch((error) => {
+          console.error(
+            "Ошибка при сохранении предпочтений по биометрии:",
+            error
+          );
+        });
+    }
+  };
+  useEffect(() => {
+    const checkBiometricPreference = async () => {
+      try {
+        const biometricEnabled = await AsyncStorage.getItem("biometricEnabled");
+
+        if (biometricEnabled === "true") {
+          setIsEnabled(true);
+        } else {
+          setIsEnabled(false);
+        }
+      } catch (error) {
+        console.error("Ошибка при чтении предпочтений по биометрии:", error);
+      }
+    };
+
+    checkBiometricPreference();
+  }, []); // Пустой массив зависимостей гарантирует, что эффект запустится только один раз при монтировании
+
   // redux
   const dispatch = useDispatch();
   const isDarkModeEnabled = useSelector(
@@ -150,7 +234,7 @@ const SettingsScreen = () => {
                 isDarkModeEnabled && { backgroundColor: "#fff" },
               ]}
             >
-              <Dark name="ios-moon" size={20} color={"#0268EC"} />
+              <Dark name="ios-moon" size={20} color={"#5d00e6"} />
             </View>
             <Text
               style={[
@@ -171,6 +255,49 @@ const SettingsScreen = () => {
         </View> */}
 
           <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+              paddingHorizontal: 20,
+              marginBottom: 10,
+            }}
+          >
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                alignItems: "center",
+                columnGap: 15,
+              }}
+            >
+              <View
+                style={[
+                  {
+                    backgroundColor: "#5d00e6",
+                    borderRadius: 50,
+                    padding: 10,
+                  },
+                  // isDarkModeEnabled && { backgroundColor: "#fff" },
+                ]}
+              >
+                <Ionicons
+                  name="finger-print-outline"
+                  style={{ color: "#fff", fontSize: 20 }}
+                />
+              </View>
+
+              <Text style={{ color: "#fff" }}>Вход по биометрии</Text>
+            </View>
+            <Switch
+              trackColor={{ false: "#767577", true: "#5d00e6" }}
+              thumbColor={isEnabled && "#f4f3f4"}
+              ios_backgroundColor="#3e3e3e"
+              onValueChange={toggleSwitch}
+              value={isEnabled}
+            />
+          </View>
+          <View
             style={[
               styles.linksContainer,
               // isDarkModeEnabled
@@ -178,49 +305,26 @@ const SettingsScreen = () => {
               //   : { backgroundColor: "#fff" },
             ]}
           >
-            <Link title={"Settings"} onClick={() => null} icon={"cog"} />
+            <Link
+              title={"Сменить пин код"}
+              onClick={() => {
+                navigation.navigate("CorrectPinCode");
+              }}
+              icon={"pin"}
+            />
+
+            <Link title={"Сменить пароль"} onClick={() => null} icon={"lock"} />
 
             <Link
-              title={"Verify your identify"}
-              onClick={() => null}
-              icon={"account-multiple-check"}
-            />
-            <Link
-              title={"My card & Bank settings"}
-              onClick={() => null}
-              icon={"minus-box-outline"}
-              disabled
-            />
-            <Link
-              title={"Refer & Earn"}
-              onClick={() => null}
-              icon={"minus-box-outline"}
-              disabled
-            />
-            <Link
-              title={"Refer & Earn"}
-              onClick={() => null}
-              icon={"minus-box-outline"}
-              disabled
-            />
-            <Link
-              title={"Refer & Earn"}
-              onClick={() => null}
-              icon={"minus-box-outline"}
-              disabled
-            />
-            <Link
-              title={"Helpdesk"}
+              title={"Помощь"}
               onClick={() => null}
               icon={"email-fast-outline"}
             />
-
             <Link
-              title={"Logout"}
+              title={"Выйти"}
               textColor={"#cc4949"}
               onClick={() => null}
               icon={"logout"}
-              textRest
             />
           </View>
         </ScrollView>
@@ -234,7 +338,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     rowGap: 10,
- 
   },
   avatar: {
     borderRadius: 80,
@@ -277,7 +380,7 @@ const styles = StyleSheet.create({
   //   position: "relative",
   // },
   // toggleOn: {
-  //   backgroundColor: "#0268EC",
+  //   backgroundColor: "#5d00e6",
   // },
   // toggleHandle: {
   //   width: 24,

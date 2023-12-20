@@ -22,6 +22,7 @@ const Incoming = () => {
     (state) => state.theme.isDarkModeEnabled
   );
   const [selectedTransaction, setSelectedTransaction] = useState(null);
+  const [modalVisible, setModalVisible] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const transactions = useSelector((state) => state.transactions.incoming);
   const loading = useSelector((state) => state.transactions.loading);
@@ -124,7 +125,7 @@ const Incoming = () => {
         <ActivityIndicator
           size="large"
           style={{ marginTop: 30 }}
-          color={"#0268EC"}
+          color={"#fff"}
         />
       </View>
     );
@@ -182,7 +183,7 @@ const Incoming = () => {
                         onPress={() => {
                           if (transactions.Status !== "Performed") {
                             setSelectedTransaction(transactions);
-                            setShowModal(true);
+                            setModalVisible(!modalVisible);
                           }
                         }}
                         style={[
@@ -308,9 +309,9 @@ const Incoming = () => {
           </View>
           <ModalCheck
             selectedTransaction={selectedTransaction}
-            setShowModal={setShowModal}
+            modalVisible={modalVisible}
+            setModalVisible={setModalVisible}
             transactions={transactions}
-            showModal={showModal}
           />
         </ScrollView>
       </LinearGradient>

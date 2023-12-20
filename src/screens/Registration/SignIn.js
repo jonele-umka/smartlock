@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigation } from "@react-navigation/core";
 import { useForm, Controller } from "react-hook-form";
@@ -17,7 +17,7 @@ import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { loginUser } from "../../Store/SignIn/SignInAction";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { LinearGradient } from "expo-linear-gradient";
-
+import Ionicons from "react-native-vector-icons/Ionicons";
 const SignIn = () => {
   const {
     control,
@@ -27,7 +27,10 @@ const SignIn = () => {
   const isDarkModeEnabled = useSelector(
     (state) => state.theme.isDarkModeEnabled
   );
-
+  const [isPasswordHidden, setIsPasswordHidden] = useState(true);
+  const togglePasswordVisibility = () => {
+    setIsPasswordHidden((prev) => !prev);
+  };
   const loading = useSelector((state) => state.signIn.loading);
   const dispatch = useDispatch();
 
@@ -36,6 +39,7 @@ const SignIn = () => {
   const goToCreateAccount = () => {
     navigation.navigate("Email");
   };
+
   // submit
   // const onSubmit = (userData) => {
   //   console.log(userData);
@@ -55,7 +59,7 @@ const SignIn = () => {
       const data = await dispatch(loginUser(userData));
 
       if (data && data?.data && data?.data?.access_token) {
-        await AsyncStorage.setItem("token", data.data.access_token);
+        await AsyncStorage.setItem("token", data?.data?.access_token);
         navigation.navigate("Главная страница");
       } else {
         console.error("Ошибка при входе");
@@ -114,7 +118,7 @@ const SignIn = () => {
             <View style={{ marginBottom: 25 }}>
               <Text
                 style={
-                  { color: "#fff" }
+                  { color: "#fff", marginBottom: 10 }
                   //   [
                   //   isDarkModeEnabled ? { color: "#fff" } : { color: "#000" },
                   // ]
@@ -133,12 +137,11 @@ const SignIn = () => {
                     onChangeText={field.onChange}
                     value={field.value}
                     style={{
-                      marginTop: 10,
                       color: "#fff",
                       fontSize: 14,
-                      height: 50,
-                     backgroundColor: "rgba(255,255,255,0.2)",
+                      backgroundColor: "rgba(255,255,255,0.2)",
                       paddingHorizontal: 10,
+                      paddingVertical: 10,
                       borderRadius: 10,
                       borderWidth: errors.UserName ? 1 : 0,
                       borderColor: errors.UserName ? "red" : "#272727",
@@ -165,7 +168,7 @@ const SignIn = () => {
             <View>
               <Text
                 style={
-                  { color: "#fff" }
+                  { color: "#fff", marginBottom: 10 }
                   //   [
                   //   isDarkModeEnabled ? { color: "#fff" } : { color: "#000" },
                   // ]
@@ -173,41 +176,65 @@ const SignIn = () => {
               >
                 Пароль
               </Text>
-              <Controller
-                control={control}
-                name="UserPassword"
-                rules={{ required: true }}
-                render={({ field }) => (
-                  <TextInput
-                    type="Пароль"
-                    placeholder="Введите пароль"
-                    placeholderTextColor="#9c9c9c"
-                    onChangeText={field.onChange}
-                    value={field.value}
-                    style={{
-                      marginTop: 10,
-                      color: "#fff",
-                      fontSize: 14,
-                      height: 50,
-                     backgroundColor: "rgba(255,255,255,0.2)",
-                      paddingHorizontal: 10,
-                      borderRadius: 10,
-                      borderWidth: errors.UserPassword ? 1 : 0,
-                      borderColor: errors.UserPassword ? "red" : "#272727",
-                      // borderWidth: 1,
-                      // borderColor: error ? "red" : "#f3f3f3",
-                      // shadowColor: "#000",
-                      // shadowOffset: {
-                      //   width: 0,
-                      //   height: 2,
-                      // },
-                      // shadowOpacity: 0.1,
-                      // shadowRadius: 8.84,
-                      // elevation: 5,
-                    }}
-                  />
-                )}
-              />
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  columnGap: 10,
+                  backgroundColor: "rgba(255,255,255,0.2)",
+                  paddingRight: 10,
+                  borderRadius: 10,
+                }}
+              >
+                <Controller
+                  control={control}
+                  name="UserPassword"
+                  rules={{ required: true }}
+                  render={({ field }) => (
+                    <TextInput
+                      type="Пароль"
+                      placeholder="Введите пароль"
+                      placeholderTextColor="#9c9c9c"
+                      onChangeText={field.onChange}
+                      value={field.value}
+                      secureTextEntry={isPasswordHidden}
+                      style={{
+                        flex: 1,
+                        color: "#fff",
+                        fontSize: 14,
+                        paddingHorizontal: 10,
+                        paddingVertical: 10,
+                        borderRadius: 10,
+                        borderWidth: errors.UserPassword ? 1 : 0,
+                        borderColor: errors.UserPassword ? "red" : "#272727",
+                        // borderWidth: 1,
+                        // borderColor: error ? "red" : "#f3f3f3",
+                        // shadowColor: "#000",
+                        // shadowOffset: {
+                        //   width: 0,
+                        //   height: 2,
+                        // },
+                        // shadowOpacity: 0.1,
+                        // shadowRadius: 8.84,
+                        // elevation: 5,
+                      }}
+                    />
+                  )}
+                />
+                <TouchableOpacity onPress={togglePasswordVisibility}>
+                  {isPasswordHidden ? (
+                    <Ionicons
+                      name="eye-outline"
+                      style={{ color: "#fff", fontSize: 25 }}
+                    />
+                  ) : (
+                    <Ionicons
+                      name="eye-off-outline"
+                      style={{ color: "#fff", fontSize: 25 }}
+                    />
+                  )}
+                </TouchableOpacity>
+              </View>
               {errors.UserPassword && (
                 <Text style={{ color: "red", fontSize: 12, marginTop: 7 }}>
                   Введите пароль
@@ -219,7 +246,6 @@ const SignIn = () => {
           <View>
             <Text
               style={{
-                // fontFamily: Font["poppins-semiBold"],
                 fontSize: 14,
                 color: "#fff",
                 alignSelf: "flex-end",
@@ -233,7 +259,7 @@ const SignIn = () => {
             <ActivityIndicator
               size="large"
               style={{ marginTop: 30, marginBottom: 20 }}
-              color={"#0268EC"}
+              color={"#fff"}
             />
           ) : (
             <TouchableOpacity

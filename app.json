@@ -1,28 +1,58 @@
 {
   "expo": {
-    "name": "Bivalut",
+    "name": "Crypton",
     "slug": "bivalut",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./src/assets/icon.png",
+    "icon": "./src/assets/apkIcons/icon.png",
+    "splash": {
+      "image": "./src/assets/CRYPTONLogo.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#140A4F"
+    },
     "userInterfaceStyle": "light",
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "splash": {
+        "image": "./src/assets/CRYPTONLogo.png",
+        "resizeMode": "contain",
+        "backgroundColor": "#140A4F"
+      },
+      "infoPlist": {
+        "NSPhotoLibraryUsageDescription": "Разрешение на доступ к вашей галерее",
+        "NSCameraUsageDescription": "Разрешение на доступ к вашей камере"
+      }
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./src/assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "foregroundImage": "./src/assets/apkIcons/adaptive-icon.png",
+        "backgroundColor": "#140A4F"
       },
+      "permissions": [
+        "android.permission.READ_EXTERNAL_STORAGE",
+        "android.permission.WRITE_EXTERNAL_STORAGE",
+        "android.permission.DOWNLOAD_WITHOUT_NOTIFICATION",
+        "android.permission.ACCESS_NETWORK_STATE"
+      ],
+      "useNextNotificationsApi": true,
       "package": "com.jonele_umka.bivalut"
     },
     "web": {
-      "favicon": "./src/assets/favicon.png"
+      "favicon": "./src/assets/apkIcons/icon.png"
     },
     "extra": {
       "eas": {
         "projectId": "3090da21-81bd-4cfc-8a12-779a0b7025f6"
       }
-    }
+    },
+    "plugins": [
+      [
+        "expo-local-authentication",
+        {
+          "faceIDPermission": "Allow $(Crypton) to use Face ID."
+        }
+      ],
+      "expo-localization"
+    ]
   }
 }

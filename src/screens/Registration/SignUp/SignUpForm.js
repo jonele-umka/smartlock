@@ -749,19 +749,19 @@ const SignUpForm = () => {
           <ActivityIndicator
             size="large"
             style={{ marginTop: 30 }}
-            color={"#0268EC"}
+            color={"#fff"}
           />
         ) : (
           <TouchableOpacity
             onPress={handleSubmit(onSubmit)}
             style={{
               padding: 15,
-              backgroundColor: "#0268EC",
+              backgroundColor: "#5d00e6",
 
               marginBottom: 20,
               color: "#fff",
               borderRadius: 10,
-              shadowColor: "#0268EC",
+              shadowColor: "#5d00e6",
               shadowOffset: {
                 width: 0,
                 height: 10,
@@ -786,19 +786,19 @@ const SignUpForm = () => {
           <ActivityIndicator
             size="large"
             style={{ marginTop: 30 }}
-            color={"#0268EC"}
+            color={"#5d00e6"}
           />
         ) : (
           <TouchableOpacity
             onPress={handleSubmit(onSubmit)}
             style={{
               padding: 15,
-              backgroundColor: "#0268EC",
+              backgroundColor: "#5d00e6",
 
               marginBottom: 20,
               color: "#fff",
               borderRadius: 10,
-              shadowColor: "#0268EC",
+              shadowColor: "#5d00e6",
               shadowOffset: {
                 width: 0,
                 height: 10,

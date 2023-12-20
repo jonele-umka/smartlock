@@ -1,21 +1,19 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Image,
   View,
   TouchableOpacity,
   StyleSheet,
-  Dimensions,
   SafeAreaView,
   Platform,
   Text,
   ScrollView,
-  ActivityIndicator,
   RefreshControl,
-  ImageBackground,
+  Button,
 } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import { SafeAreaView as SafeAreaViewContext } from "react-native-safe-area-context";
-import CardTabsRoute from "../components/CardTabs/CardTabsRoute/CardTabsRoute";
+// import CardTabsRoute from "../components/CardTabs/CardTabsRoute/CardTabsRoute";
 import { Skeleton } from "@rneui/themed";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { useNavigation } from "@react-navigation/native";
@@ -30,10 +28,13 @@ import {
   fetchTransactionsIncoming,
 } from "../Store/Transactions/transctionsActions";
 import Analytics from "../components/Analytics/Analytics";
-import { Avatar, AvatarFallbackText } from "@gluestack-ui/themed";
-import { Badge, Icon, withBadge } from "@rneui/themed";
-
+// import { Avatar, AvatarFallbackText } from "@gluestack-ui/themed";
+import { Badge } from "@rneui/themed";
+// import * as Sharing from "expo-sharing";
+// import * as FileSystem from "expo-file-system";
+// import { Asset } from "expo-asset";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+
 export const OverviewScreen = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
@@ -46,7 +47,7 @@ export const OverviewScreen = () => {
   const transactions = [...outgoing, ...incoming];
   const loading = useSelector((state) => state.transactions.loading);
   const token = useSelector((state) => state.signIn.token);
-
+  console.log(token);
   // loadHistory
   useEffect(() => {
     if (token) {
@@ -59,6 +60,7 @@ export const OverviewScreen = () => {
   const onRefresh = () => {
     dispatch(fetchTransactions());
   };
+
   // const favorites = useSelector((state) => state.favorites.favorites);
 
   // const [showActionsheet, setShowActionsheet] = React.useState(false);
@@ -70,7 +72,24 @@ export const OverviewScreen = () => {
   // };
   const SafeAreaWrapper =
     Platform.OS === "android" ? SafeAreaViewContext : SafeAreaView;
+  // const onShare = async () => {
+  //   try {
+  //     const asset = Asset.fromModule(require("../assets/card/cardCrypto.png"));
+  //     await asset.downloadAsync();
+  //     const localFilePath = asset.localUri;
+  //     console.log(localFilePath);
 
+  //     // Отправьте файл
+  //     const result = await Sharing.shareAsync(localFilePath, {
+  //       mimeType: "image/png",
+  //       dialogTitle: "Kurmet shakal",
+  //     });
+
+  //     console.log("Результат обмена:", result);
+  //   } catch (error) {
+  //     console.error("Ошибка обмена:", error.message);
+  //   }
+  // };
   return (
     <LinearGradient
       style={[
@@ -87,7 +106,10 @@ export const OverviewScreen = () => {
           // isDarkModeEnabled && { backgroundColor: "#191a1d" },
         ]}
       >
-        <ScrollView refreshControl={<RefreshControl onRefresh={onRefresh} />}>
+        <ScrollView
+          style={{ paddingVertical: 10 }}
+          refreshControl={<RefreshControl onRefresh={onRefresh} />}
+        >
           <View style={styles.header}>
             <TouchableOpacity
               onPress={() =>
@@ -113,7 +135,8 @@ export const OverviewScreen = () => {
               style={styles.logo}
               source={require("../assets/CRYPTONLogo.png")}
             />
-            <TouchableOpacity >
+
+            <TouchableOpacity>
               <Image
                 source={require("../assets/avatar.png")}
                 style={{ width: 30, height: 30 }}
@@ -127,6 +150,7 @@ export const OverviewScreen = () => {
           <View>
             <CryptoCard />
           </View>
+
           <View
             style={{
               flexDirection: "row",
@@ -191,10 +215,7 @@ export const OverviewScreen = () => {
                   </View>
                 </LinearGradient>
               </TouchableOpacity>
-              <TouchableOpacity
-                style={{ flex: 1, height: 120 }}
-                onPress={() => navigation.navigate("Перевести")}
-              >
+              <TouchableOpacity style={{ flex: 1, height: 120 }}>
                 <LinearGradient
                   style={[
                     { flex: 1, borderRadius: 15, padding: 10 },
@@ -354,139 +375,7 @@ export const OverviewScreen = () => {
               </TouchableOpacity>
             </View>
           </View>
-          {/* <View style={{ marginBottom: 30 }}>
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-around",
-              }}
-            >
-              <View
-                style={{
-                  justifyContent: "center",
-                  alignItems: "center",
 
-                  // width: "30%",
-                }}
-              >
-                <TouchableOpacity
-                  onPress={() => navigation.navigate("Перевести")}
-                  style={styles.cardBottomView}
-                  // style={[
-                  //   styles.cardBottomView,
-                  //   // isDarkModeEnabled && { backgroundColor: "#383838" },
-                  // ]}
-                >
-                  <MaterialCommunityIcons
-                    name="line-scan"
-                    style={{ fontSize: 35, color: "#fff" }}
-                  />
-                </TouchableOpacity>
-                <Text
-                  style={styles.cardBottomText}
-                  // style={[
-                  //   styles.cardBottomText,
-                  //   // isDarkModeEnabled && { color: "#fff" },
-                  // ]}
-                >
-                  Скан
-                </Text>
-              </View>
-              <View
-                style={{
-                  justifyContent: "center",
-                  alignItems: "center",
-
-                  // width: "30%",
-                }}
-              >
-                <TouchableOpacity
-                  onPress={() => navigation.navigate("Перевести")}
-                  style={styles.cardBottomView}
-                  // style={[
-                  //   styles.cardBottomView,
-                  //   // isDarkModeEnabled && { backgroundColor: "#383838" },
-                  // ]}
-                >
-                  <Feather
-                    name="send"
-                    style={{ color: "#fff", fontSize: 35 }}
-                  />
-                </TouchableOpacity>
-                <Text
-                  style={styles.cardBottomText}
-                  // style={[
-                  //   styles.cardBottomText,
-                  //   // isDarkModeEnabled && { color: "#fff" },
-                  // ]}
-                >
-                  Перевести
-                </Text>
-              </View>
-              <View
-                style={{
-                  justifyContent: "center",
-                  alignItems: "center",
-
-                  // width: "30%",
-                }}
-              >
-                <TouchableOpacity
-                  onPress={() => navigation.navigate("История переводов")}
-                  style={styles.cardBottomView}
-                  // style={[
-                  //   styles.cardBottomView,
-                  //   // isDarkModeEnabled && { backgroundColor: "#383838" },
-                  // ]}
-                >
-                  <MaterialCommunityIcons
-                    name="history"
-                    style={{ fontSize: 35, color: "#fff" }}
-                  />
-                </TouchableOpacity>
-                <Text
-                  style={styles.cardBottomText}
-                  // style={[
-                  //   styles.cardBottomText,
-                  //   // isDarkModeEnabled && { color: "#fff" },
-                  // ]}
-                >
-                  История
-                </Text>
-              </View>
-              <View
-                style={{
-                  justifyContent: "center",
-                  alignItems: "center",
-
-                  // width: "30%",
-                }}
-              >
-                <TouchableOpacity
-                  onPress={() => navigation.navigate("Перевести")}
-                  style={styles.cardBottomView}
-                  // style={[
-                  //   styles.cardBottomView,
-                  //   // isDarkModeEnabled && { backgroundColor: "#383838" },
-                  // ]}
-                >
-                  <MaterialCommunityIcons
-                    name="plus"
-                    style={{ fontSize: 35, color: "#fff" }}
-                  />
-                </TouchableOpacity>
-                <Text
-                  style={styles.cardBottomText}
-                  // style={[
-                  //   styles.cardBottomText,
-                  //   // isDarkModeEnabled && { color: "#fff" },
-                  // ]}
-                >
-                  Карта
-                </Text>
-              </View>
-            </View>
-          </View> */}
           <View
             style={{
               paddingHorizontal: 10,
@@ -580,7 +469,7 @@ export const OverviewScreen = () => {
                 }
               >
                 <Text style={{ textAlign: "center", color: "#fff" }}>
-                  Посмотреть все расходы
+                  Подробнее
                 </Text>
               </TouchableOpacity>
             )}
@@ -588,6 +477,7 @@ export const OverviewScreen = () => {
           <View
             style={{
               paddingHorizontal: 10,
+              paddingBottom: 30,
             }}
           >
             <Text
@@ -646,7 +536,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   logo: {
-    width: 120,
+    width: 130,
     height: 30,
   },
 

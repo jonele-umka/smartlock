@@ -79,7 +79,7 @@ const CardDetails = () => {
                   alignItems: "center",
                   justifyContent: "center",
                   columnGap: 10,
-                  backgroundColor: "rgba(0,0,0,0.1)",
+                  backgroundColor: "rgba(255,255,255,0.05)",
                   borderRadius: 10,
                   paddingVertical: 10,
                 }}
@@ -101,7 +101,8 @@ const CardDetails = () => {
           </Text>
           <View
             style={{
-              backgroundColor: "#2A2867",
+              // backgroundColor: "#2A2867",
+
               paddingHorizontal: 10,
               paddingVertical: 15,
               borderRadius: 10,
@@ -115,7 +116,7 @@ const CardDetails = () => {
                 </Text>
                 <View
                   style={{
-                    backgroundColor: "rgba(0,0,0,0.1)",
+                    backgroundColor: "rgba(255,255,255,0.05)",
                     flexDirection: "row",
                     justifyContent: "space-between",
                     alignItems: "center",
@@ -146,7 +147,7 @@ const CardDetails = () => {
                 </Text>
                 <View
                   style={{
-                    backgroundColor: "rgba(0,0,0,0.1)",
+                    backgroundColor: "rgba(255,255,255,0.05)",
                     justifyContent: "center",
                     paddingHorizontal: 10,
                     paddingVertical: 15,
@@ -162,7 +163,7 @@ const CardDetails = () => {
                 <Text style={{ color: "#fff", marginBottom: 10 }}>Баланс</Text>
                 <View
                   style={{
-                    backgroundColor: "rgba(0,0,0,0.1)",
+                    backgroundColor: "rgba(255,255,255,0.05)",
                     justifyContent: "center",
                     paddingHorizontal: 10,
                     paddingVertical: 15,
@@ -181,9 +182,16 @@ const CardDetails = () => {
                 alignItems: "center",
                 justifyContent: "center",
                 columnGap: 10,
-                backgroundColor: "rgba(0,0,0,0.1)",
                 borderRadius: 10,
-                paddingVertical: 10,
+                padding: 15,
+                backgroundColor: "#5d00e6",
+                shadowColor: "#5d00e6",
+                shadowOffset: {
+                  width: 0,
+                  height: 10,
+                },
+                shadowOpacity: 0.3,
+                shadowRadius: 10,
               }}
             >
               <MaterialCommunityIcons

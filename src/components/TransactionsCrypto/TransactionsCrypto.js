@@ -8,7 +8,8 @@ import ModalCheck from "../ModalCheck/ModalCheck";
 import { LinearGradient } from "expo-linear-gradient";
 const TransactionsCrypto = ({ transactions, incoming, outgoing }) => {
   const [selectedTransaction, setSelectedTransaction] = useState(null);
-  const [showModal, setShowModal] = useState(false);
+
+  const [modalVisible, setModalVisible] = useState(false);
   const isDarkModeEnabled = useSelector(
     (state) => state.theme.isDarkModeEnabled
   );
@@ -118,7 +119,7 @@ const TransactionsCrypto = ({ transactions, incoming, outgoing }) => {
                 onPress={() => {
                   if (transactions.Status !== "Performed") {
                     setSelectedTransaction(transactions);
-                    setShowModal(true);
+                    setModalVisible(!modalVisible);
                   }
                 }}
               >
@@ -253,11 +254,11 @@ const TransactionsCrypto = ({ transactions, incoming, outgoing }) => {
 
       <ModalCheck
         selectedTransaction={selectedTransaction}
-        setShowModal={setShowModal}
         transactions={transactions}
-        showModal={showModal}
         incoming={incoming}
         outgoing={outgoing}
+        modalVisible={modalVisible}
+        setModalVisible={setModalVisible}
       />
     </View>
   );

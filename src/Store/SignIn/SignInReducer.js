@@ -31,12 +31,13 @@ const signInReducer = (state = initialState, action) => {
         error: null,
       };
     case LOGIN_SUCCESS:
-      AsyncStorage.setItem("token", action.payload);
+   
       return {
         ...state,
         token: action.payload,
         loading: false,
         error: null,
+        isLoggedIn: true,
       };
     case LOGIN_FAILURE:
       return {

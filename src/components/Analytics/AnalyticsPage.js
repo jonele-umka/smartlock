@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
-  StyleSheet,
   ScrollView,
   ActivityIndicator,
   SafeAreaView,
@@ -16,7 +15,7 @@ const AnalyticsPage = () => {
   const { transactions, loading } = route.params;
 
   const [monthlyExpenses, setMonthlyExpenses] = useState([]);
-
+  const [selectedDay, setSelectedDay] = useState(null);
   useEffect(() => {
     const groupedExpenses = transactions.reduce((result, transaction) => {
       const date = transaction.CreatedAt.split("T")[0];
@@ -174,7 +173,17 @@ const AnalyticsPage = () => {
       </View>
     );
   }
-
+  const handleDayClick = (day) => {
+    setSelectedDay(day);
+    const selectedExpenses = monthlyExpenses.find(
+      (expense) => expense.days[day]
+    );
+    setSelectedDay(
+      selectedExpenses
+        ? { date: day, expenses: selectedExpenses.days[day] }
+        : null
+    );
+  };
   return (
     <LinearGradient
       style={{ flex: 1 }}
@@ -182,18 +191,29 @@ const AnalyticsPage = () => {
       end={{ x: 0, y: 0 }}
       colors={["#241270", "#140A4F", "#000"]}
     >
-      <SafeAreaView style={{ flex: 1 }}>
+      <SafeAreaView style={{ flex: 1}}>
         <Text
           style={{
             color: "#fff",
             paddingHorizontal: 10,
-            paddingTop: 20,
+            paddingTop: 10,
             fontSize: 25,
             textAlign: "center",
           }}
         >
           Все расходы
         </Text>
+
+        {selectedDay && (
+          <View style={{ paddingVertical: 20, paddingHorizontal: 10 , flex: 1, alignItems: 'center' }}>
+            <Text style={{ color: "#fff", fontSize: 16, marginBottom: 5 }}>
+              {selectedDay ? `Расход за ${selectedDay.date}` : null}
+            </Text>
+            <Text style={{ color: "#fff", fontSize: 16 }}>
+              {selectedDay ? `${selectedDay.expenses.totalAmount}` : null}
+            </Text>
+          </View>
+        )}
         <ScrollView
           contentContainerStyle={{
             flexGrow: 1,
@@ -213,6 +233,7 @@ const AnalyticsPage = () => {
                 }}
                 key={index}
               >
+                {console.log(expense.totalAmount)}
                 <View>
                   <Text
                     style={{
@@ -253,6 +274,7 @@ const AnalyticsPage = () => {
                         }}
                       ></View>
                       <Text
+                        onPress={() => handleDayClick(day)}
                         style={{
                           paddingTop: 10,
                           color: "#fff",

@@ -101,6 +101,7 @@ const PaymentsScreen = ({ navigation }) => {
                 color: "#191a1d",
                 marginBottom: 25,
                 color: "#fff",
+                paddingVertical: 10
               },
               // isDarkModeEnabled && {
               //   color: "#fff",

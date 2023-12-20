@@ -27,9 +27,9 @@ const Logout = () => {
       <TouchableOpacity
         style={{
           padding: 15,
-          backgroundColor: "#0268EC",
+          backgroundColor: "#5d00e6",
           marginTop: 30,
-          shadowColor: "#0268EC",
+          shadowColor: "#5d00e6",
           shadowOffset: {
             width: 0,
             height: 10,

@@ -160,7 +160,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 4,
   },
   activeDot: {
-    backgroundColor: "#0268EC",
+    backgroundColor: "#5d00e6",
   },
 });
 

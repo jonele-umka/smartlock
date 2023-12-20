@@ -26,7 +26,7 @@ const CardTabsRoute = () => {
     backgroundColor: "#191a1d",
   };
 
-  const tabBarActiveTintColor = "#0268EC";
+  const tabBarActiveTintColor = "#5d00e6";
   const tabBarInactiveTintColor = "#fff";
 
   return (

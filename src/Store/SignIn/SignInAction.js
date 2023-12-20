@@ -17,79 +17,7 @@ import {
 } from "./SignInTypes";
 import Toast from "react-native-toast-message";
 import { API_URL } from "../../constants";
-// export const saveTokenToLocalstorage = (token) => {
-//   return async (dispatch) => {
-//     try {
-//       await AsyncStorage.setItem("token", JSON.stringify(token));
-//       dispatch({
-//         type: SAVE_TOKEN_TO_LOCAL_STORAGE,
-//         payload: token,
-//       });
-//     } catch (error) {
-//       console.log(error);
-
-//       Toast.show({
-//         type: "error",
-//         position: "top",
-//         text1: "Ошибка",
-//         text2: error,
-//         visibilityTime: 3000,
-//         autoHide: true,
-//         topOffset: 30,
-//       });
-//     }
-//   };
-// };
-
-// export const loadTokenFromLocalstorage = () => {
-//   return async (dispatch) => {
-//     try {
-//       const token = await AsyncStorage.getItem("token");
-
-//       dispatch({
-//         type: LOAD_TOKEN_FROM_LOCAL_STORAGE,
-//         payload: token,
-//       });
-//     } catch (error) {
-//       console.log(error);
-
-//       Toast.show({
-//         type: "error",
-//         position: "top",
-//         text1: "Ошибка",
-//         text2: error,
-//         visibilityTime: 3000,
-//         autoHide: true,
-//         topOffset: 30,
-//       });
-//     }
-//   };
-// };
-
-// export const loginSuccess = (token) => {
-//   return async (dispatch) => {
-//     try {
-//       await AsyncStorage.setItem("token", token);
-//       dispatch({
-//         type: LOGIN_SUCCESS,
-//         payload: token,
-//       });
-//     } catch (error) {
-//       console.log(error);
-
-//       Toast.show({
-//         type: "error",
-//         position: "top",
-//         text1: "Ошибка",
-//         text2: error,
-//         visibilityTime: 3000,
-//         autoHide: true,
-//         topOffset: 30,
-//       });
-//     }
-//   };
-// };
-
+ 
 export const loginRequest = () => ({
   type: LOGIN_REQUEST,
 });
@@ -119,6 +47,8 @@ export const loginUser = (userData) => async (dispatch) => {
       const data = await response.json();
       const token = data?.data?.access_token;
       await AsyncStorage.setItem("token", token);
+      await AsyncStorage.setItem("login", userData.UserName);
+      await AsyncStorage.setItem("password", userData.UserPassword)
       dispatch(loginSuccess(token));
 
       return data;
@@ -144,70 +74,7 @@ export const loginUser = (userData) => async (dispatch) => {
   }
 };
 
-// export const loginSuccess = (token) => {
-//   return async (dispatch) => {
-//     try {
-//       await AsyncStorage.setItem("token", token);
-//       dispatch({
-//         type: LOGIN_SUCCESS,
-//         payload: { token },
-//       });
-//     } catch (error) {
-//       Toast.show({
-//         type: "error",
-//         position: "top",
-//         text1: "Ошибка",
-//         text2: error,
-//         visibilityTime: 3000,
-//         autoHide: true,
-//         topOffset: 30,
-//       });
-//     }
-//   };
-// };
-
-// export const loginUser = (userData) => {
-//   return async (dispatch) => {
-//     dispatch({ type: LOGIN_REQUEST });
-
-//     try {
-//       const response = await fetch("${API_URL}/login", {
-//         method: "POST",
-//         headers: {
-//           "Content-Type": "application/json",
-//         },
-//         body: JSON.stringify(userData),
-//       });
-
-//       if (response.ok) {
-//         const data = await response.json();
-//         const token = data.data.access_token;
-
-//         await dispatch(loginSuccess(token));
-
-//         return data;
-//       } else if (response.status >= 400) {
-//         throw new Error("Некорректные данные");
-//       } else if (response.status >= 500) {
-//         throw new Error("Ошибка с сервером");
-//       } else {
-//         throw new Error("Неизвестная ошибка");
-//       }
-//     } catch (error) {
-//       dispatch({ type: LOGIN_FAILURE, payload: error.message });
-//       Toast.show({
-//         type: "error",
-//         position: "top",
-//         text1: "Ошибка",
-//         text2: error.message,
-//         visibilityTime: 3000,
-//         autoHide: true,
-//         topOffset: 30,
-//       });
-//       throw error;
-//     }
-//   };
-// };
+  
 export const sendEmail = (email) => {
   return (dispatch) => {
     dispatch({ type: SEND_EMAIL_REQUEST });

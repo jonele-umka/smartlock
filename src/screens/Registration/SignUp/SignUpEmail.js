@@ -114,7 +114,7 @@ const SignUpEmail = () => {
           <ActivityIndicator
             size="large"
             style={{ marginTop: 30 }}
-            color={"#0268EC"}
+            color={"#fff"}
           />
         ) : (
           <TouchableOpacity
@@ -123,9 +123,9 @@ const SignUpEmail = () => {
             style={{
               marginTop: 20,
               padding: 15,
-              backgroundColor: "#0268EC",
+              backgroundColor: "#5d00e6",
               borderRadius: 10,
-              shadowColor: "#0268EC",
+              shadowColor: "#5d00e6",
               shadowOffset: {
                 width: 0,
                 height: 10,

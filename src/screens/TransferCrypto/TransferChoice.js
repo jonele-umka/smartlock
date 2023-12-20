@@ -21,9 +21,9 @@ function TransferChoice() {
           marginTop: 20,
           marginHorizontal: 20,
           padding: 15,
-          backgroundColor: "#0268EC",
+          backgroundColor: "#5d00e6",
           borderRadius: 10,
-          shadowColor: "#0268EC",
+          shadowColor: "#5d00e6",
           shadowOffset: {
             width: 0,
             height: 10,
@@ -42,9 +42,9 @@ function TransferChoice() {
           width: "100%",
           marginTop: 15,
           padding: 15,
-          backgroundColor: "#0268EC",
+          backgroundColor: "#5d00e6",
           borderRadius: 10,
-          shadowColor: "#0268EC",
+          shadowColor: "#5d00e6",
           shadowOffset: {
             width: 0,
             height: 10,
@@ -65,9 +65,9 @@ const styles = StyleSheet.create({
   btn: {
     marginTop: 20,
     padding: 15,
-    backgroundColor: "#0268EC",
+    backgroundColor: "#5d00e6",
     borderRadius: 10,
-    shadowColor: "#0268EC",
+    shadowColor: "#5d00e6",
     shadowOffset: {
       width: 0,
       height: 10,

@@ -16,15 +16,8 @@ import { SafeAreaView as SafeAreaViewContext } from "react-native-safe-area-cont
 import { useNavigation } from "@react-navigation/native";
 import Toast from "react-native-toast-message";
 import card from "../../assets/card/cards.png";
-import {
-  Box,
-  Actionsheet,
-  ActionsheetBackdrop,
-  ActionsheetContent,
-  ActionsheetDragIndicatorWrapper,
-  ActionsheetDragIndicator,
-  ActionsheetItem,
-} from "@gluestack-ui/themed";
+
+import ActionSheet from "react-native-actions-sheet";
 import { LinearGradient } from "expo-linear-gradient";
 import { API_URL } from "../../constants";
 export const TransferCryptoInternal = () => {
@@ -38,18 +31,17 @@ export const TransferCryptoInternal = () => {
   const { navigate } = useNavigation();
 
   const [data, setData] = useState([]);
-
   const [wallet, setWallet] = useState([]);
   const [selectedType, setSelectedType] = useState("По номеру телефона");
   const [addressType, setAddressType] = useState("Внутренний");
   const [loading, setLoading] = useState(false);
-
   const [currencyCode, setCurrencyCode] = useState(null);
   const [error, setError] = useState(null);
   const [sender_requisites, setSender_requisites] = useState(null);
 
   const token = useSelector((state) => state.signIn.token);
 
+  const actionSheetRef = useRef(null);
   // selectedtype
   const handleTypeChange = (value) => {
     setSelectedType(value);
@@ -510,8 +502,9 @@ export const TransferCryptoInternal = () => {
         });
     }
   };
-  const [showActionsheet, setShowActionsheet] = useState(false);
-  const handleClose = () => setShowActionsheet(!showActionsheet);
+  // const handleClose = () => setShowActionsheet(!showActionsheet);
+  // const [showActionsheet, setShowActionsheet] = useState(false);
+
   const SafeAreaWrapper =
     Platform.OS === "android" ? SafeAreaViewContext : SafeAreaView;
 
@@ -533,7 +526,7 @@ export const TransferCryptoInternal = () => {
         <View
           style={{
             paddingHorizontal: 10,
-            paddingVertical: Platform.OS === "android" ? 0 : 20,
+            paddingVertical: 10,
           }}
         >
           <Text
@@ -627,7 +620,7 @@ export const TransferCryptoInternal = () => {
               render={({ field }) => (
                 <View>
                   <TouchableOpacity
-                    onPress={handleClose}
+                    onPress={() => actionSheetRef.current?.show()}
                     style={{
                       backgroundColor: "rgba(255,255,255,0.05)",
                       justifyContent: "center",
@@ -647,7 +640,7 @@ export const TransferCryptoInternal = () => {
                     </View>
                   </TouchableOpacity>
 
-                  <Actionsheet
+                  {/* <Actionsheet
                     isOpen={showActionsheet}
                     onClose={handleClose}
                     zIndex={999}
@@ -680,8 +673,29 @@ export const TransferCryptoInternal = () => {
                         </ActionsheetItem>
                       ))}
                     </ActionsheetContent>
-                  </Actionsheet>
-
+                  </Actionsheet> */}
+                  <ActionSheet ref={actionSheetRef}>
+                    {wallet.map((item, index) => (
+                      <TouchableOpacity
+                        key={index}
+                        onPress={() => {
+                          actionSheetRef.current?.hide();
+                          field.onChange(item.value);
+                          handleWalletChange(item.value);
+                          setSender_requisites(item.selectedWallet);
+                        }}
+                      >
+                        <View
+                          style={{
+                            padding: 10,
+                            backgroundColor: "#140A4F",
+                          }}
+                        >
+                          {item.selectedWallet}
+                        </View>
+                      </TouchableOpacity>
+                    ))}
+                  </ActionSheet>
                   {errors.sender_requisites && (
                     <Text style={{ color: "red", fontSize: 12, marginTop: 7 }}>
                       {errors.sender_requisites.message}
@@ -985,7 +999,9 @@ export const TransferCryptoInternal = () => {
                     columnGap: 10,
                     borderWidth: errors.sum || parseInt(error) === 400 ? 1 : 0,
                     borderColor:
-                      errors.sum || parseInt(error) === 400 ? "red" : "rgba(255,255,255,0.05)",
+                      errors.sum || parseInt(error) === 400
+                        ? "red"
+                        : "rgba(255,255,255,0.05)",
                   }}
                 >
                   <TextInput
@@ -1026,12 +1042,11 @@ export const TransferCryptoInternal = () => {
             <ActivityIndicator
               size="large"
               style={{ marginTop: 30 }}
-              color={"#0268EC"}
+              color={"#fff"}
             />
           ) : (
             <TouchableOpacity
               style={{
-                marginTop: 25,
                 borderRadius: 10,
                 padding: 20,
                 backgroundColor: "#5d00e6",

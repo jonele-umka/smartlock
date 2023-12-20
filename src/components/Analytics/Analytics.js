@@ -13,7 +13,8 @@ const Analytics = ({ transactions, loading }) => {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [totalAmount, setTotalAmount] = useState("");
-
+  const [monthlyExpenses, setMonthlyExpenses] = useState([]);
+  const [selectedDay, setSelectedDay] = useState(null);
   useEffect(() => {
     let totalAmount = 0;
     const currentDate = new Date();
@@ -45,6 +46,11 @@ const Analytics = ({ transactions, loading }) => {
     setTotalAmount(totalAmount);
     setDailyExpenses(groupedExpenses);
   }, [transactions]);
+  const handleDayClick = (day, totalAmount) => {
+    // Здесь вы можете выполнить необходимые действия при выборе дня
+    console.log(`Выбран день: ${day}, Расход за день: ${totalAmount}`);
+    setSelectedDay({ date: day, expenses: { totalAmount } });
+  };
 
   const maxExpense = Math.max(...Object.values(dailyExpenses));
   const minExpense = Math.min(...Object.values(dailyExpenses));
@@ -141,8 +147,25 @@ const Analytics = ({ transactions, loading }) => {
           marginTop: 5,
         }}
       >
-        {totalAmount}
+        {totalAmount ? totalAmount : "Нет расходов в этом месяце"}
       </Text>
+      {selectedDay && (
+        <View
+          style={{
+            paddingVertical: 20,
+            paddingHorizontal: 10,
+            flex: 1,
+            alignItems: "center",
+          }}
+        >
+          <Text style={{ color: "#fff", fontSize: 16, marginBottom: 5 }}>
+            {selectedDay ? `Расход за ${selectedDay.date}` : null}
+          </Text>
+          <Text style={{ color: "#fff", fontSize: 16 }}>
+            {selectedDay ? `${selectedDay.expenses.totalAmount}` : null}
+          </Text>
+        </View>
+      )}
       <View style={styles.container}>
         <ScrollView
           contentContainerStyle={styles.scrollViewContent}
@@ -163,7 +186,12 @@ const Analytics = ({ transactions, loading }) => {
                   ]}
                 ></View>
 
-                <Text style={styles.barText}>{date.split("-")[2]}</Text>
+                <Text
+                  onPress={() => handleDayClick(date, dailyExpenses[date] || 0)}
+                  style={styles.barText}
+                >
+                  {date.split("-")[2]}
+                </Text>
               </View>
             ))}
           </View>

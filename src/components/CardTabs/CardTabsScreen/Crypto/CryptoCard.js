@@ -247,7 +247,7 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     justifyContent: "space-between",
     padding: 20,
-    // shadowColor: "#0268EC",
+    // shadowColor: "#5d00e6",
     // shadowOffset: {
     //   width: 0,
     //   height: 2,
@@ -280,7 +280,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 4,
   },
   activeDot: {
-    backgroundColor: "#0268EC",
+    backgroundColor: "#5d00e6",
   },
   skeletonItem: {
     width: "100%",

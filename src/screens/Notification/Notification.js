@@ -2,7 +2,6 @@ import React, { useEffect, useState, useRef } from "react";
 import {
   View,
   Text,
-  TextInput,
   ScrollView,
   ActivityIndicator,
   SafeAreaView,
@@ -11,12 +10,14 @@ import { LinearGradient } from "expo-linear-gradient";
 import {
   fetchTransactions,
   fetchTransactionsIncoming,
+  markNotificationsAsRead,
 } from "../../Store/Transactions/transctionsActions";
 import { useSelector, useDispatch } from "react-redux";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import Entypo from "react-native-vector-icons/Entypo";
 import { API_URL } from "../../constants";
-const Chat = () => {
+
+const Notification = () => {
   const dispatch = useDispatch();
   const incoming = useSelector((state) => state.transactions.incoming);
   const outgoing = useSelector((state) => state.transactions.transactions);
@@ -25,10 +26,14 @@ const Chat = () => {
   const token = useSelector((state) => state.signIn.token);
   const [balance, setBalance] = useState("");
   const scrollViewRef = useRef();
-
+ 
   useEffect(() => {
-    scrollViewRef.current.scrollToEnd({ animated: true });
-  }, []);
+    // Check if scrollViewRef is defined before calling scrollToEnd
+    if (scrollViewRef.current) {
+      scrollViewRef.current.scrollToEnd({ animated: true });
+    }
+  }, [scrollViewRef.current]);
+
   // loadHistory
   const currencySymbols = {
     USD: "$",
@@ -43,8 +48,6 @@ const Chat = () => {
     if (token) {
       dispatch(fetchTransactionsIncoming());
       dispatch(fetchTransactions());
-
-      // Запрос баланса счетов
       fetch(`${API_URL}/wallets/balance`, {
         method: "GET",
         headers: {
@@ -98,13 +101,15 @@ const Chat = () => {
         end={{ x: 0, y: 0 }}
         colors={["#241270", "#140A4F", "#000"]}
       >
-        <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <ActivityIndicator
-          size="large"
-          style={{ marginTop: 30 }}
-          color={"#0268EC"}
-        />
-      </View>
+        <View
+          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+        >
+          <ActivityIndicator
+            size="large"
+            style={{ marginTop: 30 }}
+            color={"#fff"}
+          />
+        </View>
       </LinearGradient>
     );
   } else {
@@ -181,7 +186,7 @@ const Chat = () => {
 
                       <Text style={styles.messageText}>
                         {isIncoming ? "От кого:" : "Кому:"}{" "}
-                        {isIncoming ? "*" : ""}
+                        {isIncoming ? "****" : ""}
                         {isIncoming
                           ? transaction.ReceiverRequisites.slice(-4) // Последние 4 цифры
                           : transaction.ReceiverRequisites}
@@ -260,4 +265,4 @@ const styles = {
   },
 };
 
-export default Chat;
+export default Notification;

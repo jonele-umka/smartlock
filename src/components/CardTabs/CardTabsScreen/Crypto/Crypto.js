@@ -72,7 +72,7 @@ function Crypto() {
             >
               <MaterialCommunityIcons
                 name="line-scan"
-                style={{ fontSize: 50, color: "#0268EC" }}
+                style={{ fontSize: 50, color: "#5d00e6" }}
               />
               <Text
                 style={[
@@ -93,7 +93,7 @@ function Crypto() {
             >
               <Ionicons
                 name="send"
-                style={{ color: "#0268EC", fontSize: 40 }}
+                style={{ color: "#5d00e6", fontSize: 40 }}
               />
 
               <Text
@@ -115,7 +115,7 @@ function Crypto() {
             >
               <MaterialCommunityIcons
                 name="history"
-                style={{ fontSize: 50, color: "#0268EC" }}
+                style={{ fontSize: 50, color: "#5d00e6" }}
               />
               <Text
                 style={[
@@ -148,7 +148,7 @@ function Crypto() {
             <ActivityIndicator
               size="large"
               style={{ marginTop: 30 }}
-              color={"#0268EC"}
+              color={"#fff"}
             />
           ) : (
             <TransactionsCrypto transactions={transactions} />

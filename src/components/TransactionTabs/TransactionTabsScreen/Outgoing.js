@@ -22,7 +22,7 @@ const Outgoing = () => {
     (state) => state.theme.isDarkModeEnabled
   );
   const [selectedTransaction, setSelectedTransaction] = useState(null);
-  const [showModal, setShowModal] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
   const transactions = useSelector((state) => state.transactions.transactions);
   const loading = useSelector((state) => state.transactions.loading);
   const token = useSelector((state) => state.signIn.token);
@@ -124,7 +124,7 @@ const Outgoing = () => {
         <ActivityIndicator
           size="large"
           style={{ marginTop: 30 }}
-          color={"#0268EC"}
+          color={"#fff"}
         />
       </View>
     );
@@ -180,12 +180,12 @@ const Outgoing = () => {
                   {groupedTransactions[date].map(
                     (transactions, index, array) => (
                       <TouchableOpacity
-                      onPress={() => {
-                        if (transactions.Status !== "Performed") {
-                          setSelectedTransaction(transactions);
-                          setShowModal(true);
-                        }
-                      }}
+                        onPress={() => {
+                          if (transactions.Status !== "Performed") {
+                            setSelectedTransaction(transactions);
+                            setModalVisible(!modalVisible);
+                          }
+                        }}
                         key={`${transactions.ID}_${transactions.Type}_${index}`}
                         style={[
                           styles.transactionListView,
@@ -305,9 +305,9 @@ const Outgoing = () => {
           </View>
           <ModalCheck
             selectedTransaction={selectedTransaction}
-            setShowModal={setShowModal}
             outgoing={transactions}
-            showModal={showModal}
+            modalVisible={modalVisible}
+            setModalVisible={setModalVisible}
           />
         </ScrollView>
       </LinearGradient>
