@@ -15,7 +15,7 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import Entypo from "react-native-vector-icons/Entypo";
 import ModalCheck from "../../ModalCheck/ModalCheck";
 import { LinearGradient } from "expo-linear-gradient";
-
+import i18n from "../../i18n/i18n";
 const Outgoing = () => {
   const dispatch = useDispatch();
   const isDarkModeEnabled = useSelector(
@@ -34,11 +34,11 @@ const Outgoing = () => {
       date.getDate() === now.getDate() &&
       date.getMonth() === now.getMonth() &&
       date.getFullYear() === now.getFullYear()
-        ? "Сегодня"
+        ? i18n.t("today")
         : date.getDate() === now.getDate() - 1 &&
           date.getMonth() === now.getMonth() &&
           date.getFullYear() === now.getFullYear()
-        ? "Вчера"
+        ? i18n.t("yesterday")
         : `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
 
     if (!result[formattedDate]) {

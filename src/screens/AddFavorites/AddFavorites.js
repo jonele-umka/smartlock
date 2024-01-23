@@ -29,7 +29,6 @@ export const AddFavorites = () => {
   
   const { templateName } = values;
   const { favorites } = route.params;
-  console.log(favorites);
 
   const addToFavoritesHandler = () => {
     console.log("Adding to favorites: ", favorites);  

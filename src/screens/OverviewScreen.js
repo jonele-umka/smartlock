@@ -9,16 +9,14 @@ import {
   Text,
   ScrollView,
   RefreshControl,
-  Button,
 } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import { SafeAreaView as SafeAreaViewContext } from "react-native-safe-area-context";
-// import CardTabsRoute from "../components/CardTabs/CardTabsRoute/CardTabsRoute";
 import { Skeleton } from "@rneui/themed";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { useNavigation } from "@react-navigation/native";
-import Crypto from "../components/CardTabs/CardTabsScreen/Crypto/Crypto";
-import CryptoCard from "../components/CardTabs/CardTabsScreen/Crypto/CryptoCard";
+
+import CryptoCard from "../components/Crypto/CryptoCard";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import Feather from "react-native-vector-icons/Feather";
 import TransactionsCrypto from "../components/TransactionsCrypto/TransactionsCrypto";
@@ -28,12 +26,8 @@ import {
   fetchTransactionsIncoming,
 } from "../Store/Transactions/transctionsActions";
 import Analytics from "../components/Analytics/Analytics";
-// import { Avatar, AvatarFallbackText } from "@gluestack-ui/themed";
 import { Badge } from "@rneui/themed";
-// import * as Sharing from "expo-sharing";
-// import * as FileSystem from "expo-file-system";
-// import { Asset } from "expo-asset";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import i18n from "../components/i18n/i18n";
 
 export const OverviewScreen = () => {
   const navigation = useNavigation();
@@ -48,6 +42,14 @@ export const OverviewScreen = () => {
   const loading = useSelector((state) => state.transactions.loading);
   const token = useSelector((state) => state.signIn.token);
   console.log(token);
+
+  // refresh
+  const [refreshing, setRefreshing] = useState(false);
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await dispatch(fetchTransactions());
+    setRefreshing(false);
+  };
   // loadHistory
   useEffect(() => {
     if (token) {
@@ -55,11 +57,6 @@ export const OverviewScreen = () => {
       dispatch(fetchTransactions());
     }
   }, [token, dispatch]);
-
-  // refresh
-  const onRefresh = () => {
-    dispatch(fetchTransactions());
-  };
 
   // const favorites = useSelector((state) => state.favorites.favorites);
 
@@ -100,15 +97,17 @@ export const OverviewScreen = () => {
       end={{ x: 0, y: 0 }}
       colors={["#241270", "#140A4F", "#000"]}
     >
-      <SafeAreaWrapper
-        style={[
-          { flex: 1 },
-          // isDarkModeEnabled && { backgroundColor: "#191a1d" },
-        ]}
+      <ScrollView
+        style={{ paddingVertical: 20 }}
+        refreshControl={
+          <RefreshControl onRefresh={onRefresh} refreshing={refreshing} />
+        }
       >
-        <ScrollView
-          style={{ paddingVertical: 10 }}
-          refreshControl={<RefreshControl onRefresh={onRefresh} />}
+        <SafeAreaWrapper
+          style={[
+            { flex: 1 },
+            // isDarkModeEnabled && { backgroundColor: "#191a1d" },
+          ]}
         >
           <View style={styles.header}>
             <TouchableOpacity
@@ -197,7 +196,7 @@ export const OverviewScreen = () => {
                           color: "#fff",
                         }}
                       >
-                        Перевести
+                        {i18n.t("transfer")}
                       </Text>
                     </View>
                     <View style={{ flex: 1 }}>
@@ -248,7 +247,7 @@ export const OverviewScreen = () => {
                           color: "#fff",
                         }}
                       >
-                        Сканировать
+                        {i18n.t("scan")}
                       </Text>
                     </View>
                     <View style={{ flex: 1 }}>
@@ -304,7 +303,7 @@ export const OverviewScreen = () => {
                           color: "#fff",
                         }}
                       >
-                        История
+                        {i18n.t("history")}
                       </Text>
                     </View>
                     <View style={{ flex: 1 }}>
@@ -355,7 +354,7 @@ export const OverviewScreen = () => {
                           color: "#fff",
                         }}
                       >
-                        Заказать карту
+                        {i18n.t("orderACard")}
                       </Text>
                     </View>
                     <View style={{ flex: 1 }}>
@@ -388,7 +387,7 @@ export const OverviewScreen = () => {
                 color: "#fff",
               }}
             >
-              Расходы за этот месяц
+              {i18n.t("expensesForThisMonth")}
             </Text>
             {loading ? (
               <View
@@ -469,7 +468,7 @@ export const OverviewScreen = () => {
                 }
               >
                 <Text style={{ textAlign: "center", color: "#fff" }}>
-                  Подробнее
+                  {i18n.t("moreDetails")}
                 </Text>
               </TouchableOpacity>
             )}
@@ -487,7 +486,7 @@ export const OverviewScreen = () => {
                 marginBottom: 10,
               }}
             >
-              Переводы
+              {i18n.t("transfers")}
             </Text>
             {loading ? (
               <View style={{ flexDirection: "column", rowGap: 20 }}>
@@ -516,13 +515,13 @@ export const OverviewScreen = () => {
                 onPress={() => navigation.navigate("История переводов")}
               >
                 <Text style={{ textAlign: "center", color: "#fff" }}>
-                  Посмотреть все переводы
+                  {i18n.t("viewAllTransfers")}
                 </Text>
               </TouchableOpacity>
             )}
           </View>
-        </ScrollView>
-      </SafeAreaWrapper>
+        </SafeAreaWrapper>
+      </ScrollView>
     </LinearGradient>
   );
 };

@@ -20,6 +20,8 @@ const initialState = {
   isLoggedIn: false,
   token: null,
   isRegistered: false,
+  userName: "",
+  refreshToken: null,
 };
 
 const signInReducer = (state = initialState, action) => {
@@ -31,10 +33,11 @@ const signInReducer = (state = initialState, action) => {
         error: null,
       };
     case LOGIN_SUCCESS:
-   
       return {
         ...state,
-        token: action.payload,
+        token: action.payload.token,
+        userName: action.payload.userName,
+        refreshToken: action.payload.refreshToken,
         loading: false,
         error: null,
         isLoggedIn: true,

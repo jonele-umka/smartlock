@@ -13,11 +13,13 @@ import {
   Platform,
 } from "react-native";
 import { SafeAreaView as SafeAreaViewContext } from "react-native-safe-area-context";
-import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+// import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { loginUser } from "../../Store/SignIn/SignInAction";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { LinearGradient } from "expo-linear-gradient";
 import Ionicons from "react-native-vector-icons/Ionicons";
+import i18n from "../../components/i18n/i18n";
+
 const SignIn = () => {
   const {
     control,
@@ -27,6 +29,7 @@ const SignIn = () => {
   const isDarkModeEnabled = useSelector(
     (state) => state.theme.isDarkModeEnabled
   );
+  const [error, setError] = useState("");
   const [isPasswordHidden, setIsPasswordHidden] = useState(true);
   const togglePasswordVisibility = () => {
     setIsPasswordHidden((prev) => !prev);
@@ -54,18 +57,45 @@ const SignIn = () => {
   //     setError(error);
   //   }
   // };
+  // const onSubmit = async (userData) => {
+  //   try {
+  //     const data = await dispatch(loginUser(userData));
+
+  //     if (data && data?.data && data?.data?.access_token) {
+  //       await AsyncStorage.setItem("token", data?.data?.access_token);
+  //       navigation.navigate("Главная страница");
+  //     } else {
+  //       console.error("Ошибка при входе");
+  //     }
+  //   } catch (error) {
+  //     console.error("Ошибка при входе:", error);
+  //   }
+  // };
+
   const onSubmit = async (userData) => {
     try {
+      // Выполняем вход
       const data = await dispatch(loginUser(userData));
 
       if (data && data?.data && data?.data?.access_token) {
+        // Сохраняем токен
         await AsyncStorage.setItem("token", data?.data?.access_token);
-        navigation.navigate("Главная страница");
+
+        // Проверяем наличие пин-кода
+        const pinCode = await AsyncStorage.getItem("pinCode");
+
+        if (pinCode) {
+          // Если пин-код существует, перенаправляем на главную страницу
+          navigation.navigate("Главная страница");
+        } else {
+          // Если пин-кода нет, перенаправляем на страницу создания пин-кода
+          navigation.navigate("Создать пин-код");
+        }
       } else {
-        console.error("Ошибка при входе");
+        setError("Некорректные данные");
       }
     } catch (error) {
-      console.error("Ошибка при входе:", error);
+      setError(error.message);
     }
   };
 
@@ -90,7 +120,8 @@ const SignIn = () => {
       >
         <View
           style={{
-            padding: 20,
+            paddingHorizontal: 10,
+            paddingVertical: 20,
           }}
         >
           <Image
@@ -132,19 +163,22 @@ const SignIn = () => {
                 rules={{ required: true }}
                 render={({ field }) => (
                   <TextInput
-                    placeholder="Введите Email"
+                    placeholder={i18n.t("enterEmail")}
                     placeholderTextColor="#9c9c9c"
-                    onChangeText={field.onChange}
+                    onChangeText={(value) => {
+                      field.onChange(value);
+                      setError("");
+                    }}
                     value={field.value}
                     style={{
                       color: "#fff",
                       fontSize: 14,
                       backgroundColor: "rgba(255,255,255,0.2)",
-                      paddingHorizontal: 10,
-                      paddingVertical: 10,
+                      paddingHorizontal: Platform.OS === "android" ? 10 : 15,
+                      paddingVertical: Platform.OS === "android" ? 10 : 15,
                       borderRadius: 10,
-                      borderWidth: errors.UserName ? 1 : 0,
-                      borderColor: errors.UserName ? "red" : "#272727",
+                      borderWidth: errors.UserName || error ? 1 : 0,
+                      borderColor: errors.UserName || error ? "red" : "#272727",
                       // borderWidth: 1,
                       // borderColor: error ? "red" : "#f3f3f3",
                       // shadowColor: "#000",
@@ -161,7 +195,12 @@ const SignIn = () => {
               />
               {errors.UserName && (
                 <Text style={{ color: "red", fontSize: 12, marginTop: 7 }}>
-                  Введите Email
+                  {i18n.t("enterEmail")}
+                </Text>
+              )}
+              {error && (
+                <Text style={{ color: "red", fontSize: 12, marginTop: 7 }}>
+                  {error}
                 </Text>
               )}
             </View>
@@ -174,7 +213,7 @@ const SignIn = () => {
                   // ]
                 }
               >
-                Пароль
+                {i18n.t("password")}
               </Text>
               <View
                 style={{
@@ -184,6 +223,8 @@ const SignIn = () => {
                   backgroundColor: "rgba(255,255,255,0.2)",
                   paddingRight: 10,
                   borderRadius: 10,
+                  borderWidth: errors.UserPassword || error ? 1 : 0,
+                  borderColor: errors.UserPassword || error ? "red" : "#272727",
                 }}
               >
                 <Controller
@@ -193,20 +234,22 @@ const SignIn = () => {
                   render={({ field }) => (
                     <TextInput
                       type="Пароль"
-                      placeholder="Введите пароль"
+                      placeholder={i18n.t("enterPassword")}
                       placeholderTextColor="#9c9c9c"
-                      onChangeText={field.onChange}
+                      onChangeText={(value) => {
+                        field.onChange(value);
+                        setError("");
+                      }}
                       value={field.value}
                       secureTextEntry={isPasswordHidden}
                       style={{
                         flex: 1,
                         color: "#fff",
                         fontSize: 14,
-                        paddingHorizontal: 10,
-                        paddingVertical: 10,
+                        paddingHorizontal: Platform.OS === "android" ? 10 : 15,
+                        paddingVertical: Platform.OS === "android" ? 10 : 15,
                         borderRadius: 10,
-                        borderWidth: errors.UserPassword ? 1 : 0,
-                        borderColor: errors.UserPassword ? "red" : "#272727",
+
                         // borderWidth: 1,
                         // borderColor: error ? "red" : "#f3f3f3",
                         // shadowColor: "#000",
@@ -237,7 +280,12 @@ const SignIn = () => {
               </View>
               {errors.UserPassword && (
                 <Text style={{ color: "red", fontSize: 12, marginTop: 7 }}>
-                  Введите пароль
+                  {i18n.t("enterPassword")}
+                </Text>
+              )}
+              {error && (
+                <Text style={{ color: "red", fontSize: 12, marginTop: 7 }}>
+                  {error}
                 </Text>
               )}
             </View>
@@ -251,7 +299,7 @@ const SignIn = () => {
                 alignSelf: "flex-end",
               }}
             >
-              Забыли пароль ?
+              {i18n.t("forgotPassword")}
             </Text>
           </View>
 
@@ -287,7 +335,7 @@ const SignIn = () => {
                   fontSize: 20,
                 }}
               >
-                Войти
+                {i18n.t("signIn")}
               </Text>
             </TouchableOpacity>
           )}
@@ -307,11 +355,11 @@ const SignIn = () => {
               ]}
               onPress={goToCreateAccount}
             >
-              Создать новый аккаунт
+              {i18n.t("createAccount")}
             </Text>
           </TouchableOpacity>
 
-          <View
+          {/* <View
             style={{
               marginVertical: 30,
             }}
@@ -386,7 +434,7 @@ const SignIn = () => {
                 />
               </TouchableOpacity>
             </View>
-          </View>
+          </View> */}
         </View>
       </SafeAreaWrapper>
     </LinearGradient>

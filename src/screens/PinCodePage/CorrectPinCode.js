@@ -10,17 +10,18 @@ import {
   Animated,
 } from "react-native";
 import { SafeAreaView as SafeAreaViewContext } from "react-native-safe-area-context";
-import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import Feather from "react-native-vector-icons/Feather";
 import { LinearGradient } from "expo-linear-gradient";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
+import i18n from "../../components/i18n/i18n";
+import Toast from "react-native-toast-message";
 
 const CorrectPinCode = () => {
   const navigation = useNavigation();
   const [pinCode, setPinCode] = useState("");
   const [pinError, setPinError] = useState("");
-  const [pinText, setPinText] = useState("Введите новый PIN");
+  const [pinText, setPinText] = useState(i18n.t("enterNewPIN"));
   const [isLoading, setIsLoading] = useState(false);
   const [pinStep, setPinStep] = useState(1);
   const [firstPinCode, setFirstPinCode] = useState("");
@@ -77,16 +78,23 @@ const CorrectPinCode = () => {
         setFirstPinCode(pinCode);
         setPinStep(2);
         setPinCode("");
-        setPinText("Подтвердите новый PIN");
+        setPinText(i18n.t("confirmTheNewPIN"));
       } else if (pinStep === 2 && pinCode.length === 4) {
         const newPinCode = pinCode;
         if (newPinCode === firstPinCode) {
           setIsCorrect(true);
           navigation.navigate("Главная страница");
+          Toast.show({
+            type: "success",
+            position: "top",
+            text2: i18n.t("youHaveSuccessfullyChangedYourPinCode"),
+            visibilityTime: 3000,
+            autoHide: true,
+            topOffset: 30,
+          });
           await AsyncStorage.setItem("pinCode", newPinCode);
         } else {
-          console.log("Пин-коды не совпадают. Повторите ввод.");
-          setPinError("Пин-коды не совпадают. Повторите ввод.");
+          setPinError(i18n.t("PINCodesDoNotMatch"));
 
           Vibration.vibrate();
           setIsLoading(false);
@@ -108,11 +116,6 @@ const CorrectPinCode = () => {
     if (pinCode.length > 0) {
       setPinCode(pinCode.slice(0, -1));
     }
-  };
-
-  // logout
-  const handleExit = () => {
-    console.log("Выход");
   };
 
   // dots
@@ -198,12 +201,7 @@ const CorrectPinCode = () => {
               </TouchableOpacity>
             ))}
             <View style={styles.zeroContainer}>
-              <TouchableOpacity style={styles.zeroButton} onPress={handleExit}>
-                <MaterialIcons
-                  name="logout"
-                  style={{ color: "#fff", fontSize: 30 }}
-                />
-              </TouchableOpacity>
+              <View style={styles.zeroButton}></View>
 
               <TouchableOpacity
                 key={0}

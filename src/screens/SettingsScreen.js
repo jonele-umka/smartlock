@@ -1,13 +1,12 @@
-import React, { useState, useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { toggleDarkMode } from "../Store/DarkTheme/themeAction";
+import React, { useState, useEffect, useRef } from "react";
+import { useSelector } from "react-redux";
+// import { toggleDarkMode } from "../Store/DarkTheme/themeAction";
 import {
   Text,
   View,
   StyleSheet,
   Dimensions,
   TouchableOpacity,
-  ScrollView,
   Image,
   SafeAreaView,
   Platform,
@@ -16,17 +15,48 @@ import {
 import { useNavigation } from "@react-navigation/native";
 import { SafeAreaView as SafeAreaViewContext } from "react-native-safe-area-context";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+// import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { LinearGradient } from "expo-linear-gradient";
 import Ionicons from "react-native-vector-icons/Ionicons";
+import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as LocalAuthentication from "expo-local-authentication";
+import * as Localization from "expo-localization";
+import i18n from "../components/i18n/i18n";
+import ActionSheet from "react-native-actions-sheet";
+import { Dialog } from "@rneui/themed";
+import { API_URL } from "../constants";
 
 // link
 const Link = ({ title, onClick, icon, disabled = false }) => {
   const isDarkModeEnabled = useSelector(
     (state) => state.theme.isDarkModeEnabled
   );
+  let iconComponent;
+
+  switch (icon) {
+    case "pin":
+      iconComponent = (
+        <Image
+          source={require("../assets/pin.png")}
+          style={{ width: 20, height: 20 }}
+        />
+      );
+      break;
+    case "currency-exchange":
+      iconComponent = (
+        <Image
+          source={require("../assets/currency.png")}
+          style={{ width: 20, height: 20 }}
+        />
+      );
+
+      break;
+    default:
+      iconComponent = <Icon name={icon} size={20} color={"#fff"} />;
+      break;
+  }
   return (
     <TouchableOpacity onPress={onClick} disabled={disabled}>
       <View
@@ -50,14 +80,7 @@ const Link = ({ title, onClick, icon, disabled = false }) => {
               // isDarkModeEnabled && { backgroundColor: "#fff" },
             ]}
           >
-            {icon === "pin" ? (
-              <Image
-                source={require("../assets/pin.png")}
-                style={{ width: 20, height: 20 }}
-              />
-            ) : (
-              <Icon name={icon} size={20} color={"#fff"} />
-            )}
+            {iconComponent}
           </View>
           <View>
             <Text
@@ -84,6 +107,70 @@ const Link = ({ title, onClick, icon, disabled = false }) => {
 
 const SettingsScreen = () => {
   const navigation = useNavigation();
+  // language
+  const actionSheetRef = useRef();
+  const token = useSelector((state) => state.signIn.token);
+  const userName = useSelector((state) => state.signIn.userName);
+  const refresh_token = useSelector((state) => state.signIn.refreshToken);
+  const [language, setLanguage] = useState(Localization.locale);
+  const [modal, setModal] = useState(false);
+  const [hasFingerprint, setHasFingerprint] = useState(false);
+  const toggleModal = () => {
+    setModal(!modal);
+  };
+
+  useEffect(() => {
+    const checkBiometricAvailability = async () => {
+      const supported = await LocalAuthentication.hasHardwareAsync();
+      if (supported) {
+        setHasFingerprint(true);
+      }
+    };
+    checkBiometricAvailability();
+  }, []);
+  const handleLogout = async () => {
+    try {
+      const response = await fetch(`${API_URL}/logout`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ refresh_token }),
+      });
+
+      if (response.ok) {
+        const responseBody = await response.text();
+        console.log("Response Body:", responseBody);
+
+        navigation.navigate("Войти");
+        await AsyncStorage.removeItem("login");
+        await AsyncStorage.removeItem("password");
+        await AsyncStorage.removeItem("pinCode");
+        await AsyncStorage.removeItem("biometricEnabled");
+      } else {
+        console.log("Ошибка при выходе:", response.status, response.statusText);
+
+        const errorBody = await response.text();
+        console.log("Error Body:", errorBody);
+      }
+    } catch (error) {
+      console.log("Error during logout:", error);
+    }
+  };
+
+  const changeLanguage = async (newLanguage) => {
+    Localization.locale = newLanguage;
+
+    try {
+      await AsyncStorage.setItem("language", newLanguage);
+      setLanguage(newLanguage);
+      actionSheetRef.current?.hide();
+    } catch (error) {
+      console.error("Ошибка при сохранении языка в AsyncStorage:", error);
+    }
+  };
+
   // switch biometric
   const [isEnabled, setIsEnabled] = useState(false);
 
@@ -153,10 +240,9 @@ const SettingsScreen = () => {
     };
 
     checkBiometricPreference();
-  }, []); // Пустой массив зависимостей гарантирует, что эффект запустится только один раз при монтировании
+  }, []);
 
   // redux
-  const dispatch = useDispatch();
   const isDarkModeEnabled = useSelector(
     (state) => state.theme.isDarkModeEnabled
   );
@@ -179,7 +265,50 @@ const SettingsScreen = () => {
   // const animatedStyle = {
   //   transform: [{ translateX: translateXValue }],
   // };
+  // useEffect(() => {
+  //   const currencyData = {
+  //     selectedWallet: (
+  //       <View
+  //         style={{
+  //           flexDirection: "row",
+  //           justifyContent: "space-between",
+  //           alignItems: "center",
+  //           width: "100%",
+  //         }}
+  //       >
+  //         <ImageBackground
+  //           imageStyle={{ borderRadius: 5 }}
+  //           source={card}
+  //           style={{
+  //             width: 50,
+  //             height: 30,
+  //             display: "flex",
+  //             alignItems: "flex-end",
+  //             justifyContent: "center",
+  //             padding: 3,
+  //           }}
+  //         >
+  //           <Text style={{ color: "#fff", fontSize: 12 }}>
+  //             ... {item.WalletSubAccount.AccountNumber.slice(-4)}
+  //           </Text>
+  //         </ImageBackground>
 
+  //         <View>
+  //           <Text
+  //             style={{
+  //               color: "#fff",
+  //             }}
+  //           >{`${item.WalletSubAccount.Balance} ${
+  //             currencySymbols[item.WalletSubAccount.Currency.CurrencyCode]
+  //           }`}</Text>
+  //         </View>
+  //       </View>
+  //     ),
+  //     value: item.WalletSubAccount.AccountNumber,
+  //   };
+
+  //   setWallet(currencyData);
+  // }, [token]);
   const SafeAreaWrapper =
     Platform.OS === "android" ? SafeAreaViewContext : SafeAreaView;
 
@@ -194,11 +323,38 @@ const SettingsScreen = () => {
       colors={["#241270", "#140A4F", "#000"]}
     >
       <SafeAreaWrapper
-      // style={
-      //   [isDarkModeEnabled && { backgroundColor: "#383838" }]
-      // }
+        style={{ flex: 1, paddingVertical: 20 }}
+        // style={
+        //   [isDarkModeEnabled && { backgroundColor: "#383838" }]
+        // }
       >
-        <ScrollView>
+        <Dialog isVisible={modal}>
+          <Dialog.Title title={i18n.t("areYouSureYouWantToLogOut")} />
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              marginTop: 20,
+            }}
+          >
+            <TouchableOpacity
+              onPress={() => {
+                toggleModal();
+              }}
+            >
+              <Text style={{ fontSize: 18 }}>{i18n.t("no")}</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
+                toggleModal();
+                handleLogout();
+              }}
+            >
+              <Text style={{ fontSize: 18 }}>{i18n.t("yes")}</Text>
+            </TouchableOpacity>
+          </View>
+        </Dialog>
+        <View style={{ flex: 1 }}>
           <View
             style={[
               styles.profile,
@@ -218,9 +374,10 @@ const SettingsScreen = () => {
                 // isDarkModeEnabled && { color: "#fff" }
               ]}
             >
-              Client Demo
+              {userName}
             </Text>
           </View>
+
           {/* <View
           style={[
             styles.toggleButtonContainer,
@@ -253,50 +410,167 @@ const SettingsScreen = () => {
             <Animated.View style={[styles.toggleHandle, animatedStyle]} />
           </TouchableOpacity>
         </View> */}
+          {Platform.OS === "android" && hasFingerprint && (
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                alignItems: "center",
+                paddingHorizontal: 10,
+                marginBottom: 20,
+              }}
+            >
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  columnGap: 15,
+                }}
+              >
+                <View
+                  style={[
+                    {
+                      backgroundColor: "#5d00e6",
+                      borderRadius: 50,
+                      padding: 10,
+                    },
+                    // isDarkModeEnabled && { backgroundColor: "#fff" },
+                  ]}
+                >
+                  <Ionicons
+                    name="finger-print-outline"
+                    style={{ color: "#fff", fontSize: 20 }}
+                  />
+                </View>
 
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignItems: "center",
-              paddingHorizontal: 20,
-              marginBottom: 10,
-            }}
+                <Text style={{ color: "#fff" }}>
+                  {i18n.t("biometricLogin")}
+                </Text>
+              </View>
+              <Switch
+                trackColor={{ false: "#767577", true: "#5d00e6" }}
+                thumbColor={isEnabled && "#f4f3f4"}
+                ios_backgroundColor="#3e3e3e"
+                onValueChange={toggleSwitch}
+                value={isEnabled}
+              />
+            </View>
+          )}
+          <TouchableOpacity
+            style={{ marginBottom: 10 }}
+            onPress={() => actionSheetRef.current?.show()}
           >
             <View
               style={{
                 flexDirection: "row",
                 justifyContent: "space-between",
                 alignItems: "center",
-                columnGap: 15,
+                paddingHorizontal: 10,
               }}
             >
               <View
-                style={[
-                  {
-                    backgroundColor: "#5d00e6",
-                    borderRadius: 50,
-                    padding: 10,
-                  },
-                  // isDarkModeEnabled && { backgroundColor: "#fff" },
-                ]}
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  columnGap: 15,
+                }}
               >
-                <Ionicons
-                  name="finger-print-outline"
-                  style={{ color: "#fff", fontSize: 20 }}
-                />
-              </View>
+                <View
+                  style={[
+                    {
+                      backgroundColor: "#5d00e6",
+                      borderRadius: 50,
+                      padding: 10,
+                    },
+                    // isDarkModeEnabled && { backgroundColor: "#fff" },
+                  ]}
+                >
+                  <Ionicons
+                    name="language"
+                    style={{ color: "#fff", fontSize: 20 }}
+                  />
+                </View>
 
-              <Text style={{ color: "#fff" }}>Вход по биометрии</Text>
+                <Text style={{ color: "#fff" }}>{i18n.t("language")}</Text>
+              </View>
+              <Icon name={"chevron-right"} size={20} color={"#5d00e6"} />
             </View>
-            <Switch
-              trackColor={{ false: "#767577", true: "#5d00e6" }}
-              thumbColor={isEnabled && "#f4f3f4"}
-              ios_backgroundColor="#3e3e3e"
-              onValueChange={toggleSwitch}
-              value={isEnabled}
-            />
-          </View>
+          </TouchableOpacity>
+
+          <ActionSheet ref={actionSheetRef}>
+            <View
+              style={{
+                flexDirection: "column",
+                rowGap: 20,
+                paddingHorizontal: 10,
+                paddingVertical: 20,
+                backgroundColor: "#140A4F",
+              }}
+            >
+              <TouchableOpacity onPress={() => changeLanguage("en")}>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    width: "100%",
+                  }}
+                >
+                  <Image
+                    style={{ width: 30, height: 30 }}
+                    source={require("../assets/Country/united-kingdom.png")}
+                  />
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      alignItems: "center",
+                      columnGap: 10,
+                    }}
+                  >
+                    <Text style={{ color: "#fff" }}>English</Text>
+                    {language === "en" && (
+                      <Ionicons
+                        name="checkmark"
+                        style={{ color: "#fff", fontSize: 20 }}
+                      />
+                    )}
+                  </View>
+                </View>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => changeLanguage("ru")}>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    width: "100%",
+                  }}
+                >
+                  <Image
+                    style={{ width: 30, height: 30 }}
+                    source={require("../assets/Country/russia.png")}
+                  />
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      alignItems: "center",
+                      columnGap: 10,
+                    }}
+                  >
+                    <Text style={{ color: "#fff" }}>Русский</Text>
+                    {language === "ru" && (
+                      <Ionicons
+                        name="checkmark"
+                        style={{ color: "#fff", fontSize: 20 }}
+                      />
+                    )}
+                  </View>
+                </View>
+              </TouchableOpacity>
+            </View>
+          </ActionSheet>
           <View
             style={[
               styles.linksContainer,
@@ -306,28 +580,38 @@ const SettingsScreen = () => {
             ]}
           >
             <Link
-              title={"Сменить пин код"}
+              title={i18n.t("changePINCode")}
               onClick={() => {
-                navigation.navigate("CorrectPinCode");
+                navigation.navigate("Сменить пин-код");
               }}
               icon={"pin"}
             />
-
-            <Link title={"Сменить пароль"} onClick={() => null} icon={"lock"} />
+            <Link
+              title={i18n.t("exchangeRates")}
+              onClick={() => navigation.navigate("Курс валют")}
+              icon={"currency-exchange"}
+            />
+            <Link
+              title={i18n.t("changePassword")}
+              onClick={() => {
+                navigation.navigate("Смена пароля");
+              }}
+              icon={"lock"}
+            />
 
             <Link
-              title={"Помощь"}
-              onClick={() => null}
+              title={i18n.t("help")}
+              onClick={() => navigation.navigate("Помощь")}
               icon={"email-fast-outline"}
             />
             <Link
-              title={"Выйти"}
+              title={i18n.t("logOut")}
               textColor={"#cc4949"}
-              onClick={() => null}
+              onClick={toggleModal}
               icon={"logout"}
             />
           </View>
-        </ScrollView>
+        </View>
       </SafeAreaWrapper>
     </LinearGradient>
   );
@@ -338,6 +622,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     rowGap: 10,
+    marginBottom: 30,
   },
   avatar: {
     borderRadius: 80,
@@ -396,8 +681,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    paddingVertical: 15,
-    paddingHorizontal: 20,
+    paddingVertical: 10,
+    paddingHorizontal: 10,
   },
 });
 

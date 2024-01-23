@@ -13,7 +13,8 @@ import {
 import { SafeAreaView as SafeAreaViewContext } from "react-native-safe-area-context";
 
 import { useNavigation } from "@react-navigation/core";
-import Toast from "react-native-toast-message";
+import i18n from "../../../components/i18n/i18n";
+import { LinearGradient } from "expo-linear-gradient";
 
 const SignUpEmail = () => {
   const isDarkModeEnabled = useSelector(
@@ -41,106 +42,120 @@ const SignUpEmail = () => {
     Platform.OS === "android" ? SafeAreaViewContext : SafeAreaView;
 
   return (
-    <SafeAreaWrapper
+    <LinearGradient
       style={[
-        { flex: 1, backgroundColor: "#191a1d" },
+        { flex: 1 },
         // isDarkModeEnabled && { backgroundColor: "#191a1d" },
       ]}
+      start={{ x: 2.4, y: 1.1 }}
+      end={{ x: 0, y: 0 }}
+      colors={["#241270", "#140A4F", "#000"]}
     >
-      <View
-        style={{
-          paddingHorizontal: 10,
-          paddingVertical: Platform.OS === "android" ? 0 : 20,
-        }}
+      <SafeAreaWrapper
+        style={[
+          { flex: 1 },
+          // isDarkModeEnabled && { backgroundColor: "#191a1d" },
+        ]}
       >
-        <Text
-          style={[
-            {
-              fontSize: 20,
-              textAlign: "center",
-              marginBottom: 30,
-              paddingTop: 10,
-              color: "#fff",
-            },
-            // isDarkModeEnabled ? { color: "#fff" } : { color: "#191a1d" },
-          ]}
-        >
-          Введите свой Email
-        </Text>
-        <Controller
-          control={control}
-          rules={{
-            required: "Заполните поле",
-            pattern: {
-              value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-              message:
-                "Пожалуйста, введите действительный адрес электронной почты",
-            },
+        <View
+          style={{
+            paddingHorizontal: 10,
+            paddingVertical: 20,
           }}
-          render={({ field: { onChange, value } }) => (
-            <TextInput
-              value={value}
-              onChangeText={(text) => {
-                onChange(text);
-                setError("");
-              }}
-              placeholderTextColor="grey"
-              placeholder="Введите Email"
-              style={{
+        >
+          <Text
+            style={[
+              {
+                fontSize: 20,
+                textAlign: "center",
+                marginBottom: 30,
+                paddingTop: 10,
                 color: "#fff",
-                fontSize: 14,
-                height: 50,
-                backgroundColor: "#272727",
-                paddingHorizontal: 10,
-                borderRadius: 10,
-                borderWidth: errors.email || error == 400 ? 1 : 0,
-                borderColor: errors.email || error == 400 ? "red" : "#272727",
-              }}
-            />
-          )}
-          name="email"
-        />
-        {errors.email && (
-          <Text style={{ color: "red", fontSize: 12, marginTop: 7 }}>
-            {errors.email.message}
-          </Text>
-        )}
-        {error == 400 && (
-          <Text style={{ color: "red", fontSize: 12, marginTop: 7 }}>
-            Неверный Email
-          </Text>
-        )}
-        {loading ? (
-          <ActivityIndicator
-            size="large"
-            style={{ marginTop: 30 }}
-            color={"#fff"}
-          />
-        ) : (
-          <TouchableOpacity
-            onPress={handleSubmit(onSubmit)}
-            disabled={loading}
-            style={{
-              marginTop: 20,
-              padding: 15,
-              backgroundColor: "#5d00e6",
-              borderRadius: 10,
-              shadowColor: "#5d00e6",
-              shadowOffset: {
-                width: 0,
-                height: 10,
               },
-              shadowOpacity: 0.3,
-              shadowRadius: 10,
-            }}
+              // isDarkModeEnabled ? { color: "#fff" } : { color: "#191a1d" },
+            ]}
           >
-            <Text style={{ color: "#fff", textAlign: "center", fontSize: 20 }}>
-              Далее
+            {i18n.t("enterEmail")}
+          </Text>
+          <Controller
+            control={control}
+            rules={{
+              required: i18n.t("fillInTheField"),
+              pattern: {
+                value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                message: i18n.t("pleaseEnterAValidEmailAddress"),
+              },
+            }}
+            render={({ field: { onChange, value } }) => (
+              <TextInput
+                placeholderTextColor={"#9c9c9c"}
+                value={value}
+                onChangeText={(text) => {
+                  onChange(text);
+                  setError("");
+                }}
+                placeholder={i18n.t("enterEmail")}
+                style={{
+                  color: "#fff",
+                  fontSize: 16,
+                  backgroundColor: "rgba(255,255,255,0.05)",
+                  paddingHorizontal: 10,
+                  paddingVertical: 15,
+                  borderRadius: 10,
+                  borderWidth: errors.email || error == 400 ? 1 : 0,
+                  borderColor:
+                    errors.email || error == 400
+                      ? "red"
+                      : "rgba(255,255,255,0.05)",
+                }}
+              />
+            )}
+            name="email"
+          />
+          {errors.email && (
+            <Text style={{ color: "red", fontSize: 12, marginTop: 7 }}>
+              {errors.email.message}
             </Text>
-          </TouchableOpacity>
-        )}
-      </View>
-    </SafeAreaWrapper>
+          )}
+          {error == 400 && (
+            <Text style={{ color: "red", fontSize: 12, marginTop: 7 }}>
+              {i18n.t("invalidEmail")}
+            </Text>
+          )}
+          {loading ? (
+            <ActivityIndicator
+              size="large"
+              style={{ marginTop: 30 }}
+              color={"#fff"}
+            />
+          ) : (
+            <TouchableOpacity
+              onPress={handleSubmit(onSubmit)}
+              disabled={loading}
+              style={{
+                marginTop: 20,
+                padding: 15,
+                backgroundColor: "#5d00e6",
+                borderRadius: 10,
+                shadowColor: "#5d00e6",
+                shadowOffset: {
+                  width: 0,
+                  height: 10,
+                },
+                shadowOpacity: 0.3,
+                shadowRadius: 10,
+              }}
+            >
+              <Text
+                style={{ color: "#fff", textAlign: "center", fontSize: 20 }}
+              >
+                {i18n.t("next")}
+              </Text>
+            </TouchableOpacity>
+          )}
+        </View>
+      </SafeAreaWrapper>
+    </LinearGradient>
   );
 };
 

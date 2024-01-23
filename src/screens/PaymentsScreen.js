@@ -67,7 +67,8 @@ const PaymentsScreen = ({ navigation }) => {
   const isDarkModeEnabled = useSelector(
     (state) => state.theme.isDarkModeEnabled
   );
-  const clickHandler = (page) => navigation.push("Главная страница", { screen: page });
+  const clickHandler = (page) =>
+    navigation.push("Главная страница", { screen: page });
 
   const SafeAreaWrapper =
     Platform.OS === "android" ? SafeAreaViewContext : SafeAreaView;
@@ -82,16 +83,16 @@ const PaymentsScreen = ({ navigation }) => {
       end={{ x: 0, y: 0 }}
       colors={["#241270", "#140A4F", "#000"]}
     >
-      <SafeAreaWrapper
-        style={[
-          {
-            flex: 1,
-            // paddingHorizontal: 10,
-          },
-          // isDarkModeEnabled && { backgroundColor: "#191a1d" },
-        ]}
-      >
-        <ScrollView>
+      <ScrollView>
+        <SafeAreaWrapper
+          style={[
+            {
+              flex: 1,
+              // paddingHorizontal: 10,
+            },
+            // isDarkModeEnabled && { backgroundColor: "#191a1d" },
+          ]}
+        >
           <Text
             style={[
               {
@@ -101,7 +102,7 @@ const PaymentsScreen = ({ navigation }) => {
                 color: "#191a1d",
                 marginBottom: 25,
                 color: "#fff",
-                paddingVertical: 10
+                paddingTop: 20,
               },
               // isDarkModeEnabled && {
               //   color: "#fff",
@@ -172,8 +173,8 @@ const PaymentsScreen = ({ navigation }) => {
               />
             </View>
           </View>
-        </ScrollView>
-      </SafeAreaWrapper>
+        </SafeAreaWrapper>
+      </ScrollView>
     </LinearGradient>
   );
 };

@@ -7,6 +7,7 @@ import { Text, View, StyleSheet } from "react-native";
 import Incoming from "../TransactionTabsScreen/Incoming";
 import Outgoing from "../TransactionTabsScreen/Outgoing";
 import { LinearGradient } from "expo-linear-gradient";
+import i18n from "../../i18n/i18n";
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -88,7 +89,7 @@ function TransactionTabsRoute() {
         options={{
           tabBarLabel: ({ color }) => (
             <View>
-              <Text style={{ color, fontWeight: 600 }}>Отправленные</Text>
+              <Text style={{ color, fontWeight: 600 }}>{i18n.t("sent")}</Text>
             </View>
           ),
         }}
@@ -99,7 +100,7 @@ function TransactionTabsRoute() {
         options={{
           tabBarLabel: ({ color }) => (
             <View>
-              <Text style={{ color, fontWeight: 600 }}>Полученные</Text>
+              <Text style={{ color, fontWeight: 600 }}>{i18n.t("received")}</Text>
             </View>
           ),
         }}

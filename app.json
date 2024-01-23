@@ -6,17 +6,16 @@
     "orientation": "portrait",
     "icon": "./src/assets/apkIcons/icon.png",
     "splash": {
-      "image": "./src/assets/CRYPTONLogo.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#140A4F"
+      "image": "./src/assets/apkIcons/splashImg.png",
+      "resizeMode": "cover"
     },
     "userInterfaceStyle": "light",
+
     "ios": {
       "supportsTablet": true,
       "splash": {
-        "image": "./src/assets/CRYPTONLogo.png",
-        "resizeMode": "contain",
-        "backgroundColor": "#140A4F"
+        "image": "./src/assets/apkIcons/splashImg.png",
+        "resizeMode": "cover"
       },
       "infoPlist": {
         "NSPhotoLibraryUsageDescription": "Разрешение на доступ к вашей галерее",

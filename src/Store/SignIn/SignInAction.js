@@ -3,8 +3,6 @@ import {
   LOGIN_REQUEST,
   LOGIN_SUCCESS,
   LOGIN_FAILURE,
-  SAVE_TOKEN_TO_LOCAL_STORAGE,
-  LOAD_TOKEN_FROM_LOCAL_STORAGE,
   SEND_EMAIL_REQUEST,
   SEND_EMAIL_SUCCESS,
   SEND_EMAIL_FAILURE,
@@ -15,16 +13,16 @@ import {
   REGISTER_SUCCESS,
   REGISTER_FAILURE,
 } from "./SignInTypes";
-import Toast from "react-native-toast-message";
+
 import { API_URL } from "../../constants";
- 
+
 export const loginRequest = () => ({
   type: LOGIN_REQUEST,
 });
 
-export const loginSuccess = (token) => ({
+export const loginSuccess = (token, userName, refreshToken) => ({
   type: LOGIN_SUCCESS,
-  payload: token,
+  payload: { token, userName, refreshToken },
 });
 
 export const loginFailure = (error) => ({
@@ -46,10 +44,13 @@ export const loginUser = (userData) => async (dispatch) => {
     if (response.ok) {
       const data = await response.json();
       const token = data?.data?.access_token;
+      const userName = data?.data?.username;
+      const refreshToken = data?.data?.refresh_token;
+
       await AsyncStorage.setItem("token", token);
       await AsyncStorage.setItem("login", userData.UserName);
-      await AsyncStorage.setItem("password", userData.UserPassword)
-      dispatch(loginSuccess(token));
+      await AsyncStorage.setItem("password", userData.UserPassword);
+      dispatch(loginSuccess(token, userName, refreshToken));
 
       return data;
     } else if (response.status >= 400) {
@@ -60,21 +61,19 @@ export const loginUser = (userData) => async (dispatch) => {
       throw new Error("Неизвестная ошибка");
     }
   } catch (error) {
-    console.log(error)
     dispatch(loginFailure(error));
-    Toast.show({
-      type: "error",
-      position: "top",
-      text1: "Ошибка",
-      text2: error.message,
-      visibilityTime: 3000,
-      autoHide: true,
-      topOffset: 30,
-    });
+    // Toast.show({
+    //   type: "error",
+    //   position: "top",
+    //   text1: "Ошибка",
+    //   text2: error.message,
+    //   visibilityTime: 3000,
+    //   autoHide: true,
+    //   topOffset: 30,
+    // });
   }
 };
 
-  
 export const sendEmail = (email) => {
   return (dispatch) => {
     dispatch({ type: SEND_EMAIL_REQUEST });
@@ -170,21 +169,20 @@ export const registerUser = (requestData) => {
         return response.json();
       })
       .then((data) => {
-        console.log(data);
         dispatch(registerSuccess(data));
       })
       .catch((error) => {
         console.log(error);
         dispatch(registerFailure(error));
-        Toast.show({
-          type: "error",
-          position: "top",
-          text1: "fefe",
-          text2: error.message,
-          visibilityTime: 3000,
-          autoHide: true,
-          topOffset: 30,
-        });
+        // Toast.show({
+        //   type: "error",
+        //   position: "top",
+        //   text1: "fefe",
+        //   text2: error.message,
+        //   visibilityTime: 3000,
+        //   autoHide: true,
+        //   topOffset: 30,
+        // });
       });
   };
 };

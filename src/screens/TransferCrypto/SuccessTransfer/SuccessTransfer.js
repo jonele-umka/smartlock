@@ -5,8 +5,6 @@ import {
   SafeAreaView,
   TouchableOpacity,
   Platform,
-  ScrollView,
-  RefreshControl,
   Image,
   StyleSheet,
   Modal,
@@ -15,20 +13,13 @@ import { useSelector, useDispatch } from "react-redux";
 import { useRoute, useNavigation } from "@react-navigation/native";
 import { SafeAreaView as SafeAreaViewContext } from "react-native-safe-area-context";
 import Entypo from "react-native-vector-icons/Entypo";
-import EvilIcons from "react-native-vector-icons/EvilIcons";
 import { LinearGradient } from "expo-linear-gradient";
 import { fetchTransactions } from "../../../Store/Transactions/transctionsActions";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import Ionicons from "react-native-vector-icons/Ionicons";
-// import {
-//   Modal,
-//   ModalBackdrop,
-//   ModalContent,
-//   ModalHeader,
-//   ModalCloseButton,
-//   ModalBody,
-// } from "@gluestack-ui/themed";
-
+import i18n from "../../../components/i18n/i18n";
+import * as Sharing from "expo-sharing";
+import * as Print from "expo-print";
 const SuccessTransfer = () => {
   const dispatch = useDispatch();
   const route = useRoute();
@@ -41,7 +32,6 @@ const SuccessTransfer = () => {
     nameUser,
     commission,
     selectedType,
-    id,
   } = route.params;
 
   const [modalVisible, setModalVisible] = useState(false);
@@ -69,9 +59,139 @@ const SuccessTransfer = () => {
     }
   }, [token, dispatch]);
 
-  // refresh
-  const onRefresh = () => {
-    dispatch(fetchTransactions());
+  const createAndSharePDF = async () => {
+    try {
+      const htmlContent = `
+      <html>
+      <head>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
+      <style>
+       .logoImg{
+        margin-bottom: 50px;
+       }
+      .logoImg img{
+        width: 100%;
+      }
+      .block{
+        display: flex;
+        flex-direction: column;
+        padding: 20px;
+        height: 100%;
+      }
+      .detailsBlock{
+        display: flex;
+        flex-direction: column;
+        row-gap: 50px;
+        border-top: 0.5px solid #241270;
+        border-bottom: 0.5px solid #241270;
+        padding: 50px 0; 
+      }
+      .detailsBlock p{
+        font-size: 27px;
+        color: #000;
+        margin: 0;
+      }
+      .result h2{
+        font-size: 45px;
+        margin-bottom: 10px;
+        font-weight: 500;
+      }
+      .result h1{
+        font-size: 50px;
+        margin: 0;
+        font-weight: 500 
+      }
+      .box{
+        display: flex;
+        justify-content: space-between;
+        column-gap: 10px;
+      }
+      </style>
+      </head>
+        <body>
+        <div class="block">
+        <div class="logoImg">
+        <img src="https://i.ibb.co/y6RcmDN/CRYPTONLogo-Pdf.png" alt="crypton"/> 
+        </div>
+     
+          <div class='detailsBlock'>
+          ${`<div class="box">
+            <p>Тип перевода:</p>
+            <p>${selectedType}</p>
+            </div>`}
+
+            <div class="box">
+            <p>Реквизиты получателя:<p>
+            <p>${requisites}</p>
+            </div>
+          
+            ${
+              nameUser
+                ? `
+                <div class="box">
+                <p>Имя получателя:</p>
+                <p>${nameUser}</p>
+                </div>
+                `
+                : ""
+            }
+            <div class="box">
+            <p>Отправлено со счета:</p>
+            <p>****${sender_requisites.slice(-4)}</p>
+            </div>
+
+            <div class="box">
+            <p>Сумма:</p>
+            <p>${sum} ${currencySymbols[currencyCode]}</p>
+            </div>
+            
+            ${
+              selectedType !== "Между счетами"
+                ? `<div class="box">
+              <p>Комиссия:</p>
+              <p>${commission} ${currencySymbols[currencyCode]}</p>
+              </div>`
+                : ""
+            }
+        
+
+          <div class="box">
+          <p>Дата операции:</p>
+          <p>${formatDate(transactions[0].CreatedAt)}</p>
+          </div>
+
+          <div class="box">
+          <p>Номер квитанции:</p>
+          <p>${transactions[0].ChequeNo}</p>
+          </div>
+          </div>
+          <div class="result">
+            <h2>Итого:</h2> 
+            ${
+              selectedType !== "Между счетами"
+                ? `<h1>${parseFloat(sum) + parseFloat(commission)} ${
+                    currencySymbols[currencyCode]
+                  }</h1>`
+                : `<h1>${sum} ${currencySymbols[currencyCode]}</h1>`
+            }
+          </div>
+          </div>
+        </body>
+      </html>
+    `;
+
+      const pdfFile = await Print.printToFileAsync({
+        html: htmlContent,
+      });
+
+      await Sharing.shareAsync(pdfFile.uri, {
+        mimeType: "application/pdf",
+        dialogTitle: "Отправить PDF",
+        UTI: "com.adobe.pdf",
+      });
+    } catch (error) {
+      console.error("Ошибка при создании и отправке PDF:", error);
+    }
   };
   const formatDate = (dateString) => {
     const date = new Date(dateString);
@@ -87,8 +207,19 @@ const SuccessTransfer = () => {
 
   const SafeAreaWrapper =
     Platform.OS === "android" ? SafeAreaViewContext : SafeAreaView;
-  console.log(sum);
 
+  const getTranslatedSelectedType = (selectedType) => {
+    switch (selectedType) {
+      case "По номеру телефона":
+        return i18n.t("byPhoneNumber");
+      case "По номеру счета":
+        return i18n.t("byAccountNumber");
+      case "По адресу кошелька":
+        return i18n.t("byWalletAddress");
+      default:
+        return selectedType;
+    }
+  };
   return (
     <LinearGradient
       style={[
@@ -121,7 +252,7 @@ const SuccessTransfer = () => {
                   fontWeight: 500,
                 }}
               >
-                Перевод успешно проведен
+                {i18n.t("transferSuccess")}
               </Text>
               <Text
                 style={{
@@ -135,9 +266,11 @@ const SuccessTransfer = () => {
               >
                 {sum} {currencySymbols[currencyCode]}
               </Text>
-              <Text style={{ textAlign: "center", color: "#fff" }}>
-                Комиссия {commission}
-              </Text>
+              {selectedType !== "Между счетами" && (
+                <Text style={{ textAlign: "center", color: "#fff" }}>
+                  {i18n.t("commission")} {commission}
+                </Text>
+              )}
             </View>
           </LinearGradient>
         )}
@@ -170,7 +303,7 @@ const SuccessTransfer = () => {
                   fontWeight: 500,
                 }}
               >
-                В обработке
+                {i18n.t("inProcessing")}
               </Text>
               <Text
                 style={{
@@ -184,9 +317,11 @@ const SuccessTransfer = () => {
               >
                 {sum} {currencySymbols[currencyCode]}
               </Text>
-              <Text style={{ textAlign: "center", color: "#fff" }}>
-                Комиссия {commission}
-              </Text>
+              {selectedType !== "Между счетами" && (
+                <Text style={{ textAlign: "center", color: "#fff" }}>
+                  {i18n.t("commission")} {commission}
+                </Text>
+              )}
             </View>
           </LinearGradient>
         )}
@@ -214,7 +349,7 @@ const SuccessTransfer = () => {
                   fontWeight: 500,
                 }}
               >
-                Не выполнено!
+                {i18n.t("notDone")}
               </Text>
               <Text
                 style={{
@@ -239,114 +374,41 @@ const SuccessTransfer = () => {
           flex: 1,
         }}
       >
-        {transactions[0].Status === "Completed" && (
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-around",
-              columnGap: 20,
-              marginBottom: 40,
-            }}
-          >
-            <View
+        {transactions[0]?.Status === "Completed" && (
+          <View>
+            <TouchableOpacity
+              onPress={() => setModalVisible(!modalVisible)}
               style={{
-                justifyContent: "center",
-                alignItems: "center",
-
-                // width: "30%",
+                marginBottom: 30,
+                marginTop: 10,
+                borderRadius: 10,
+                padding: 15,
+                backgroundColor: "#007321",
+                shadowColor: "#007321",
+                shadowOffset: {
+                  width: 0,
+                  height: 10,
+                },
+                shadowOpacity: 0.3,
+                shadowRadius: 10,
               }}
             >
-              <TouchableOpacity
-                style={styles.cardBottomView}
-                // style={[
-                //   styles.cardBottomView,
-                //   // isDarkModeEnabled && { backgroundColor: "#383838" },
-                // ]}
-              >
-                <Ionicons
-                  name="star-outline"
-                  color="#fff"
-                  style={{ fontSize: 35 }}
-                />
-              </TouchableOpacity>
               <Text
-                style={styles.cardBottomText}
-                // style={[
-                //   styles.cardBottomText,
-                //   // isDarkModeEnabled && { color: "#fff" },
-                // ]}
+                style={{
+                  textAlign: "center",
+                  color: "#fff",
+                  fontSize: 16,
+                }}
               >
-                Избранное
+                {i18n.t("showTheReceipt")}
               </Text>
-            </View>
-            <View
-              style={{
-                justifyContent: "center",
-                alignItems: "center",
-
-                // width: "30%",
-              }}
-            >
-              <TouchableOpacity
-                onPress={() => setModalVisible(true)}
-                style={styles.cardBottomView}
-                // style={[
-                //   styles.cardBottomView,
-                //   // isDarkModeEnabled && { backgroundColor: "#383838" },
-                // ]}
-              >
-                <Ionicons
-                  name="document-text-outline"
-                  style={{ color: "#fff", fontSize: 35 }}
-                />
-              </TouchableOpacity>
-              <Text
-                style={styles.cardBottomText}
-                // style={[
-                //   styles.cardBottomText,
-                //   // isDarkModeEnabled && { color: "#fff" },
-                // ]}
-              >
-                Чек
-              </Text>
-            </View>
-            <View
-              style={{
-                justifyContent: "center",
-                alignItems: "center",
-
-                // width: "30%",
-              }}
-            >
-              <TouchableOpacity
-                onPress={() => navigation.navigate("Перевести")}
-                style={styles.cardBottomView}
-                // style={[
-                //   styles.cardBottomView,
-                //   // isDarkModeEnabled && { backgroundColor: "#383838" },
-                // ]}
-              >
-                <MaterialCommunityIcons
-                  name="restore"
-                  style={{ fontSize: 35, color: "#fff" }}
-                />
-              </TouchableOpacity>
-              <Text
-                style={styles.cardBottomText}
-                // style={[
-                //   styles.cardBottomText,
-                //   // isDarkModeEnabled && { color: "#fff" },
-                // ]}
-              >
-                Повторить
-              </Text>
-            </View>
+            </TouchableOpacity>
           </View>
         )}
         <View style={{ flex: 1, justifyContent: "space-between" }}>
           <View>
             <Text style={{ color: "#fff", fontSize: 20, marginBottom: 20 }}>
-              Подробности:
+              {i18n.t("details")}:
             </Text>
             <View
               style={{
@@ -373,7 +435,7 @@ const SuccessTransfer = () => {
                 />
                 <View>
                   <Text style={{ color: "#fff", marginBottom: 10 }}>
-                    От кого:
+                    {i18n.t("from")}:
                   </Text>
 
                   <Text style={{ color: "#fff" }}>{sender_requisites}</Text>
@@ -407,7 +469,9 @@ const SuccessTransfer = () => {
                 />
 
                 <View>
-                  <Text style={{ color: "#fff", marginBottom: 10 }}>Кому:</Text>
+                  <Text style={{ color: "#fff", marginBottom: 10 }}>
+                    {i18n.t("to")}:
+                  </Text>
                   {/* <Text style={{ color: "#fff", marginBottom: 10 }}>
                     {selectedType}
                   </Text> */}
@@ -419,7 +483,7 @@ const SuccessTransfer = () => {
                   )}
                   {selectedType && (
                     <Text style={{ color: "#fff", marginBottom: 5 }}>
-                      {selectedType}
+                      {getTranslatedSelectedType(selectedType)}
                     </Text>
                   )}
                   <Text
@@ -438,7 +502,6 @@ const SuccessTransfer = () => {
           <TouchableOpacity
             onPress={() => navigation.navigate("Главная страница")}
             style={{
-              marginTop: 25,
               borderRadius: 10,
               padding: 20,
               backgroundColor: "#5d00e6",
@@ -459,14 +522,14 @@ const SuccessTransfer = () => {
                 fontSize: 16,
               }}
             >
-              На главную
+              {i18n.t("toMainMenu")}
             </Text>
           </TouchableOpacity>
         </View>
       </View>
 
       <View>
-        {transactions[0].Status === "Completed" && (
+        {transactions[0]?.Status === "Completed" && (
           <Modal
             animationType="fade"
             transparent={true}
@@ -496,7 +559,7 @@ const SuccessTransfer = () => {
                 </View>
                 <View>
                   <View>
-                    {transactions[0].Status === "Completed" && (
+                    {transactions[0]?.Status === "Completed" && (
                       <View>
                         <View
                           style={{
@@ -525,17 +588,30 @@ const SuccessTransfer = () => {
                               marginBottom: 20,
                             }}
                           >
-                            Перевод успешно проведен
+                            {i18n.t("transferSuccess")}
                           </Text>
-                          <Text
-                            style={{
-                              color: "#fff",
-                              fontSize: 20,
-                              fontWeight: 500,
-                            }}
-                          >
-                            - {sum} {currencySymbols[currencyCode]}
-                          </Text>
+                          {selectedType !== "Между счетами" ? (
+                            <Text
+                              style={{
+                                color: "#fff",
+                                fontSize: 20,
+                                fontWeight: 500,
+                              }}
+                            >
+                              - {parseFloat(sum) + parseFloat(commission)}{" "}
+                              {currencySymbols[currencyCode]}
+                            </Text>
+                          ) : (
+                            <Text
+                              style={{
+                                color: "#fff",
+                                fontSize: 20,
+                                fontWeight: 500,
+                              }}
+                            >
+                              - {sum} {currencySymbols[currencyCode]}
+                            </Text>
+                          )}
                         </View>
                         <View
                           style={{
@@ -552,7 +628,7 @@ const SuccessTransfer = () => {
                               }}
                             >
                               <Text style={{ color: "#fff" }}>
-                                Имя получателя
+                                {i18n.t("receiverName")}
                               </Text>
                               <Text style={{ color: "#fff" }}>{nameUser}</Text>
                             </View>
@@ -566,7 +642,7 @@ const SuccessTransfer = () => {
                             }}
                           >
                             <Text style={{ color: "#fff" }}>
-                              Реквизиты получателя
+                              {i18n.t("recipientDetails")}
                             </Text>
 
                             <Text style={{ color: "#fff", textAlign: "right" }}>
@@ -582,14 +658,13 @@ const SuccessTransfer = () => {
                             }}
                           >
                             <Text style={{ color: "#fff" }}>
-                              Отправлено со счета
+                              {i18n.t("sentFromAccount")}
                             </Text>
 
                             <Text style={{ color: "#fff" }}>
                               {sender_requisites}
                             </Text>
                           </View>
-
                           <View
                             style={{
                               flexDirection: "row",
@@ -597,11 +672,30 @@ const SuccessTransfer = () => {
                               columnGap: 20,
                             }}
                           >
-                            <Text style={{ color: "#fff" }}>Комиссия</Text>
                             <Text style={{ color: "#fff" }}>
-                              {commission} {currencySymbols[currencyCode]}
+                              {i18n.t("amount")}
+                            </Text>
+
+                            <Text style={{ color: "#fff" }}>
+                              {sum} {currencySymbols[currencyCode]}
                             </Text>
                           </View>
+                          {selectedType !== "Между счетами" && (
+                            <View
+                              style={{
+                                flexDirection: "row",
+                                justifyContent: "space-between",
+                                columnGap: 20,
+                              }}
+                            >
+                              <Text style={{ color: "#fff" }}>
+                                {i18n.t("commission")}
+                              </Text>
+                              <Text style={{ color: "#fff" }}>
+                                {commission} {currencySymbols[currencyCode]}
+                              </Text>
+                            </View>
+                          )}
 
                           <View
                             style={{
@@ -610,7 +704,9 @@ const SuccessTransfer = () => {
                               columnGap: 20,
                             }}
                           >
-                            <Text style={{ color: "#fff" }}>Дата операции</Text>
+                            <Text style={{ color: "#fff" }}>
+                              {i18n.t("transactionDate")}
+                            </Text>
                             <Text style={{ color: "#fff" }}>
                               {formatDate(transactions[0].CreatedAt)}
                             </Text>
@@ -623,7 +719,7 @@ const SuccessTransfer = () => {
                             }}
                           >
                             <Text style={{ color: "#fff" }}>
-                              Номер квитанции
+                              {i18n.t("receiptNumber")}
                             </Text>
                             <Text style={{ color: "#fff" }}>
                               {transactions[0].ChequeNo}
@@ -675,7 +771,7 @@ const SuccessTransfer = () => {
                         //   // isDarkModeEnabled && { color: "#fff" },
                         // ]}
                       >
-                        Избранное
+                        {i18n.t("favorites")}
                       </Text>
                     </View>
                     <View
@@ -687,9 +783,7 @@ const SuccessTransfer = () => {
                       }}
                     >
                       <TouchableOpacity
-                        onPress={() => {
-                          setModalVisible(false);
-                        }}
+                        onPress={createAndSharePDF}
                         style={styles.cardBottomView}
                         // style={[
                         //   styles.cardBottomView,
@@ -708,7 +802,7 @@ const SuccessTransfer = () => {
                         //   // isDarkModeEnabled && { color: "#fff" },
                         // ]}
                       >
-                        Поделиться
+                        {i18n.t("share")}
                       </Text>
                     </View>
                     <View
@@ -742,7 +836,7 @@ const SuccessTransfer = () => {
                         //   // isDarkModeEnabled && { color: "#fff" },
                         // ]}
                       >
-                        Повторить
+                        {i18n.t("repeat")}
                       </Text>
                     </View>
                   </View>

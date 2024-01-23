@@ -9,7 +9,7 @@ import React, { useState } from "react";
 import { SafeAreaView as SafeAreaViewContext } from "react-native-safe-area-context";
 import { useRoute, useNavigation } from "@react-navigation/native";
 import { useSelector } from "react-redux";
-import Toast from "react-native-toast-message";
+import i18n from "../../../components/i18n/i18n";
 import { LinearGradient } from "expo-linear-gradient";
 import { API_URL } from "../../../constants";
 import * as Notifications from "expo-notifications";
@@ -30,6 +30,10 @@ const ConfirmationUser = () => {
     balance,
     addressType,
     id,
+    accountNumberFrom,
+    accountNumberWhere,
+    resultSum,
+    whereCurrencyCode,
   } = route.params;
   const [loading, setLoading] = useState(false);
 
@@ -52,7 +56,6 @@ const ConfirmationUser = () => {
       second: "2-digit",
       hour12: false,
     });
-console.log(notificationData)
     const notification = {
       title: "Отправка средств",
       body: `
@@ -113,7 +116,7 @@ console.log(notificationData)
           sendNotification({
             data,
           });
-          navigate("SuccessTransfer", {
+          navigate("Успешный перевод", {
             sum: sum,
             currencyCode: currencyCode,
             requisites: phone_number,
@@ -127,15 +130,6 @@ console.log(notificationData)
           setError(error.message);
 
           setLoading(false);
-          Toast.show({
-            type: "error",
-            position: "top",
-            text1: "Ошибка",
-            text2: error.message,
-            visibilityTime: 3000,
-            autoHide: true,
-            topOffset: 30,
-          });
         });
     } else if (selectedType === "По номеру счета") {
       fetch(
@@ -163,7 +157,7 @@ console.log(notificationData)
             data,
           });
           setLoading(false);
-          navigate("SuccessTransfer", {
+          navigate("Успешный перевод", {
             sum: sum,
             sender_requisites: sender_requisites,
             currencyCode: currencyCode,
@@ -177,15 +171,6 @@ console.log(notificationData)
         .catch((error) => {
           setError(error.message);
           setLoading(false);
-          Toast.show({
-            type: "error",
-            position: "top",
-            text1: "Ошибка",
-            text2: error.message,
-            visibilityTime: 3000,
-            autoHide: true,
-            topOffset: 30,
-          });
         });
     } else if (selectedType === "По адресу кошелька") {
       const transferApiUrl =
@@ -215,7 +200,7 @@ console.log(notificationData)
             data,
           });
           setLoading(false);
-          navigate("SuccessTransfer", {
+          navigate("Успешный перевод", {
             sum: sum,
             sender_requisites: sender_requisites,
             currencyCode: currencyCode,
@@ -228,15 +213,47 @@ console.log(notificationData)
         .catch((error) => {
           setError(error.message);
           setLoading(false);
-          Toast.show({
-            type: "error",
-            position: "top",
-            text1: "Ошибка",
-            text2: error.message,
-            visibilityTime: 3000,
-            autoHide: true,
-            topOffset: 30,
+        });
+    } else if (selectedType === "Между счетами") {
+      fetch(`${API_URL}/wallets/currency-exchange/`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ accountNumberFrom, accountNumberWhere, sum }),
+      })
+        .then((response) => {
+          setLoading(true);
+          if (!response.ok) {
+            return response.json().then((data) => {
+              const errorMessage = data?.error.Code || "Произошла ошибка";
+              throw new Error(errorMessage);
+            });
+          }
+          return response.json();
+        })
+
+        .then((data) => {
+          console.log(data);
+          setLoading(false);
+          sendNotification({
+            data,
           });
+          navigate("Успешный перевод", {
+            sum: sum,
+            currencyCode: currencyCode,
+            requisites: accountNumberWhere,
+            sender_requisites: accountNumberFrom,
+            commission: commission,
+            selectedType: selectedType,
+            id: id,
+          });
+        })
+        .catch((error) => {
+          setError(error.message);
+
+          setLoading(false);
         });
     }
   };
@@ -262,7 +279,7 @@ console.log(notificationData)
         <View
           style={{
             paddingHorizontal: 10,
-            paddingVertical: 10,
+            paddingVertical: 20,
           }}
         >
           <Text
@@ -273,7 +290,7 @@ console.log(notificationData)
               marginBottom: 20,
             }}
           >
-            Проверьте данные
+            {i18n.t("checkDetails")}
           </Text>
           <View
             style={{
@@ -286,34 +303,65 @@ console.log(notificationData)
           >
             {phone_number && (
               <View>
-                <Text style={{ color: "#fff", marginBottom: 5 }}>
-                  Номер телефона получателя:
-                </Text>
-                <Text style={{ color: "#fff", fontWeight: 600 }}>
-                  {phone_number}
-                </Text>
+                <View style={{ marginBottom: 20 }}>
+                  <Text style={{ color: "#fff", marginBottom: 5 }}>
+                    {i18n.t("transferType")}:
+                  </Text>
+                  <Text style={{ color: "#fff", fontWeight: 600 }}>
+                    {selectedType}
+                  </Text>
+                </View>
+                <View>
+                  <Text style={{ color: "#fff", marginBottom: 5 }}>
+                    {i18n.t("recipientPhoneNumber")}:
+                  </Text>
+                  <Text style={{ color: "#fff", fontWeight: 600 }}>
+                    {phone_number}
+                  </Text>
+                </View>
               </View>
             )}
             {receiver_requisites && (
               <View>
-                <Text style={{ color: "#fff", marginBottom: 10 }}>
-                  Реквизиты получателя:
-                </Text>
-                <Text
-                  style={{ color: "#fff", marginBottom: 5, fontWeight: 600 }}
-                >
-                  {nameUser}
-                </Text>
-                <Text style={{ color: "#fff", fontWeight: 600 }}>
-                  {receiver_requisites}
-                </Text>
+                <View style={{ marginBottom: 20 }}>
+                  <Text style={{ color: "#fff", marginBottom: 5 }}>
+                    {i18n.t("transferType")}:
+                  </Text>
+                  <Text style={{ color: "#fff", fontWeight: 600 }}>
+                    {selectedType}
+                  </Text>
+                </View>
+                <View style={{ marginBottom: 20 }}>
+                  <Text style={{ color: "#fff", marginBottom: 5 }}>
+                    {i18n.t("receiverName")}:
+                  </Text>
+                  <Text style={{ color: "#fff", fontWeight: 600 }}>
+                    {nameUser}
+                  </Text>
+                </View>
+                <View>
+                  <Text style={{ color: "#fff", marginBottom: 5 }}>
+                    {i18n.t("recipientDetails")}:
+                  </Text>
+                  <Text style={{ color: "#fff", fontWeight: 600 }}>
+                    {receiver_requisites}
+                  </Text>
+                </View>
               </View>
             )}
             {address && (
               <View>
                 <View style={{ marginBottom: 20 }}>
                   <Text style={{ color: "#fff", marginBottom: 5 }}>
-                    Адрес кошелька получателя:
+                    {i18n.t("transferType")}:
+                  </Text>
+                  <Text style={{ color: "#fff", fontWeight: 600 }}>
+                    {selectedType}
+                  </Text>
+                </View>
+                <View style={{ marginBottom: 20 }}>
+                  <Text style={{ color: "#fff", marginBottom: 5 }}>
+                    {i18n.t("recipientsWalletAddress")}:
                   </Text>
                   <Text style={{ color: "#fff", fontWeight: 600 }}>
                     {address}
@@ -321,10 +369,30 @@ console.log(notificationData)
                 </View>
                 <View>
                   <Text style={{ color: "#fff", marginBottom: 5 }}>
-                    Тип перевода:
+                    {i18n.t("transferTypeWallet")}:
                   </Text>
                   <Text style={{ color: "#fff", fontWeight: 600 }}>
                     {addressType}
+                  </Text>
+                </View>
+              </View>
+            )}
+            {accountNumberWhere && (
+              <View>
+                <View style={{ marginBottom: 20 }}>
+                  <Text style={{ color: "#fff", marginBottom: 5 }}>
+                    {i18n.t("transferType")}:
+                  </Text>
+                  <Text style={{ color: "#fff", fontWeight: 600 }}>
+                    {selectedType}
+                  </Text>
+                </View>
+                <View>
+                  <Text style={{ color: "#fff", marginBottom: 5 }}>
+                    {i18n.t("сurrencyDetails")}:
+                  </Text>
+                  <Text style={{ color: "#fff", fontWeight: 600 }}>
+                    {accountNumberWhere}
                   </Text>
                 </View>
               </View>
@@ -348,8 +416,12 @@ console.log(notificationData)
                 columnGap: 20,
               }}
             >
-              <Text style={{ color: "#fff" }}>Счёт списания</Text>
-              <Text style={{ color: "#fff" }}>{sender_requisites}</Text>
+              <Text style={{ color: "#fff" }}>{i18n.t("accountDebited")}</Text>
+              {selectedType === "Между счетами" ? (
+                <Text style={{ color: "#fff" }}>{accountNumberFrom}</Text>
+              ) : (
+                <Text style={{ color: "#fff" }}>{sender_requisites}</Text>
+              )}
             </View>
             <View
               style={{
@@ -360,7 +432,7 @@ console.log(notificationData)
                 columnGap: 20,
               }}
             >
-              <Text style={{ color: "#fff" }}>Баланс</Text>
+              <Text style={{ color: "#fff" }}>{i18n.t("balance")}</Text>
               <Text style={{ color: "#fff" }}>{balance}</Text>
             </View>
             <View
@@ -372,7 +444,7 @@ console.log(notificationData)
                 columnGap: 20,
               }}
             >
-              <Text style={{ color: "#fff" }}>Сумма перевода</Text>
+              <Text style={{ color: "#fff" }}>{i18n.t("transferAmount")}</Text>
               <View
                 style={{
                   flexDirection: "row",
@@ -394,7 +466,7 @@ console.log(notificationData)
                 columnGap: 20,
               }}
             >
-              <Text style={{ color: "#fff" }}>Комиссия</Text>
+              <Text style={{ color: "#fff" }}>{i18n.t("commission")}</Text>
               <View
                 style={{
                   flexDirection: "row",
@@ -422,7 +494,15 @@ console.log(notificationData)
               borderRadius: 10,
             }}
           >
-            <Text style={{ color: "#fff", fontSize: 16 }}>Сумма списания:</Text>
+            {selectedType === "Между счетами" ? (
+              <Text style={{ color: "#fff", fontSize: 16 }}>
+                {i18n.t("receiptAmount")}:
+              </Text>
+            ) : (
+              <Text style={{ color: "#fff", fontSize: 16 }}>
+                {i18n.t("amountDebited")}:
+              </Text>
+            )}
             <View
               style={{
                 flexDirection: "row",
@@ -430,7 +510,11 @@ console.log(notificationData)
                 columnGap: 5,
               }}
             >
-              {commission ? (
+              {selectedType === "Между счетами" ? (
+                <Text style={{ color: "#fff", fontSize: 20, fontWeight: 600 }}>
+                  {resultSum}
+                </Text>
+              ) : commission ? (
                 <Text style={{ color: "#fff", fontSize: 20, fontWeight: 600 }}>
                   {parseFloat(sum) + parseFloat(commission)}
                 </Text>
@@ -439,16 +523,15 @@ console.log(notificationData)
                   {sum}
                 </Text>
               )}
-
               <Text style={{ color: "#fff", fontSize: 20, fontWeight: 600 }}>
-                {currencySymbols[currencyCode]}
+                {currencySymbols[whereCurrencyCode]}
               </Text>
             </View>
           </View>
 
           {parseInt(error) === 400 && (
             <Text style={{ color: "red", fontSize: 12, marginTop: 7 }}>
-              Недостаточно средств
+              {i18n.t("insufficientFunds")}
             </Text>
           )}
           {loading ? (
@@ -482,7 +565,7 @@ console.log(notificationData)
                   fontSize: 16,
                 }}
               >
-                Подтвердить
+                {i18n.t("confirm")}
               </Text>
             </TouchableOpacity>
           )}

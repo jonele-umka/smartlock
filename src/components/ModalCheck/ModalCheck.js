@@ -12,13 +12,9 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import Ionicons from "react-native-vector-icons/Ionicons";
 import Entypo from "react-native-vector-icons/Entypo";
 import { useNavigation } from "@react-navigation/native";
-// import { BlurView } from "expo-blur";
-
 import * as Sharing from "expo-sharing";
-import * as FileSystem from "expo-file-system";
-import { Asset } from "expo-asset";
-import RNHTMLtoPDF from "react-native-html-to-pdf";
 import * as Print from "expo-print";
+import i18n from "../i18n/i18n";
 const ModalCheck = ({
   selectedTransaction,
   outgoing,
@@ -36,12 +32,12 @@ const ModalCheck = ({
     ETH: "Ξ",
     BTC: "₿",
   };
-
+console.log(selectedTransaction)
   // const addToFavoritesHandler = () => {
   //   navigation.navigate("Создать шаблон", { favorites: route.params });
   //   // dispatch(addToFavorites(route.params));
   // };
-  console.log(selectedTransaction);
+
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     const year = date.getFullYear();
@@ -184,81 +180,159 @@ const ModalCheck = ({
   };
 
   return (
-    <View>
-      <Modal
-        animationType="fade"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => {
-          setModalVisible(!modalVisible);
-        }}
-      >
-        <View style={styles.centeredView}>
-          <View style={styles.modalView}>
-            <View style={styles.modalHeader}>
-              <Image
-                style={{
-                  width: 120,
-                  height: 30,
-                }}
-                source={require("../../assets/CRYPTONLogo.png")}
-              />
+    <Modal
+      animationType="fade"
+      transparent={true}
+      visible={modalVisible}
+      onRequestClose={() => {
+        setModalVisible(!modalVisible);
+      }}
+    >
+      <View style={styles.centeredView}>
+        <View style={styles.modalView}>
+          <View style={styles.modalHeader}>
+            <Image
+              style={{
+                width: 130,
+                height: 30,
+              }}
+              source={require("../../assets/CRYPTONLogo.png")}
+            />
 
-              <MaterialCommunityIcons
-                name="close"
-                style={{ color: "#fff", fontSize: 25 }}
-                onPress={() => {
-                  setModalVisible(false);
-                }}
-              />
-            </View>
-            <View>
-              {selectedTransaction && (
+            <MaterialCommunityIcons
+              name="close"
+              style={{ color: "#fff", fontSize: 25 }}
+              onPress={() => {
+                setModalVisible(false);
+              }}
+            />
+          </View>
+          <View>
+            {selectedTransaction && (
+              <View>
                 <View>
-                  <View>
-                    {selectedTransaction.Status === "Completed" && (
-                      <View>
-                        <View
+                  {selectedTransaction.Status === "Completed" && (
+                    <View>
+                      <View
+                        style={{
+                          flexDirection: "column",
+                          justifyContent: "center",
+                          alignItems: "center",
+                          borderBottomWidth: 0.5,
+                          borderBottomColor: "grey",
+                          paddingBottom: 20,
+                          marginBottom: 20,
+                        }}
+                      >
+                        <MaterialCommunityIcons
+                          name="check-circle"
                           style={{
-                            flexDirection: "column",
-                            justifyContent: "center",
-                            alignItems: "center",
-                            borderBottomWidth: 0.5,
-                            borderBottomColor: "grey",
-                            paddingBottom: 20,
+                            color: "#2CE02B",
+                            fontSize: 70,
+                            marginBottom: 10,
+                          }}
+                        />
+                        <Text
+                          style={{
+                            color: "#2CE02B",
+                            fontSize: 20,
+                            fontWeight: 600,
                             marginBottom: 20,
                           }}
                         >
-                          <MaterialCommunityIcons
-                            name="check-circle"
+                          {i18n.t("transferSuccess")}
+                        </Text>
+                        <Text
+                          style={{
+                            color: "#fff",
+                            fontSize: 20,
+                            fontWeight: 500,
+                          }}
+                        >
+                          {outgoing ? "- " : "+ "}{" "}
+                          {parseFloat(selectedTransaction.SumSender) +
+                            parseFloat(selectedTransaction.CommissionSum)}{" "}
+                          {
+                            currencySymbols[
+                              selectedTransaction.CurrencySender.CurrencyCode
+                            ]
+                          }
+                        </Text>
+                      </View>
+                      <View
+                        style={{
+                          flexDirection: "column",
+                          rowGap: 20,
+                        }}
+                      >
+                        {selectedTransaction.nameUser && (
+                          <View
                             style={{
-                              color: "#2CE02B",
-                              fontSize: 70,
-                              marginBottom: 10,
-                            }}
-                          />
-                          <Text
-                            style={{
-                              color: "#2CE02B",
-                              fontSize: 20,
-                              fontWeight: 600,
-                              marginBottom: 20,
+                              flexDirection: "row",
+                              justifyContent: "space-between",
+                              columnGap: 20,
                             }}
                           >
-                            Перевод успешно проведен
+                            <Text style={{ color: "#fff" }}>
+                              {i18n.t("receiverName")}
+                            </Text>
+                            <Text style={{ color: "#fff" }}>
+                              {selectedTransaction.nameUser}
+                            </Text>
+                          </View>
+                        )}
+                        {outgoing && (
+                          <View
+                            style={{
+                              flexDirection: "row",
+                              justifyContent: "space-between",
+                              columnGap: 20,
+                            }}
+                          >
+                            <Text style={{ color: "#fff" }}>
+                              {i18n.t("recipientDetails")}
+                            </Text>
+                            <Text
+                              style={[
+                                { color: "#fff", textAlign: "right" },
+                                selectedTransaction.ReceiverRequisites.length >
+                                  16 && { maxWidth: 130 },
+                              ]}
+                            >
+                              {selectedTransaction.ReceiverRequisites}
+                            </Text>
+                          </View>
+                        )}
+                        {outgoing && (
+                          <View
+                            style={{
+                              flexDirection: "row",
+                              justifyContent: "space-between",
+                              columnGap: 20,
+                            }}
+                          >
+                            <Text style={{ color: "#fff" }}>
+                              {i18n.t("sentFromAccount")}
+                            </Text>
+
+                            <Text style={{ color: "#fff" }}>
+                              {selectedTransaction.SenderRequisites}
+                            </Text>
+                          </View>
+                        )}
+                        <View
+                          style={{
+                            flexDirection: "row",
+                            justifyContent: "space-between",
+                            columnGap: 20,
+                          }}
+                        >
+                          <Text style={{ color: "#fff" }}>
+                            {i18n.t("amount")}
                           </Text>
-                          <Text
-                            style={{
-                              color: "#fff",
-                              fontSize: 20,
-                              fontWeight: 500,
-                            }}
-                          >
-                            {outgoing ? "- " : "+ "}{" "}
-                            {parseFloat(selectedTransaction.SumSender) +
-                              parseFloat(
-                                selectedTransaction.CommissionSum
-                              )}{" "}
+
+                          <Text style={{ color: "#fff" }}>
+                            {selectedTransaction.SumSender}{" "}
                             {
                               currencySymbols[
                                 selectedTransaction.CurrencySender.CurrencyCode
@@ -266,67 +340,7 @@ const ModalCheck = ({
                             }
                           </Text>
                         </View>
-                        <View
-                          style={{
-                            flexDirection: "column",
-                            rowGap: 20,
-                          }}
-                        >
-                          {selectedTransaction.nameUser && (
-                            <View
-                              style={{
-                                flexDirection: "row",
-                                justifyContent: "space-between",
-                                columnGap: 20,
-                              }}
-                            >
-                              <Text style={{ color: "#fff" }}>
-                                Имя получателя
-                              </Text>
-                              <Text style={{ color: "#fff" }}>
-                                {selectedTransaction.nameUser}
-                              </Text>
-                            </View>
-                          )}
-                          {outgoing && (
-                            <View
-                              style={{
-                                flexDirection: "row",
-                                justifyContent: "space-between",
-                                columnGap: 20,
-                              }}
-                            >
-                              <Text style={{ color: "#fff" }}>
-                                Реквизиты получателя
-                              </Text>
-                              <Text
-                                style={[
-                                  { color: "#fff", textAlign: "right" },
-                                  selectedTransaction.ReceiverRequisites
-                                    .length > 16 && { maxWidth: 130 },
-                                ]}
-                              >
-                                {selectedTransaction.ReceiverRequisites}
-                              </Text>
-                            </View>
-                          )}
-                          {outgoing && (
-                            <View
-                              style={{
-                                flexDirection: "row",
-                                justifyContent: "space-between",
-                                columnGap: 20,
-                              }}
-                            >
-                              <Text style={{ color: "#fff" }}>
-                                Отправлено со счета
-                              </Text>
-
-                              <Text style={{ color: "#fff" }}>
-                                {selectedTransaction.SenderRequisites}
-                              </Text>
-                            </View>
-                          )}
+                        {outgoing && (
                           <View
                             style={{
                               flexDirection: "row",
@@ -334,10 +348,11 @@ const ModalCheck = ({
                               columnGap: 20,
                             }}
                           >
-                            <Text style={{ color: "#fff" }}>Сумма</Text>
-
                             <Text style={{ color: "#fff" }}>
-                              {selectedTransaction.SumSender}{" "}
+                              {i18n.t("commission")}
+                            </Text>
+                            <Text style={{ color: "#fff" }}>
+                              {selectedTransaction.CommissionSum}{" "}
                               {
                                 currencySymbols[
                                   selectedTransaction.CurrencySender
@@ -346,149 +361,93 @@ const ModalCheck = ({
                               }
                             </Text>
                           </View>
-                          {outgoing && (
-                            <View
-                              style={{
-                                flexDirection: "row",
-                                justifyContent: "space-between",
-                                columnGap: 20,
-                              }}
-                            >
-                              <Text style={{ color: "#fff" }}>Комиссия</Text>
-                              <Text style={{ color: "#fff" }}>
-                                {selectedTransaction.CommissionSum}{" "}
-                                {
-                                  currencySymbols[
-                                    selectedTransaction.CurrencySender
-                                      .CurrencyCode
-                                  ]
-                                }
-                              </Text>
-                            </View>
-                          )}
-                          <View
-                            style={{
-                              flexDirection: "row",
-                              justifyContent: "space-between",
-                              columnGap: 20,
-                            }}
-                          >
-                            <Text style={{ color: "#fff" }}>Дата операции</Text>
-                            <Text style={{ color: "#fff" }}>
-                              {formatDate(selectedTransaction.CreatedAt)}
-                            </Text>
-                          </View>
-                          <View
-                            style={{
-                              flexDirection: "row",
-                              justifyContent: "space-between",
-                              columnGap: 20,
-                            }}
-                          >
-                            <Text style={{ color: "#fff" }}>
-                              Номер квитанции
-                            </Text>
-                            <Text style={{ color: "#fff" }}>
-                              {selectedTransaction.ChequeNo}
-                            </Text>
-                          </View>
-                        </View>
-                      </View>
-                    )}
-                    {selectedTransaction.Status === "Canceled" && (
-                      <View>
+                        )}
                         <View
                           style={{
-                            flexDirection: "column",
-                            justifyContent: "center",
-                            alignItems: "center",
-                            borderBottomWidth: 0.5,
-                            borderBottomColor: "grey",
-                            paddingBottom: 20,
-                            marginBottom: 20,
+                            flexDirection: "row",
+                            justifyContent: "space-between",
+                            columnGap: 20,
                           }}
                         >
-                          <Entypo
-                            name="circle-with-cross"
-                            style={{
-                              color: "#9D0038",
-                              fontSize: 70,
-                              marginBottom: 10,
-                            }}
-                          />
+                          <Text style={{ color: "#fff" }}>
+                            {i18n.t("transactionDate")}
+                          </Text>
+                          <Text style={{ color: "#fff" }}>
+                            {formatDate(selectedTransaction.CreatedAt)}
+                          </Text>
+                        </View>
+                        <View
+                          style={{
+                            flexDirection: "row",
+                            justifyContent: "space-between",
+                            columnGap: 20,
+                          }}
+                        >
+                          <Text style={{ color: "#fff" }}>
+                            {i18n.t("receiptNumber")}
+                          </Text>
+                          <Text style={{ color: "#fff" }}>
+                            {selectedTransaction.ChequeNo}
+                          </Text>
+                        </View>
+                      </View>
+                    </View>
+                  )}
+                  {selectedTransaction.Status === "Canceled" && (
+                    <View>
+                      <View
+                        style={{
+                          flexDirection: "column",
+                          justifyContent: "center",
+                          alignItems: "center",
+                          borderBottomWidth: 0.5,
+                          borderBottomColor: "grey",
+                          paddingBottom: 20,
+                          marginBottom: 20,
+                        }}
+                      >
+                        <Entypo
+                          name="circle-with-cross"
+                          style={{
+                            color: "#9D0038",
+                            fontSize: 70,
+                            marginBottom: 10,
+                          }}
+                        />
+                        <Text
+                          style={{
+                            color: "#9D0038",
+                            fontSize: 20,
+                            fontWeight: 500,
+                          }}
+                        >
+                          {i18n.t("TransferDeclined")}
+                        </Text>
+                        {outgoing && (
                           <Text
                             style={{
                               color: "#9D0038",
                               fontSize: 20,
                               fontWeight: 500,
+                              marginTop: 20,
                             }}
                           >
-                            Трансфер отклонён
+                            - {selectedTransaction.SumSender}{" "}
+                            {
+                              currencySymbols[
+                                selectedTransaction.CurrencySender.CurrencyCode
+                              ]
+                            }
                           </Text>
-                          {outgoing && (
-                            <Text
-                              style={{
-                                color: "#9D0038",
-                                fontSize: 20,
-                                fontWeight: 500,
-                                marginTop: 20,
-                              }}
-                            >
-                              - {selectedTransaction.SumSender}{" "}
-                              {
-                                currencySymbols[
-                                  selectedTransaction.CurrencySender
-                                    .CurrencyCode
-                                ]
-                              }
-                            </Text>
-                          )}
-                        </View>
-                        <View
-                          style={{
-                            flexDirection: "column",
-                            rowGap: 20,
-                          }}
-                        >
-                          {outgoing && (
-                            <View
-                              style={{
-                                flexDirection: "row",
-                                justifyContent: "space-between",
-                                columnGap: 20,
-                              }}
-                            >
-                              <Text style={{ color: "#fff" }}>
-                                Реквизиты получателя
-                              </Text>
-                              <Text
-                                style={[
-                                  { color: "#fff", textAlign: "right" },
-                                  selectedTransaction.ReceiverRequisites
-                                    .length > 16 && { maxWidth: 130 },
-                                ]}
-                              >
-                                {selectedTransaction.ReceiverRequisites}
-                              </Text>
-                            </View>
-                          )}
-                          {outgoing && (
-                            <View
-                              style={{
-                                flexDirection: "row",
-                                justifyContent: "space-between",
-                                columnGap: 20,
-                              }}
-                            >
-                              <Text style={{ color: "#fff" }}>
-                                Отправлено со счета
-                              </Text>
-                              <Text style={{ color: "#fff" }}>
-                                {selectedTransaction.SenderRequisites}
-                              </Text>
-                            </View>
-                          )}
-
+                        )}
+                      </View>
+                      <View
+                        style={{
+                          flexDirection: "column",
+                          rowGap: 20,
+                        }}
+                      >
+                        {outgoing && (
                           <View
                             style={{
                               flexDirection: "row",
@@ -496,137 +455,176 @@ const ModalCheck = ({
                               columnGap: 20,
                             }}
                           >
-                            <Text style={{ color: "#fff" }}>Дата операции</Text>
                             <Text style={{ color: "#fff" }}>
-                              {formatDate(selectedTransaction.CreatedAt)}
+                              {i18n.t("recipientDetails")}
+                            </Text>
+                            <Text
+                              style={[
+                                { color: "#fff", textAlign: "right" },
+                                selectedTransaction.ReceiverRequisites.length >
+                                  16 && { maxWidth: 130 },
+                              ]}
+                            >
+                              {selectedTransaction.ReceiverRequisites}
                             </Text>
                           </View>
+                        )}
+                        {outgoing && (
+                          <View
+                            style={{
+                              flexDirection: "row",
+                              justifyContent: "space-between",
+                              columnGap: 20,
+                            }}
+                          >
+                            <Text style={{ color: "#fff" }}>
+                              {i18n.t("sentFromAccount")}
+                            </Text>
+                            <Text style={{ color: "#fff" }}>
+                              {selectedTransaction.SenderRequisites}
+                            </Text>
+                          </View>
+                        )}
+
+                        <View
+                          style={{
+                            flexDirection: "row",
+                            justifyContent: "space-between",
+                            columnGap: 20,
+                          }}
+                        >
+                          <Text style={{ color: "#fff" }}>
+                            {i18n.t("transactionDate")}
+                          </Text>
+                          <Text style={{ color: "#fff" }}>
+                            {formatDate(selectedTransaction.CreatedAt)}
+                          </Text>
                         </View>
                       </View>
-                    )}
-                    {/* 019757 009C4D */}
+                    </View>
+                  )}
+                  {/* 019757 009C4D */}
+                </View>
+              </View>
+            )}
+            {outgoing &&
+              selectedTransaction &&
+              selectedTransaction.Status === "Completed" && (
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "space-around",
+                    marginTop: 30,
+                    width: "100%",
+                  }}
+                >
+                  <View
+                    style={{
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    <TouchableOpacity
+                      onPress={() => {
+                        setModalVisible(false);
+                      }}
+                      // onPress={addToFavoritesHandler}
+                      style={styles.cardBottomView}
+                      // style={[
+                      //   styles.cardBottomView,
+                      //   // isDarkModeEnabled && { backgroundColor: "#383838" },
+                      // ]}
+                    >
+                      <Ionicons
+                        name="star-outline"
+                        color="#fff"
+                        style={{ fontSize: 30 }}
+                      />
+                    </TouchableOpacity>
+                    <Text
+                      onPress={() => {
+                        setModalVisible(false);
+                      }}
+                      style={styles.cardBottomText}
+                      // style={[
+                      //   styles.cardBottomText,
+                      //   // isDarkModeEnabled && { color: "#fff" },
+                      // ]}
+                    >
+                      {i18n.t("favorites")}
+                    </Text>
+                  </View>
+                  <View
+                    style={{
+                      justifyContent: "center",
+                      alignItems: "center",
+
+                      // width: "30%",
+                    }}
+                  >
+                    <TouchableOpacity
+                      onPress={createAndSharePDF}
+                      style={styles.cardBottomView}
+                      // style={[
+                      //   styles.cardBottomView,
+                      //   // isDarkModeEnabled && { backgroundColor: "#383838" },
+                      // ]}
+                    >
+                      <Ionicons
+                        name="share-outline"
+                        style={{ color: "#fff", fontSize: 30 }}
+                      />
+                    </TouchableOpacity>
+                    <Text
+                      style={styles.cardBottomText}
+                      // style={[
+                      //   styles.cardBottomText,
+                      //   // isDarkModeEnabled && { color: "#fff" },
+                      // ]}
+                    >
+                      {i18n.t("share")}
+                    </Text>
+                  </View>
+                  <View
+                    style={{
+                      justifyContent: "center",
+                      alignItems: "center",
+
+                      // width: "30%",
+                    }}
+                  >
+                    <TouchableOpacity
+                      onPress={() => {
+                        setModalVisible(false);
+                        navigation.navigate("Перевести");
+                      }}
+                      style={styles.cardBottomView}
+                      // style={[
+                      //   styles.cardBottomView,
+                      //   // isDarkModeEnabled && { backgroundColor: "#383838" },
+                      // ]}
+                    >
+                      <MaterialCommunityIcons
+                        name="restore"
+                        style={{ fontSize: 30, color: "#fff" }}
+                      />
+                    </TouchableOpacity>
+                    <Text
+                      style={styles.cardBottomText}
+                      // style={[
+                      //   styles.cardBottomText,
+                      //   // isDarkModeEnabled && { color: "#fff" },
+                      // ]}
+                    >
+                      {i18n.t("repeat")}
+                    </Text>
                   </View>
                 </View>
               )}
-              {outgoing &&
-                selectedTransaction &&
-                selectedTransaction.Status === "Completed" && (
-                  <View
-                    style={{
-                      flexDirection: "row",
-                      justifyContent: "space-around",
-                      marginTop: 30,
-                      width: "100%",
-                    }}
-                  >
-                    <View
-                      style={{
-                        justifyContent: "center",
-                        alignItems: "center",
-                      }}
-                    >
-                      <TouchableOpacity
-                        onPress={() => {
-                          setModalVisible(false);
-                        }}
-                        // onPress={addToFavoritesHandler}
-                        style={styles.cardBottomView}
-                        // style={[
-                        //   styles.cardBottomView,
-                        //   // isDarkModeEnabled && { backgroundColor: "#383838" },
-                        // ]}
-                      >
-                        <Ionicons
-                          name="star-outline"
-                          color="#fff"
-                          style={{ fontSize: 30 }}
-                        />
-                      </TouchableOpacity>
-                      <Text
-                        onPress={() => {
-                          setModalVisible(false);
-                        }}
-                        style={styles.cardBottomText}
-                        // style={[
-                        //   styles.cardBottomText,
-                        //   // isDarkModeEnabled && { color: "#fff" },
-                        // ]}
-                      >
-                        Избранное
-                      </Text>
-                    </View>
-                    <View
-                      style={{
-                        justifyContent: "center",
-                        alignItems: "center",
-
-                        // width: "30%",
-                      }}
-                    >
-                      <TouchableOpacity
-                        onPress={createAndSharePDF}
-                        style={styles.cardBottomView}
-                        // style={[
-                        //   styles.cardBottomView,
-                        //   // isDarkModeEnabled && { backgroundColor: "#383838" },
-                        // ]}
-                      >
-                        <Ionicons
-                          name="share-outline"
-                          style={{ color: "#fff", fontSize: 30 }}
-                        />
-                      </TouchableOpacity>
-                      <Text
-                        style={styles.cardBottomText}
-                        // style={[
-                        //   styles.cardBottomText,
-                        //   // isDarkModeEnabled && { color: "#fff" },
-                        // ]}
-                      >
-                        Поделиться
-                      </Text>
-                    </View>
-                    <View
-                      style={{
-                        justifyContent: "center",
-                        alignItems: "center",
-
-                        // width: "30%",
-                      }}
-                    >
-                      <TouchableOpacity
-                        onPress={() => {
-                          setModalVisible(false);
-                          navigation.navigate("Перевести");
-                        }}
-                        style={styles.cardBottomView}
-                        // style={[
-                        //   styles.cardBottomView,
-                        //   // isDarkModeEnabled && { backgroundColor: "#383838" },
-                        // ]}
-                      >
-                        <MaterialCommunityIcons
-                          name="restore"
-                          style={{ fontSize: 30, color: "#fff" }}
-                        />
-                      </TouchableOpacity>
-                      <Text
-                        style={styles.cardBottomText}
-                        // style={[
-                        //   styles.cardBottomText,
-                        //   // isDarkModeEnabled && { color: "#fff" },
-                        // ]}
-                      >
-                        Повторить
-                      </Text>
-                    </View>
-                  </View>
-                )}
-            </View>
           </View>
         </View>
-      </Modal>
-    </View>
+      </View>
+    </Modal>
   );
 };
 const styles = StyleSheet.create({

@@ -16,6 +16,7 @@ import { useSelector, useDispatch } from "react-redux";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import Entypo from "react-native-vector-icons/Entypo";
 import { API_URL } from "../../constants";
+import i18n from "../../components/i18n/i18n";
 
 const Notification = () => {
   const dispatch = useDispatch();
@@ -26,7 +27,7 @@ const Notification = () => {
   const token = useSelector((state) => state.signIn.token);
   const [balance, setBalance] = useState("");
   const scrollViewRef = useRef();
- 
+
   useEffect(() => {
     // Check if scrollViewRef is defined before calling scrollToEnd
     if (scrollViewRef.current) {
@@ -71,7 +72,6 @@ const Notification = () => {
               item.WalletSubAccount.Balance;
           });
           setBalance(newBalances);
-          console.log(newBalances);
         })
         .catch((error) => {
           console.error(error);
@@ -123,14 +123,14 @@ const Notification = () => {
         end={{ x: 0, y: 0 }}
         colors={["#241270", "#140A4F", "#000"]}
       >
-        <SafeAreaView style={{ flex: 1 }}>
-          <ScrollView
-            ref={scrollViewRef}
-            onContentSizeChange={() =>
-              scrollViewRef.current.scrollToEnd({ animated: true })
-            }
-            style={styles.chatThread}
-          >
+        <ScrollView
+          ref={scrollViewRef}
+          onContentSizeChange={() =>
+            scrollViewRef.current.scrollToEnd({ animated: true })
+          }
+          style={styles.chatThread}
+        >
+          <SafeAreaView style={{ flex: 1 }}>
             {transactions.map((transaction, index) => {
               const isOutgoing = outgoing.includes(transaction);
               const isIncoming = incoming.includes(transaction);
@@ -175,7 +175,7 @@ const Notification = () => {
                     )}
                     <View style={styles.message}>
                       <Text style={styles.messageText}>
-                        Перевод: {transaction.SumSender}
+                        {i18n.t("transfers")}: {transaction.SumSender}
                         {""}{" "}
                         {
                           currencySymbols[
@@ -185,20 +185,21 @@ const Notification = () => {
                       </Text>
 
                       <Text style={styles.messageText}>
-                        {isIncoming ? "От кого:" : "Кому:"}{" "}
+                        {isIncoming ? i18n.t("from") : i18n.t("to")} :{" "}
                         {isIncoming ? "****" : ""}
                         {isIncoming
-                          ? transaction.ReceiverRequisites.slice(-4) // Последние 4 цифры
+                          ? transaction.ReceiverRequisites.slice(-4)
                           : transaction.ReceiverRequisites}
                       </Text>
 
                       <Text style={styles.messageText}>
-                        Карта: {transaction.SenderRequisites}
+                        {i18n.t("card")}: {transaction.SenderRequisites}
                       </Text>
 
                       {transaction.Status === "Completed" && (
                         <Text style={styles.messageText}>
-                          Доступно: {balance[transaction.SenderRequisites]}
+                          {i18n.t("available")}:{" "}
+                          {balance[transaction.SenderRequisites]}
                         </Text>
                       )}
                       <Text
@@ -216,8 +217,8 @@ const Notification = () => {
                 </View>
               );
             })}
-          </ScrollView>
-        </SafeAreaView>
+          </SafeAreaView>
+        </ScrollView>
       </LinearGradient>
     );
   }

@@ -6,21 +6,25 @@ import OverviewScreen from "../screens/OverviewScreen";
 import PaymentsScreen from "../screens/PaymentsScreen";
 import FavoritesScreen from "../screens/FavoritesScreen";
 import SettingsScreen from "../screens/SettingsScreen";
-import { signIn, overview, payments, favorites, settings } from "../constants";
-
+import SignIn from "../screens/Registration/SignIn";
+import i18n from "../components/i18n/i18n";
 const Tab = createBottomTabNavigator();
 
 const NavBar = () => {
+  const overview = i18n.t("home");
+  const payments = i18n.t("payments");
+  const favorites = i18n.t("favorites");
+  const settings = i18n.t("more");
   const isDarkModeEnabled = useSelector(
     (state) => state.theme.isDarkModeEnabled
   );
   return (
     <Tab.Navigator
-      initialRouteName={signIn}
+      initialRouteName={SignIn}
       screenOptions={({ route }) => ({
         headerShown: false,
         // tabBarShowLabel: tr,
-        tabBarActiveTintColor: "#5d00e6",
+        tabBarActiveTintColor: "#fff",
         tabBarInactiveTintColor: "grey",
         tabBarStyle: [
           // isDarkModeEnabled
