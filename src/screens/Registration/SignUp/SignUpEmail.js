@@ -14,8 +14,12 @@ import { SafeAreaView as SafeAreaViewContext } from "react-native-safe-area-cont
 
 import { useNavigation } from "@react-navigation/core";
 import i18n from "../../../components/i18n/i18n";
+<<<<<<< HEAD
 import Ionicons from "react-native-vector-icons/Ionicons";
 import Feather from "react-native-vector-icons/Feather";
+=======
+import { LinearGradient } from "expo-linear-gradient";
+>>>>>>> f197eaaaae4752be8ef2f168da1b153613fee086
 
 const SignUpEmail = () => {
   const isDarkModeEnabled = useSelector(
@@ -43,12 +47,20 @@ const SignUpEmail = () => {
     Platform.OS === "android" ? SafeAreaViewContext : SafeAreaView;
 
   return (
-    <SafeAreaWrapper
+    <LinearGradient
       style={[
+<<<<<<< HEAD
         { flex: 1, backgroundColor: "#fff" },
+=======
+        { flex: 1 },
+>>>>>>> f197eaaaae4752be8ef2f168da1b153613fee086
         // isDarkModeEnabled && { backgroundColor: "#191a1d" },
       ]}
+      start={{ x: 2.4, y: 1.1 }}
+      end={{ x: 0, y: 0 }}
+      colors={["#241270", "#140A4F", "#000"]}
     >
+<<<<<<< HEAD
       <View
         style={{
           paddingHorizontal: 10,
@@ -266,18 +278,119 @@ const SignUpEmail = () => {
               shadowOffset: {
                 width: 0,
                 height: 10,
+=======
+      <SafeAreaWrapper
+        style={[
+          { flex: 1 },
+          // isDarkModeEnabled && { backgroundColor: "#191a1d" },
+        ]}
+      >
+        <View
+          style={{
+            paddingHorizontal: 10,
+            paddingVertical: 20,
+          }}
+        >
+          <Text
+            style={[
+              {
+                fontSize: 20,
+                textAlign: "center",
+                marginBottom: 30,
+                paddingTop: 10,
+                color: "#fff",
               },
-              shadowOpacity: 0.3,
-              shadowRadius: 10,
+              // isDarkModeEnabled ? { color: "#fff" } : { color: "#191a1d" },
+            ]}
+          >
+            {i18n.t("enterEmail")}
+          </Text>
+          <Controller
+            control={control}
+            rules={{
+              required: i18n.t("fillInTheField"),
+              pattern: {
+                value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                message: i18n.t("pleaseEnterAValidEmailAddress"),
+>>>>>>> f197eaaaae4752be8ef2f168da1b153613fee086
+              },
             }}
+<<<<<<< HEAD
           >
             <Text style={{ color: "#fff", textAlign: "center", fontSize: 20 }}>
               {i18n.t("next")}
+=======
+            render={({ field: { onChange, value } }) => (
+              <TextInput
+                placeholderTextColor={"#9c9c9c"}
+                value={value}
+                onChangeText={(text) => {
+                  onChange(text);
+                  setError("");
+                }}
+                placeholder={i18n.t("enterEmail")}
+                style={{
+                  color: "#fff",
+                  fontSize: 16,
+                  backgroundColor: "rgba(255,255,255,0.05)",
+                  paddingHorizontal: 10,
+                  paddingVertical: 15,
+                  borderRadius: 10,
+                  borderWidth: errors.email || error == 400 ? 1 : 0,
+                  borderColor:
+                    errors.email || error == 400
+                      ? "red"
+                      : "rgba(255,255,255,0.05)",
+                }}
+              />
+            )}
+            name="email"
+          />
+          {errors.email && (
+            <Text style={{ color: "red", fontSize: 12, marginTop: 7 }}>
+              {errors.email.message}
+>>>>>>> f197eaaaae4752be8ef2f168da1b153613fee086
             </Text>
-          </TouchableOpacity>
-        )}
-      </View>
-    </SafeAreaWrapper>
+          )}
+          {error == 400 && (
+            <Text style={{ color: "red", fontSize: 12, marginTop: 7 }}>
+              {i18n.t("invalidEmail")}
+            </Text>
+          )}
+          {loading ? (
+            <ActivityIndicator
+              size="large"
+              style={{ marginTop: 30 }}
+              color={"#fff"}
+            />
+          ) : (
+            <TouchableOpacity
+              onPress={handleSubmit(onSubmit)}
+              disabled={loading}
+              style={{
+                marginTop: 20,
+                padding: 15,
+                backgroundColor: "#5d00e6",
+                borderRadius: 10,
+                shadowColor: "#5d00e6",
+                shadowOffset: {
+                  width: 0,
+                  height: 10,
+                },
+                shadowOpacity: 0.3,
+                shadowRadius: 10,
+              }}
+            >
+              <Text
+                style={{ color: "#fff", textAlign: "center", fontSize: 20 }}
+              >
+                {i18n.t("next")}
+              </Text>
+            </TouchableOpacity>
+          )}
+        </View>
+      </SafeAreaWrapper>
+    </LinearGradient>
   );
 };
 

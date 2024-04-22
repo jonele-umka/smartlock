@@ -13,7 +13,11 @@ import { API_URL } from "../../constants";
 import { useSelector } from "react-redux";
 import i18n from "../../components/i18n/i18n";
 const ExchangeRates = () => {
+<<<<<<< HEAD
   // const token = useSelector((state) => state.signIn.token);
+=======
+  const token = useSelector((state) => state.signIn.token);
+>>>>>>> f197eaaaae4752be8ef2f168da1b153613fee086
   const [exchange, setExchange] = useState(false);
   const [loading, setLoading] = useState(false);
 

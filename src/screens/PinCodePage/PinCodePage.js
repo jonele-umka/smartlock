@@ -30,8 +30,13 @@ const PinCodePage = () => {
   const [pinCode, setPinCode] = useState("");
   const [pinError, setPinError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+<<<<<<< HEAD
   // const token = useSelector((state) => state.signIn.token);
   // const refresh_token = useSelector((state) => state.signIn.refreshToken);
+=======
+  const token = useSelector((state) => state.signIn.token);
+  const refresh_token = useSelector((state) => state.signIn.refreshToken);
+>>>>>>> f197eaaaae4752be8ef2f168da1b153613fee086
 
   const [storedPinCode, setStoredPinCode] = useState(null);
   const [biometryType, setBiometryType] = useState(null);
@@ -202,7 +207,11 @@ const PinCodePage = () => {
         const responseBody = await response.text();
         console.log("Response Body:", responseBody);
 
+<<<<<<< HEAD
         // navigation.navigate("Войти");
+=======
+        navigation.navigate("Войти");
+>>>>>>> f197eaaaae4752be8ef2f168da1b153613fee086
         await AsyncStorage.removeItem("login");
         await AsyncStorage.removeItem("password");
       } else {

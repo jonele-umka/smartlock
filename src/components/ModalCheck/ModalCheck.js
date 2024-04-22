@@ -596,7 +596,11 @@ console.log(selectedTransaction)
                     <TouchableOpacity
                       onPress={() => {
                         setModalVisible(false);
+<<<<<<< HEAD
                      
+=======
+                        navigation.navigate("Перевести");
+>>>>>>> f197eaaaae4752be8ef2f168da1b153613fee086
                       }}
                       style={styles.cardBottomView}
                       // style={[

@@ -12,6 +12,7 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import SearchScreen from "../screens/SearchScreen";
 import HomeScreen from "../screens/HomeScreen";
 import FavoritesScreen from "../screens/FavoritesScreen";
+<<<<<<< HEAD
 import ProfileScreen from "../screens/ProfileScreen";
 import SignIn from "../screens/Registration/SignIn";
 import i18n from "../components/i18n/i18n";
@@ -241,6 +242,18 @@ const NavBar = () => {
   const reservation = i18n.t("Бронь");
   const favorites = i18n.t("favorites");
   const more = i18n.t("more");
+=======
+import SettingsScreen from "../screens/SettingsScreen";
+import SignIn from "../screens/Registration/SignIn";
+import i18n from "../components/i18n/i18n";
+const Tab = createBottomTabNavigator();
+
+const NavBar = () => {
+  const overview = i18n.t("home");
+  const payments = i18n.t("payments");
+  const favorites = i18n.t("favorites");
+  const settings = i18n.t("more");
+>>>>>>> f197eaaaae4752be8ef2f168da1b153613fee086
   const isDarkModeEnabled = useSelector(
     (state) => state.theme.isDarkModeEnabled
   );
@@ -250,7 +263,11 @@ const NavBar = () => {
       screenOptions={({ route }) => ({
         headerShown: false,
         // tabBarShowLabel: tr,
+<<<<<<< HEAD
         tabBarActiveTintColor: "#000",
+=======
+        tabBarActiveTintColor: "#fff",
+>>>>>>> f197eaaaae4752be8ef2f168da1b153613fee086
         tabBarInactiveTintColor: "grey",
         tabBarStyle: [
           // isDarkModeEnabled

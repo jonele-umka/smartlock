@@ -45,6 +45,7 @@ const Notification = () => {
     ETH: "Ξ",
     BTC: "₿",
   };
+<<<<<<< HEAD
   // useEffect(() => {
   //   if (token) {
   //     dispatch(fetchTransactionsIncoming());
@@ -78,6 +79,41 @@ const Notification = () => {
   //       });
   //   }
   // }, [token, dispatch]);
+=======
+  useEffect(() => {
+    if (token) {
+      dispatch(fetchTransactionsIncoming());
+      dispatch(fetchTransactions());
+      fetch(`${API_URL}/wallets/balance`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      })
+        .then((response) => {
+          if (!response.ok) {
+            return response.json().then((data) => {
+              const errorMessage = data?.Error || "Произошла ошибка";
+              throw new Error(errorMessage);
+            });
+          }
+          return response.json();
+        })
+        .then((data) => {
+          const newBalances = {};
+          data.data.forEach((item) => {
+            newBalances[item.WalletSubAccount.AccountNumber] =
+              item.WalletSubAccount.Balance;
+          });
+          setBalance(newBalances);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    }
+  }, [token, dispatch]);
+>>>>>>> f197eaaaae4752be8ef2f168da1b153613fee086
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);

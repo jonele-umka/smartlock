@@ -18,10 +18,18 @@ const App = () => {
       if (storedLanguage) {
         Localization.locale = storedLanguage;
       } else {
+<<<<<<< HEAD
         Localization.locale = "ru";
       }
     });
 
+=======
+        Localization.locale = "en";
+      }
+    });
+
+    // Execute the following code only on Android
+>>>>>>> f197eaaaae4752be8ef2f168da1b153613fee086
     if (Platform.OS === "android") {
       const registerForPushNotificationsAsync = async () => {
         Notifications.setNotificationChannelAsync("default", {

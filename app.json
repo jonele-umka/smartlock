@@ -10,14 +10,20 @@
       "resizeMode": "cover"
     },
     "userInterfaceStyle": "light",
+
     "ios": {
       "supportsTablet": true,
       "splash": {
+<<<<<<< HEAD
         "image": "./src/assets/apkIcons/icon.png",
         "resizeMode": "contain"
       },
       "config": {
         "googleMapsApiKey": "AIzaSyBvwtsqmVTETIZtsUUcmkW0nNUBeET_MeY"
+=======
+        "image": "./src/assets/apkIcons/splashImg.png",
+        "resizeMode": "cover"
+>>>>>>> f197eaaaae4752be8ef2f168da1b153613fee086
       },
       "infoPlist": {
         "NSPhotoLibraryUsageDescription": "Разрешение на доступ к вашей галерее",

@@ -5,6 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="b5ea0d75-6488-4c35-ad02-e196b89dc90a" name="Changes" comment="">
+<<<<<<< HEAD
       <change beforePath="$PROJECT_DIR$/.env" beforeDir="false" afterPath="$PROJECT_DIR$/.env" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/App.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app.json" beforeDir="false" afterPath="$PROJECT_DIR$/app.json" afterDir="false" />
@@ -19,11 +20,22 @@
       <change beforePath="$PROJECT_DIR$/src/Store/Transactions/transactionsReducer.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Store/Transactions/transactionsReducer.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Store/Transactions/transactionsTypes.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Store/Transactions/transactionsTypes.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Store/Transactions/transctionsActions.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Store/Transactions/transctionsActions.js" afterDir="false" />
+=======
+      <change beforePath="$PROJECT_DIR$/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/App.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app.json" beforeDir="false" afterPath="$PROJECT_DIR$/app.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Store/SignIn/SignInAction.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Store/SignIn/SignInAction.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Store/SignIn/SignInReducer.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Store/SignIn/SignInReducer.js" afterDir="false" />
+>>>>>>> f197eaaaae4752be8ef2f168da1b153613fee086
       <change beforePath="$PROJECT_DIR$/src/Store/rootReducer.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Store/rootReducer.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/assets/CRYPTONLogoIcon2.png" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/assets/abstract-gradient-neon-lights.jpg" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/assets/adaptive-icon.png" beforeDir="false" />
+<<<<<<< HEAD
       <change beforePath="$PROJECT_DIR$/src/assets/apkIcons/adaptive-icon.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/assets/apkIcons/adaptive-icon.png" afterDir="false" />
+=======
+>>>>>>> f197eaaaae4752be8ef2f168da1b153613fee086
       <change beforePath="$PROJECT_DIR$/src/assets/apkIcons/icon.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/assets/apkIcons/icon.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/assets/apkIcons/splash.png" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/assets/bell.png" beforeDir="false" />
@@ -34,7 +46,10 @@
       <change beforePath="$PROJECT_DIR$/src/assets/card 3.png" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/assets/card.png" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/assets/card/Frame 116.pdf" beforeDir="false" />
+<<<<<<< HEAD
       <change beforePath="$PROJECT_DIR$/src/assets/card/Frame 26.png" beforeDir="false" />
+=======
+>>>>>>> f197eaaaae4752be8ef2f168da1b153613fee086
       <change beforePath="$PROJECT_DIR$/src/assets/card/cardCrypto.png" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/assets/card/cardCrypto.svg" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/assets/card/visaLogo.png" beforeDir="false" />
@@ -65,7 +80,11 @@
       <change beforePath="$PROJECT_DIR$/src/assets/ic_transfer.png" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/assets/ic_wallet.png" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/assets/icon.png" beforeDir="false" />
+<<<<<<< HEAD
       <change beforePath="$PROJECT_DIR$/src/assets/logo.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/assets/logo.png" afterDir="false" />
+=======
+      <change beforePath="$PROJECT_DIR$/src/assets/logo.png" beforeDir="false" />
+>>>>>>> f197eaaaae4752be8ef2f168da1b153613fee086
       <change beforePath="$PROJECT_DIR$/src/assets/logo2.png" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/assets/logo3.png" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/assets/logoIcon.png" beforeDir="false" />
@@ -96,14 +115,22 @@
       <change beforePath="$PROJECT_DIR$/src/components/CardTabs/CardTabsScreen/Crypto/Crypto.js" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/CardTabs/CardTabsScreen/Crypto/CryptoCard.js" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/CardTabs/CardTabsScreen/Theme.js" beforeDir="false" />
+<<<<<<< HEAD
       <change beforePath="$PROJECT_DIR$/src/components/ListCard.js" beforeDir="false" />
+=======
+>>>>>>> f197eaaaae4752be8ef2f168da1b153613fee086
       <change beforePath="$PROJECT_DIR$/src/components/ListService.js" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/ModalCheck/ModalCheck.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/ModalCheck/ModalCheck.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/RecentTransaction.js" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/TestComponent.js" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/TransactionTabs/TransactionTabsRoute/TransactionTabsRoute.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/TransactionTabs/TransactionTabsRoute/TransactionTabsRoute.js" afterDir="false" />
+<<<<<<< HEAD
       <change beforePath="$PROJECT_DIR$/src/components/TransactionTabs/TransactionTabsScreen/Incoming.js" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/TransactionTabs/TransactionTabsScreen/Outgoing.js" beforeDir="false" />
+=======
+      <change beforePath="$PROJECT_DIR$/src/components/TransactionTabs/TransactionTabsScreen/Incoming.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/TransactionTabs/TransactionTabsScreen/Incoming.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/TransactionTabs/TransactionTabsScreen/Outgoing.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/TransactionTabs/TransactionTabsScreen/Outgoing.js" afterDir="false" />
+>>>>>>> f197eaaaae4752be8ef2f168da1b153613fee086
       <change beforePath="$PROJECT_DIR$/src/components/TransactionsCrypto/TransactionsCrypto.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/TransactionsCrypto/TransactionsCrypto.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/i18n/i18n.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/i18n/i18n.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/constants.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/constants.js" afterDir="false" />
@@ -111,18 +138,27 @@
       <change beforePath="$PROJECT_DIR$/src/navigation/NavBar.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/navigation/NavBar.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/navigation/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/navigation/index.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/screens/AddFavorites/AddFavorites.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/screens/AddFavorites/AddFavorites.js" afterDir="false" />
+<<<<<<< HEAD
       <change beforePath="$PROJECT_DIR$/src/screens/FavoritesScreen.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/screens/FavoritesScreen.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/screens/Logout/Logout.js" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/screens/Logout/b.json" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/screens/Notification/Notification.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/screens/Notification/Notification.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/screens/OverviewScreen.js" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/screens/PaymentsScreen.js" beforeDir="false" />
+=======
+      <change beforePath="$PROJECT_DIR$/src/screens/Logout/Logout.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/screens/Logout/b.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/screens/Notification/Notification.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/screens/Notification/Notification.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/screens/OverviewScreen.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/screens/OverviewScreen.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/screens/PaymentsScreen.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/screens/PaymentsScreen.js" afterDir="false" />
+>>>>>>> f197eaaaae4752be8ef2f168da1b153613fee086
       <change beforePath="$PROJECT_DIR$/src/screens/PinCodePage/CorrectPinCode.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/screens/PinCodePage/CorrectPinCode.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/screens/PinCodePage/CreatePinCode.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/screens/PinCodePage/CreatePinCode.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/screens/PinCodePage/PinCodePage.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/screens/PinCodePage/PinCodePage.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/screens/Registration/SignIn.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/screens/Registration/SignIn.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/screens/Registration/SignUp/SignUpCode.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/screens/Registration/SignUp/SignUpCode.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/screens/Registration/SignUp/SignUpEmail.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/screens/Registration/SignUp/SignUpEmail.js" afterDir="false" />
+<<<<<<< HEAD
       <change beforePath="$PROJECT_DIR$/src/screens/Registration/SignUp/SignUpForm.js" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/screens/SettingsScreen.js" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/screens/TransactionsScreen.js" beforeDir="false" />
@@ -130,6 +166,15 @@
       <change beforePath="$PROJECT_DIR$/src/screens/TransferCrypto/TransferChoice.js" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/screens/TransferCrypto/TransferCryptoInternal.js" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/screens/TransferCrypto/СonfirmationUser/ConfirmationUser.js" beforeDir="false" />
+=======
+      <change beforePath="$PROJECT_DIR$/src/screens/Registration/SignUp/SignUpForm.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/screens/Registration/SignUp/SignUpForm.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/screens/SettingsScreen.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/screens/SettingsScreen.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/screens/TransactionsScreen.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/screens/TransferCrypto/SuccessTransfer/SuccessTransfer.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/screens/TransferCrypto/SuccessTransfer/SuccessTransfer.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/screens/TransferCrypto/TransferChoice.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/screens/TransferCrypto/TransferCryptoInternal.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/screens/TransferCrypto/СonfirmationUser/ConfirmationUser.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/screens/TransferCrypto/СonfirmationUser/ConfirmationUser.js" afterDir="false" />
+>>>>>>> f197eaaaae4752be8ef2f168da1b153613fee086
       <change beforePath="$PROJECT_DIR$/src/screens/WelcomeScreen.js" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -151,8 +196,12 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.cidr.known.project.marker": "true",
     "cidr.known.project.marker": "true",
+<<<<<<< HEAD
     "com.google.services.firebase.aqiPopupShown": "true",
     "last_opened_file_path": "/Users/umka/Documents/Microret/lock-mobile"
+=======
+    "last_opened_file_path": "/Users/umka/Documents/Microret/Biatex/biatexApp — копия"
+>>>>>>> f197eaaaae4752be8ef2f168da1b153613fee086
   }
 }]]></component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />

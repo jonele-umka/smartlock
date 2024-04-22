@@ -30,8 +30,13 @@ const ChangePassword = () => {
     Platform.OS === "android" ? SafeAreaViewContext : SafeAreaView;
   const dispatch = useDispatch();
   const navigation = useNavigation();
+<<<<<<< HEAD
   // const loading = useSelector((state) => state.signIn.loading);
   // const token = useSelector((state) => state.signIn.token);
+=======
+  const loading = useSelector((state) => state.signIn.loading);
+  const token = useSelector((state) => state.signIn.token);
+>>>>>>> f197eaaaae4752be8ef2f168da1b153613fee086
   const [confirmError, setConfirmError] = useState("");
   const [oldError, setOldError] = useState("");
 

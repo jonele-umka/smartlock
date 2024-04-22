@@ -179,6 +179,7 @@ const translations = {
     currency: "Currency",
     buy: "Buy",
     sell: "Sell",
+<<<<<<< HEAD
 
     passwordMinEight: "Enter a minimum of 8 characters",
     enterInLatin: "Enter in Latin",
@@ -191,6 +192,8 @@ const translations = {
     animals: "are there any animals?",
     save: "Save",
     profile: "Profile",
+=======
+>>>>>>> f197eaaaae4752be8ef2f168da1b153613fee086
   },
   ru: {
     balance: "Баланс",
@@ -371,6 +374,7 @@ const translations = {
     currency: "Валюта",
     buy: "Покупка",
     sell: "Продажа",
+<<<<<<< HEAD
 
     passwordMinEight: "Введите минимально 8 символов",
     enterInLatin: "Введите на латинице",
@@ -383,6 +387,8 @@ const translations = {
     animals: "Есть животные?",
     save: "Сохранить",
     profile: "Профиль",
+=======
+>>>>>>> f197eaaaae4752be8ef2f168da1b153613fee086
   },
 };
 
