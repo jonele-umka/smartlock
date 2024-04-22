@@ -4,112 +4,147 @@ import {
   Text,
   View,
   TouchableOpacity,
+  ScrollView,
+  RefreshControl,
+  Modal,
+  Pressable,
+  Button,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { SafeAreaView as SafeAreaViewContext } from "react-native-safe-area-context";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import Entypo from "react-native-vector-icons/Entypo";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigation } from "@react-navigation/native";
 import {
-  loadFavoritesFromStorage,
-  removeFromFavorites,
+  deleteFavorite,
+  fetchFavorites,
 } from "../Store/Favorites/FavoritesAction";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-
-// import {
-//   Actionsheet,
-//   ActionsheetBackdrop,
-//   ActionsheetContent,
-//   ActionsheetDragIndicatorWrapper,
-//   ActionsheetDragIndicator,
-//   ActionsheetItem,
-//   ActionsheetItemText,
-// } from "@gluestack-ui/themed";
 import { LinearGradient } from "expo-linear-gradient";
-
+import i18n from "../components/i18n/i18n";
+import { useNavigation } from "@react-navigation/native";
+import { Tooltip } from "@rneui/themed";
 const FavoritesScreen = () => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
-  const [loading, setLoading] = useState(true);
-  const [favorites, setFavorites] = useState([]);
-  const [selectedFavorite, setSelectedFavorite] = useState(null);
-  const [showActionsheet, setShowActionsheet] = useState(false);
-  const favorite = useSelector((state) => state.favorites.favorites);
+  // const loading = useSelector((state) => state.favorites.loading);
+  const [selectedTemplateDelete, setSelectedTemplateDelete] = useState(null);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [selectedTemplate, setSelectedTemplate] = useState(null);
+  const [refreshing, setRefreshing] = useState(false);
 
-  const handleClose = () => {
-    setShowActionsheet(!showActionsheet);
+  // const favorites = useSelector((state) => state.favorites.favorites);
+  // const token = useSelector((state) => state.signIn.token);
+
+  const handleTemplatePress = (template) => {
+    setSelectedTemplate(template);
+     
+  };
+  useEffect(() => {
+    dispatch(fetchFavorites(token));
+  }, [dispatch, token]);
+
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await dispatch(fetchFavorites(token));
+    setRefreshing(false);
   };
 
-  const removeFavoriteHandler = () => {
-    if (selectedFavorite) {
-      dispatch(removeFromFavorites(selectedFavorite));
-      console.log("first", selectedFavorite);
-      setSelectedFavorite(null);
+  const deleteTransferTemplate = async (id) => {
+    console.log(id);
+    try {
+      await dispatch(deleteFavorite(id, token));
+    } catch (error) {
+      console.error("Ошибка при удалении элемента:", error);
     }
   };
 
-  useEffect(() => {
-    const loadFavorites = async () => {
-      setLoading(true);
-      try {
-        const favoritesData = await AsyncStorage.getItem("favorites");
-        if (favoritesData !== null && favoritesData !== "[]") {
-          const parsedFavorites = JSON.parse(favoritesData);
-          dispatch(loadFavoritesFromStorage(parsedFavorites));
-          setFavorites(parsedFavorites);
-        }
-      } catch (error) {
-        console.error(error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadFavorites();
-  }, [dispatch]);
-
+  const handleDeletePress = (id) => {
+    setShowDeleteModal(!showDeleteModal);
+    setSelectedTemplateDelete(id);
+  };
   const SafeAreaWrapper =
     Platform.OS === "android" ? SafeAreaViewContext : SafeAreaView;
 
-  return (
-    <LinearGradient
-      style={[
-        { flex: 1 },
-        // isDarkModeEnabled && { backgroundColor: "#191a1d" },
-      ]}
-      start={{ x: 2.4, y: 1.1 }}
-      end={{ x: 0, y: 0 }}
-      colors={["#241270", "#140A4F", "#000"]}
-    >
+  if (loading) {
+    return (
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: "#fff",
+        }}
+      >
+        <ActivityIndicator size="large" color={"#000"} />
+      </View>
+    );
+  }
+  if (!favorites.length) {
+    return (
       <SafeAreaWrapper
         style={{
           flex: 1,
           justifyContent: "center",
           alignItems: "center",
+          backgroundColor: "#fff",
         }}
       >
         <View>
-          <Ionicons name="star-outline" size={200} color="#5d00e6" />
+          <Ionicons name="star-outline" size={200} color="#000" />
           <Text
             style={{
-              color: "#fff",
+              color: "#000",
               textAlign: "center",
               marginTop: 20,
               fontSize: 20,
             }}
           >
-            Избранные пусты
+            Нет избранных
           </Text>
         </View>
-        {loading ? (
-          <ActivityIndicator />
-        ) : (
-          <View style={{ flexDirection: "row", justifyContent: "center" }}>
-            {favorites?.length > 0 &&
-              favorites.map((favorite, index) => (
+      </SafeAreaWrapper>
+    );
+  }
+  return (
+    <ScrollView
+      style={{ paddingVertical: 20, flex: 1, backgroundColor: "#fff" }}
+      refreshControl={
+        <RefreshControl onRefresh={onRefresh} refreshing={refreshing} />
+      }
+    >
+      <SafeAreaWrapper
+        style={{
+          flex: 1,
+          paddingHorizontal: 10,
+          paddingBottom: 40,
+        }}
+      >
+        <Text
+          style={{
+            color: "#000",
+            fontSize: 30,
+            textAlign: "center",
+            marginBottom: 25,
+          }}
+        >
+          Ваши избранные
+        </Text>
+
+        {favorites && (
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "center",
+              flexWrap: "wrap",
+              columnGap: 10,
+              rowGap: 20,
+            }}
+          >
+            {favorites?.data?.map((favorite, index) => (
+              <>
                 <TouchableOpacity
-                  key={index}
+                  onPress={() => handleTemplatePress(favorite)}
+                  key={favorite.ID}
                   style={{
                     justifyContent: "flex-start",
                     alignItems: "flex-start",
@@ -119,17 +154,16 @@ const FavoritesScreen = () => {
                     paddingRight: 5,
                     paddingBottom: 15,
                     paddingLeft: 15,
-                    width: 120,
-                    height: "100%",
-                    backgroundColor: "#272727",
-                    // shadowColor: "#272727",
-                    // shadowOffset: {
-                    //   width: 0,
-                    //   height: 2,
-                    // },
-                    // shadowOpacity: 0.1,
-                    // shadowRadius: 8.84,
-                    // elevation: 5,
+                    width: 110,
+                    backgroundColor: "rgba(255,255,255,0.05)",
+                    shadowColor: "rgba(255,255,255,0.05)",
+                    shadowOffset: {
+                      width: 0,
+                      height: 2,
+                    },
+                    shadowOpacity: 0.1,
+                    shadowRadius: 8.84,
+                    elevation: 5,
                   }}
                 >
                   <View
@@ -149,8 +183,8 @@ const FavoritesScreen = () => {
                       >
                         <Ionicons
                           name={"star-outline"}
-                          size={30}
-                          color={"#fff"}
+                          size={25}
+                          color={"#000"}
                         />
                       </View>
                       <Text
@@ -158,59 +192,80 @@ const FavoritesScreen = () => {
                           flexWrap: "wrap",
                           fontSize: 14,
                           paddingTop: 10,
-                          color: "#fff",
+                          color: "#000",
                           fontWeight: 500,
                         }}
                       >
-                        {favorite?.templateName}
+                        {favorite?.Name}
                       </Text>
                     </View>
 
                     <Entypo
                       onPress={() => {
-                        setSelectedFavorite(favorite);
-                        handleClose();
+                        // setSelectedTemplate(favorite);
+                        handleDeletePress(favorite.ID);
                       }}
                       name={"dots-three-vertical"}
                       style={{
                         fontSize: 15,
-                        color: "#fff",
+                        color: "#000",
                       }}
                     />
                   </View>
-                  {/* {selectedFavorite && selectedFavorite.id === favorite.id && (
-                    <Actionsheet
-                      isOpen={showActionsheet}
-                      onClose={handleClose}
-                      zIndex={999}
-                    >
-                      <ActionsheetBackdrop />
-                      <ActionsheetContent
-                        backgroundColor={"#191a1d"}
-                        paddingVertical={10}
-                        zIndex={999}
-                      >
-                        <ActionsheetDragIndicatorWrapper marginBottom={10}>
-                          <ActionsheetDragIndicator />
-                        </ActionsheetDragIndicatorWrapper>
-
-                        <ActionsheetItem>
-                          <ActionsheetItemText
-                            color={"#fff"}
-                            onPress={removeFavoriteHandler}
+                  {/* {showDeleteModal &&
+                      selectedTemplateDelete === favorite.ID && (
+                        <Tooltip
+                          width={200}
+                          onClose={() => setShowDeleteModal(false)}
+                          placement="top"
+                          backgroundColor={"#000"}
+                        >
+                          <View
+                            style={{
+                              flexDirection: "row",
+                              justifyContent: "flex-end",
+                              marginTop: 5,
+                            }}
                           >
-                            Удалить
-                          </ActionsheetItemText>
-                        </ActionsheetItem>
-                      </ActionsheetContent>
-                    </Actionsheet>
-                  )} */}
+                            <TouchableOpacity
+                              onPress={() => {
+                                setShowDeleteModal(true);
+                                deleteTransferTemplate(selectedTemplateDelete);
+                              }}
+                            >
+                              <Text style={{ color: "#b8b8b8" }}>Delete</Text>
+                            </TouchableOpacity>
+                          </View>
+                        </Tooltip>
+                      )} */}
+                  {showDeleteModal &&
+                    selectedTemplateDelete === favorite.ID && (
+                      <Tooltip
+                        popover={
+                          <Text
+                            onPress={() => {
+                              setShowDeleteModal(false);
+                              deleteTransferTemplate(selectedTemplateDelete);
+                            }}
+                          >
+                            {i18n.t("delete")}
+                          </Text>
+                        }
+                        visible={
+                          showDeleteModal &&
+                          selectedTemplateDelete === favorite.ID
+                        }
+                        backgroundColor={"#000"}
+                        onClose={() => setShowDeleteModal(false)}
+                      />
+                    )}
                 </TouchableOpacity>
-              ))}
+              </>
+            ))}
           </View>
         )}
       </SafeAreaWrapper>
-    </LinearGradient>
+    </ScrollView>
   );
 };
 

@@ -1,35 +1,27 @@
-import {
-  ADD_TO_FAVORITES,
-  LOAD_FAVORITES_FROM_STORAGE,
-  REMOVE_FROM_FAVORITES,
-} from "./FavoritesTypes";
 
-const initialState = {
-  favorites: [],
-};
+// import { LOAD_FAVORITES, SET_LOADING } from "./FavoritesTypes";
 
-const FavoritesReducer = (state = initialState, action) => {
-  switch (action.type) {
-    case ADD_TO_FAVORITES:
-      return {
-        ...state,
-        favorites: [...state.favorites, action.payload],
-      };
-    case LOAD_FAVORITES_FROM_STORAGE:
-      return {
-        ...state,
-        favorites: action.payload,
-      };
-    case REMOVE_FROM_FAVORITES:
-      return {
-        ...state,
-        favorites: state.favorites.filter(
-          (item) => item.id !== action.payload.id
-        ),
-      };
-    default:
-      return state;
-  }
-};
+// const initialState = {
+//   favorites: [],
+//   loading: false,
+// };
 
-export default FavoritesReducer;
+// const FavoritesReducer = (state = initialState, action) => {
+//   switch (action.type) {
+//     case LOAD_FAVORITES:
+//       return {
+//         ...state,
+//         favorites: action.payload,
+//         loading: false,
+//       };
+//     case SET_LOADING:
+//       return {
+//         ...state,
+//         loading: action.payload,
+//       };
+//     default:
+//       return state;
+//   }
+// };
+
+// export default FavoritesReducer;

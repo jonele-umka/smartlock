@@ -1,58 +1,85 @@
 {
   "expo": {
-    "name": "Crypton",
-    "slug": "bivalut",
+    "name": "Smartlock",
+    "slug": "smartlock",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./src/assets/apkIcons/icon.png",
     "splash": {
-      "image": "./src/assets/CRYPTONLogo.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#140A4F"
+      "image": "./src/assets/apkIcons/splashImg.png",
+      "resizeMode": "cover"
     },
     "userInterfaceStyle": "light",
     "ios": {
       "supportsTablet": true,
       "splash": {
-        "image": "./src/assets/CRYPTONLogo.png",
-        "resizeMode": "contain",
-        "backgroundColor": "#140A4F"
+        "image": "./src/assets/apkIcons/icon.png",
+        "resizeMode": "contain"
+      },
+      "config": {
+        "googleMapsApiKey": "AIzaSyBvwtsqmVTETIZtsUUcmkW0nNUBeET_MeY"
       },
       "infoPlist": {
         "NSPhotoLibraryUsageDescription": "Разрешение на доступ к вашей галерее",
-        "NSCameraUsageDescription": "Разрешение на доступ к вашей камере"
+        "NSCameraUsageDescription": "Разрешение на доступ к вашей камере",
+        "NSFaceIDUsageDescription": "Allow $(Smartlock) to use Face ID."
       }
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./src/assets/apkIcons/adaptive-icon.png",
-        "backgroundColor": "#140A4F"
+        "foregroundImage": "./src/assets/iconHotel.png",
+        "backgroundColor": "#fff"
       },
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyBvwtsqmVTETIZtsUUcmkW0nNUBeET_MeY"
+        }
+      },
+
       "permissions": [
         "android.permission.READ_EXTERNAL_STORAGE",
         "android.permission.WRITE_EXTERNAL_STORAGE",
         "android.permission.DOWNLOAD_WITHOUT_NOTIFICATION",
-        "android.permission.ACCESS_NETWORK_STATE"
+        "android.permission.ACCESS_NETWORK_STATE",
+        "android.permission.USE_BIOMETRIC",
+        "android.permission.USE_FINGERPRINT",
+        "android.permission.RECORD_AUDIO",
+        "android.permission.ACCESS_COARSE_LOCATION",
+        "android.permission.ACCESS_FINE_LOCATION",
+        "android.permission.FOREGROUND_SERVICE"
       ],
       "useNextNotificationsApi": true,
-      "package": "com.jonele_umka.bivalut"
+      "package": "com.jonele_umka.smartlock"
     },
     "web": {
       "favicon": "./src/assets/apkIcons/icon.png"
     },
     "extra": {
       "eas": {
-        "projectId": "3090da21-81bd-4cfc-8a12-779a0b7025f6"
+        "projectId": "ca4f4746-60f3-4a50-b5c9-cafb4a2641ec"
       }
     },
     "plugins": [
       [
         "expo-local-authentication",
         {
-          "faceIDPermission": "Allow $(Crypton) to use Face ID."
+          "faceIDPermission": "Allow $(Smartlock) to use Face ID."
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "The app accesses your photos to let you share them with your friends."
+        }
+      ],
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "Allow $(Smartlock) to use your location."
         }
       ],
       "expo-localization"
-    ]
+    ],
+    "owner": "jonele_umka"
   }
 }

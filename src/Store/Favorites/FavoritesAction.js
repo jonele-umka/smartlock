@@ -1,71 +1,71 @@
-import {
-  ADD_TO_FAVORITES,
-  LOAD_FAVORITES_FROM_STORAGE,
-  REMOVE_FROM_FAVORITES,
-} from "./FavoritesTypes";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+// import { API_URL } from "../../constants";
+// import { LOAD_FAVORITES, SET_LOADING } from "./FavoritesTypes";
 
-export const addToFavorites = (transaction) => {
-  return async (dispatch) => {
-    try {
-      // Добавляем транзакцию в избранное в Redux Store
-      dispatch({
-        type: ADD_TO_FAVORITES,
-        payload: transaction,
-      });
+// export const loadFavorites = (data) => {
+//   return {
+//     type: LOAD_FAVORITES,
+//     payload: data,
+//   };
+// };
 
-      // Получаем текущий список избранных транзакций из AsyncStorage
-      const existingFavorites = await AsyncStorage.getItem("favorites");
-      const favorites = existingFavorites ? JSON.parse(existingFavorites) : [];
+// export const setLoading = (loading) => {
+//   return {
+//     type: SET_LOADING,
+//     payload: loading,
+//   };
+// };
 
-      // Добавляем новую транзакцию в список избранных
-      favorites.push(transaction);
+// export const fetchFavorites = (token) => async (dispatch) => {
+//   try {
+//     dispatch(setLoading(true));
 
-      // Сохраняем обновленный список в AsyncStorage
-      await AsyncStorage.setItem("favorites", JSON.stringify(favorites));
-    } catch (error) {
-      console.error(error);
-    }
-  };
-};
+//     const response = await fetch(`${API_URL}/transfer-template`, {
+//       method: "GET",
+//       headers: {
+//         "Content-Type": "application/json",
+//         Authorization: `Bearer ${token}`,
+//       },
+//     });
 
-export const loadFavoritesFromStorage = () => {
-  return async (dispatch) => {
-    try {
-      const favorites = await AsyncStorage.getItem("favorites");
-      if (favorites) {
-        const favoritesArray = JSON.parse(favorites);
-        dispatch({
-          type: LOAD_FAVORITES_FROM_STORAGE,
-          payload: favoritesArray,
-        });
-      }
-    } catch (error) {
-      console.error("Error loading favorites from AsyncStorage:", error);
-    }
-  };
-};
-export const removeFromFavorites = (favorite) => {
-  return async (dispatch) => {
-    try {
-      dispatch({
-        type: REMOVE_FROM_FAVORITES,
-        payload: favorite,
-      });
+//     if (response.ok) {
+//       const data = await response.json();
 
-      // Получаем текущий список избранных транзакций из AsyncStorage
-      const existingFavorites = await AsyncStorage.getItem("favorites");
-      const favorites = existingFavorites ? JSON.parse(existingFavorites) : [];
+//       dispatch(loadFavorites(data));
+//     } else {
+//       console.error("Ошибка при выполнении GET-запроса:", response.statusText);
+//     }
+//   } catch (error) {
+//     console.error("Ошибка при  загрузке:", error);
+//   } finally {
+//     dispatch(setLoading(false));
+//   }
+// };
+// // FavoritesActions.js
 
-      // Удаляем транзакцию из списка избранных
-      const updatedFavorites = favorites.filter(
-        (item) => item.id !== favorite.id
-      );
+// // ... (импорт необходимых ваших зависимостей и констант)
 
-      // Сохраняем обновленный список в AsyncStorage
-      await AsyncStorage.setItem("favorites", JSON.stringify(updatedFavorites));
-    } catch (error) {
-      console.error(error);
-    }
-  };
-};
+// export const deleteFavorite = (id, token) => async (dispatch) => {
+//   try {
+//     const response = await fetch(
+//       `http://coffee.microret.com:8088/transfer-template/${id}`,
+//       {
+//         method: "DELETE",
+//         headers: {
+//           "Content-Type": "application/json",
+//           Authorization: `Bearer ${token}`,
+//         },
+//       }
+//     );
+
+//     if (!response.ok) {
+//       const errorMessage = await response.json();
+//       throw new Error(JSON.stringify(errorMessage));
+//     }
+
+//     console.log(`Элемент с ID ${id} успешно удален.`);
+
+//     dispatch(fetchFavorites(token));
+//   } catch (error) {
+//     console.error("Ошибка при удалении элемента:", error);
+//   }
+// };

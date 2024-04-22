@@ -1,6 +1,6 @@
 // rootReducer.js
 import { combineReducers } from "redux";
-import themeReducer from "./DarkTheme/themeReducer";;
+import themeReducer from "./DarkTheme/themeReducer";
 import signInReducer from "./SignIn/SignInReducer";
 import transactionsReducer from "./Transactions/transactionsReducer";
 import favoritesReducer from "./Favorites/FavoritesReducer";
@@ -13,4 +13,3 @@ const rootReducer = combineReducers({
 });
 
 export default rootReducer;
- 

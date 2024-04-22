@@ -5,7 +5,7 @@ import { Skeleton } from "@rneui/themed";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import Entypo from "react-native-vector-icons/Entypo";
 import ModalCheck from "../ModalCheck/ModalCheck";
-import { LinearGradient } from "expo-linear-gradient";
+import i18n from "../i18n/i18n";
 const TransactionsCrypto = ({ transactions, incoming, outgoing }) => {
   const [selectedTransaction, setSelectedTransaction] = useState(null);
 
@@ -51,11 +51,11 @@ const TransactionsCrypto = ({ transactions, incoming, outgoing }) => {
         date.getDate() === now.getDate() &&
         date.getMonth() === now.getMonth() &&
         date.getFullYear() === now.getFullYear()
-          ? "Сегодня"
+          ? i18n.t("today")
           : date.getDate() === now.getDate() - 1 &&
             date.getMonth() === now.getMonth() &&
             date.getFullYear() === now.getFullYear()
-          ? "Вчера"
+          ? i18n.t("yesterday")
           : `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
 
       if (!result[formattedDate]) {
@@ -217,7 +217,7 @@ const TransactionsCrypto = ({ transactions, incoming, outgoing }) => {
                             textAlign: "right",
                           }}
                         >
-                          Отклонён
+                          {i18n.t("rejected")}
                         </Text>
                       )}
                       {transactions.Status === "Performed" && (
@@ -228,7 +228,7 @@ const TransactionsCrypto = ({ transactions, incoming, outgoing }) => {
                             textAlign: "right",
                           }}
                         >
-                          В обработке
+                          {i18n.t("inProcessing")}
                         </Text>
                       )}
                     </View>

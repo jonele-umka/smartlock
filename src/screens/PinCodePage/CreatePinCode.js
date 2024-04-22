@@ -9,6 +9,7 @@ import {
   ActivityIndicator,
   Image,
   Animated,
+  Platform,
 } from "react-native";
 import { SafeAreaView as SafeAreaViewContext } from "react-native-safe-area-context";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
@@ -19,6 +20,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
 import * as LocalAuthentication from "expo-local-authentication";
 import { Dialog } from "@rneui/themed";
+import i18n from "../../components/i18n/i18n";
 
 const CreatePinCode = () => {
   const navigation = useNavigation();
@@ -29,7 +31,7 @@ const CreatePinCode = () => {
   const [firstPinCode, setFirstPinCode] = useState("");
   const [isCorrect, setIsCorrect] = useState(false);
   const [modal, setModal] = useState(false);
-  const [pinText, setPinText] = useState("Введите новый PIN");
+  const [pinText, setPinText] = useState(i18n.t("enterNewPIN"));
 
   // animation vibrate
   const [animation] = useState(new Animated.Value(0));
@@ -66,16 +68,12 @@ const CreatePinCode = () => {
         const isEnrolled = await LocalAuthentication.isEnrolledAsync();
         if (isEnrolled) {
           const result = await LocalAuthentication.authenticateAsync({
-            promptMessage: "Добавить отпечаток пальца для входа?",
+            promptMessage: i18n.t("addAFingerprintToLogin"),
           });
           if (result.success) {
-            console.log(result);
             saveBiometricPreference();
-            navigation.navigate("Pin");
-
-            console.log("Отпечаток пальца успешно добавлен");
+            navigation.navigate("Главная страница");
           } else {
-            // Пользователь отказался добавлять отпечаток пальца
             console.log(
               "Пользователь отказался от добавления отпечатка пальца"
             );
@@ -93,7 +91,6 @@ const CreatePinCode = () => {
 
   const saveBiometricPreference = async () => {
     try {
-      // Сохранить информацию о том, что отпечаток пальца добавлен
       await AsyncStorage.setItem("biometricEnabled", "true");
     } catch (error) {
       console.error("Ошибка при сохранении предпочтений по биометрии:", error);
@@ -114,6 +111,7 @@ const CreatePinCode = () => {
 
     savePinCode();
   }, [pinCode, isCorrect, navigation]);
+
   const handlePinPress = (digit) => {
     if (pinCode.length < 4) {
       setPinCode((prevPinCode) => prevPinCode + digit);
@@ -126,18 +124,27 @@ const CreatePinCode = () => {
         setFirstPinCode(pinCode);
         setPinStep(2);
         setPinCode("");
-        setPinText("Подтвердите новый PIN");
+        setPinText(i18n.t("confirmTheNewPIN"));
       } else if (pinStep === 2 && pinCode.length === 4) {
         const newPinCode = pinCode;
 
         if (newPinCode === firstPinCode) {
           setIsCorrect(true);
-          console.log("Пин-коды совпадают. Успех!");
           await AsyncStorage.setItem("pinCode", newPinCode);
-          toggleModal();
+
+          // Проверяем поддержку биометрии
+          const hasBiometricHardware =
+            await LocalAuthentication.hasHardwareAsync();
+
+          // Если поддерживается биометрия, и пользователь выбрал добавить отпечаток пальца
+          if (Platform.OS === "android" && hasBiometricHardware) {
+            toggleModal();
+          } else {
+            // В противном случае, переходим сразу на главную страницу
+            navigation.navigate("Главная страница");
+          }
         } else {
-          console.log("Пин-коды не совпадают. Повторите ввод.");
-          setPinError("Пин-коды не совпадают. Повторите ввод.");
+          setPinError(i18n.t("PINCodesDoNotMatch"));
 
           Vibration.vibrate();
           setIsLoading(false);
@@ -159,11 +166,6 @@ const CreatePinCode = () => {
     if (pinCode.length > 0) {
       setPinCode(pinCode.slice(0, -1));
     }
-  };
-
-  // logout
-  const handleExit = () => {
-    console.log("Выход");
   };
 
   // dots
@@ -203,7 +205,7 @@ const CreatePinCode = () => {
         ]}
       >
         <Dialog isVisible={modal}>
-          <Dialog.Title title="Хотите добавить отпечаток пальца?" />
+          <Dialog.Title title={i18n.t("wantToAddAFingerprint")} />
           <View
             style={{
               flexDirection: "row",
@@ -214,10 +216,10 @@ const CreatePinCode = () => {
             <TouchableOpacity
               onPress={() => {
                 toggleModal();
-                navigation.navigate("Pin");
+                navigation.navigate("Главная страница");
               }}
             >
-              <Text style={{ fontSize: 18 }}>Нет</Text>
+              <Text style={{ fontSize: 18 }}>{i18n.t("no")}</Text>
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => {
@@ -225,7 +227,7 @@ const CreatePinCode = () => {
                 askForBiometrics();
               }}
             >
-              <Text style={{ fontSize: 18 }}>Добавить</Text>
+              <Text style={{ fontSize: 18 }}>{i18n.t("add")}</Text>
             </TouchableOpacity>
           </View>
         </Dialog>
@@ -258,7 +260,6 @@ const CreatePinCode = () => {
               {pinError}
             </Text>
           </View>
-          <Text style={{ color: "#fff" }}>fefef</Text>
 
           {isLoading ? (
             <ActivityIndicator
@@ -283,13 +284,7 @@ const CreatePinCode = () => {
               </TouchableOpacity>
             ))}
             <View style={styles.zeroContainer}>
-              <TouchableOpacity style={styles.zeroButton} onPress={handleExit}>
-                <MaterialIcons
-                  name="logout"
-                  style={{ color: "#fff", fontSize: 30 }}
-                />
-              </TouchableOpacity>
-
+              <View style={styles.zeroButton}></View>
               <TouchableOpacity
                 key={0}
                 style={styles.digitButton}

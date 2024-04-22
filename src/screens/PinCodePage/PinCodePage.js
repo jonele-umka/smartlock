@@ -10,7 +10,8 @@ import {
   Image,
   Animated,
 } from "react-native";
-import { useDispatch } from "react-redux";
+
+import { useDispatch, useSelector } from "react-redux";
 import { SafeAreaView as SafeAreaViewContext } from "react-native-safe-area-context";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import Feather from "react-native-vector-icons/Feather";
@@ -20,25 +21,37 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
 import * as LocalAuthentication from "expo-local-authentication";
 import Ionicons from "react-native-vector-icons/Ionicons";
+import i18n from "../../components/i18n/i18n";
+import { API_URL } from "../../constants";
+
 const PinCodePage = () => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const [pinCode, setPinCode] = useState("");
   const [pinError, setPinError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  // const pin = 1234;
+  // const token = useSelector((state) => state.signIn.token);
+  // const refresh_token = useSelector((state) => state.signIn.refreshToken);
+
   const [storedPinCode, setStoredPinCode] = useState(null);
   const [biometryType, setBiometryType] = useState(null);
   const [hasFingerprint, setHasFingerprint] = useState(false);
-  // const [faceType, setFaceType] = useState(null);
-  console.log(hasFingerprint);
+
   // biometric
   useEffect(() => {
     checkBiometricAvailability();
     fetchStoredPinCode();
     fetchBiometricPreference();
-    // handleBiometryLogin();
+
+    const fetchBiometricStart = async () => {
+      const biometricEnabled = await AsyncStorage.getItem("biometricEnabled");
+      if (biometricEnabled) {
+        handleBiometryLogin();
+      }
+    };
+    fetchBiometricStart();
   }, []);
+
   const fetchStoredPinCode = async () => {
     try {
       const storedPin = await AsyncStorage.getItem("pinCode");
@@ -50,7 +63,6 @@ const PinCodePage = () => {
   const fetchBiometricPreference = async () => {
     try {
       const biometricEnabled = await AsyncStorage.getItem("biometricEnabled");
-      console.log("biometricEnabled", biometricEnabled);
 
       // Проверяем, включена ли биометрия
       if (biometricEnabled === "true") {
@@ -75,7 +87,7 @@ const PinCodePage = () => {
   const handleBiometryLogin = async () => {
     try {
       const { success } = await LocalAuthentication.authenticateAsync({
-        promptMessage: "Пожалуйста, подтвердите ваш отпечаток пальца",
+        promptMessage: i18n.t("pleaseСonfirmYourFingerprint"),
       });
 
       if (success) {
@@ -155,7 +167,7 @@ const PinCodePage = () => {
         setIsLoading(false);
         navigation.navigate("Главная страница");
       } else {
-        setPinError("Неправильный PIN");
+        setPinError(i18n.t("wrongPin"));
         Vibration.vibrate();
         setIsLoading(false);
         handlePress();
@@ -175,11 +187,34 @@ const PinCodePage = () => {
   };
 
   // logout
-  const handleExit = () => {
-    // Обработка нажатия на кнопку "Выйти"
-    console.log("Выход");
-  };
+  const handleLogout = async () => {
+    try {
+      const response = await fetch(`${API_URL}/logout`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ refresh_token }),
+      });
 
+      if (response.ok) {
+        const responseBody = await response.text();
+        console.log("Response Body:", responseBody);
+
+        // navigation.navigate("Войти");
+        await AsyncStorage.removeItem("login");
+        await AsyncStorage.removeItem("password");
+      } else {
+        console.log("Ошибка при выходе:", response.status, response.statusText);
+
+        const errorBody = await response.text();
+        console.log("Error Body:", errorBody);
+      }
+    } catch (error) {
+      console.log("Error during logout:", error);
+    }
+  };
   // dots
   const renderDots = () => {
     const dots = Array.from({ length: 4 });
@@ -262,7 +297,10 @@ const PinCodePage = () => {
               </TouchableOpacity>
             ))}
             <View style={styles.zeroContainer}>
-              <TouchableOpacity style={styles.zeroButton} onPress={handleExit}>
+              <TouchableOpacity
+                style={styles.zeroButton}
+                onPress={handleLogout}
+              >
                 <MaterialIcons
                   name="logout"
                   style={{ color: "#fff", fontSize: 30 }}
@@ -275,7 +313,9 @@ const PinCodePage = () => {
               >
                 <Text style={styles.digitButtonText}>0</Text>
               </TouchableOpacity>
-              {hasFingerprint && pinCode.length < 1 ? (
+              {hasFingerprint &&
+              pinCode.length < 1 &&
+              Platform.OS === "android" ? (
                 <TouchableOpacity
                   onPress={handleBiometryLogin}
                   style={styles.zeroButton}

@@ -1,249 +1,184 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import {
-  LOGIN_REQUEST,
-  LOGIN_SUCCESS,
-  LOGIN_FAILURE,
-  SAVE_TOKEN_TO_LOCAL_STORAGE,
-  LOAD_TOKEN_FROM_LOCAL_STORAGE,
-  SEND_EMAIL_REQUEST,
-  SEND_EMAIL_SUCCESS,
-  SEND_EMAIL_FAILURE,
-  VERIFY_CODE_REQUEST,
-  VERIFY_CODE_SUCCESS,
-  VERIFY_CODE_FAILURE,
-  REGISTER_REQUEST,
-  REGISTER_SUCCESS,
-  REGISTER_FAILURE,
-} from "./SignInTypes";
-import Toast from "react-native-toast-message";
-import { API_URL } from "../../constants";
- 
-export const loginRequest = () => ({
-  type: LOGIN_REQUEST,
-});
+// import AsyncStorage from "@react-native-async-storage/async-storage";
+// import {
+//   LOGIN_REQUEST,
+//   LOGIN_SUCCESS,
+//   LOGIN_FAILURE,
+//   SEND_EMAIL_REQUEST,
+//   SEND_EMAIL_SUCCESS,
+//   SEND_EMAIL_FAILURE,
+//   VERIFY_CODE_REQUEST,
+//   VERIFY_CODE_SUCCESS,
+//   VERIFY_CODE_FAILURE,
+//   REGISTER_REQUEST,
+//   REGISTER_SUCCESS,
+//   REGISTER_FAILURE,
+// } from "./SignInTypes";
 
-export const loginSuccess = (token) => ({
-  type: LOGIN_SUCCESS,
-  payload: token,
-});
+// import { API_URL } from "../../constants";
 
-export const loginFailure = (error) => ({
-  type: LOGIN_FAILURE,
-  payload: error,
-});
+// export const loginRequest = () => ({
+//   type: LOGIN_REQUEST,
+// });
 
-export const loginUser = (userData) => async (dispatch) => {
-  dispatch(loginRequest());
+// export const loginSuccess = (token) => ({
+//   type: LOGIN_SUCCESS,
+//   payload: { token },
+// });
 
-  try {
-    const response = await fetch(`${API_URL}/login`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(userData),
-    });
-    if (response.ok) {
-      const data = await response.json();
-      const token = data?.data?.access_token;
-      await AsyncStorage.setItem("token", token);
-      await AsyncStorage.setItem("login", userData.UserName);
-      await AsyncStorage.setItem("password", userData.UserPassword)
-      dispatch(loginSuccess(token));
+// export const loginFailure = (error) => ({
+//   type: LOGIN_FAILURE,
+//   payload: error,
+// });
 
-      return data;
-    } else if (response.status >= 400) {
-      throw new Error("Некорректные данные");
-    } else if (response.status >= 500) {
-      throw new Error("Ошибка с сервером");
-    } else {
-      throw new Error("Неизвестная ошибка");
-    }
-  } catch (error) {
-    console.log(error)
-    dispatch(loginFailure(error));
-    Toast.show({
-      type: "error",
-      position: "top",
-      text1: "Ошибка",
-      text2: error.message,
-      visibilityTime: 3000,
-      autoHide: true,
-      topOffset: 30,
-    });
-  }
-};
+// // export const loginUser = (userData) => async (dispatch) => {
+// //   dispatch(loginRequest());
 
-  
-export const sendEmail = (email) => {
-  return (dispatch) => {
-    dispatch({ type: SEND_EMAIL_REQUEST });
+// //   try {
+// //     const response = await fetch(`${API_URL}/api/v1/auth/login`, {
+// //       method: "POST",
+// //       headers: {
+// //         "Content-Type": "application/json",
+// //       },
+// //       body: JSON.stringify(userData),
+// //     });
+// //     if (response.ok) {
+// //       const data = await response.json();
+// //       const token = data?.access_token;
 
-    return fetch(`${API_URL}/check-email-by-mobile/${email}`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ email }),
-    })
-      .then(async (response) => {
-        if (!response.ok) {
-          const data = await response.json();
-          console.log(data);
-          const errorMessage = data?.error?.Code || "Произошла ошибка";
+// //       await AsyncStorage.setItem("token", token);
 
-          throw new Error(errorMessage);
-        }
+// //       dispatch(loginSuccess(token));
 
-        dispatch({ type: SEND_EMAIL_SUCCESS });
-        return email;
-      })
-      .catch((error) => {
-        dispatch({ type: SEND_EMAIL_FAILURE, payload: error });
-        throw error;
-      });
-  };
-};
+// //       return data;
+// //     } else if (response.status >= 400) {
+// //       throw new Error("Некорректные данные");
+// //     } else if (response.status >= 500) {
+// //       throw new Error("Ошибка с сервером");
+// //     } else {
+// //       throw new Error("Неизвестная ошибка");
+// //     }
+// //   } catch (error) {
+// //     dispatch(loginFailure(error));
+// //     // Toast.show({
+// //     //   type: "error",
+// //     //   position: "top",
+// //     //   text1: "Ошибка",
+// //     //   text2: error.message,
+// //     //   visibilityTime: 3000,
+// //     //   autoHide: true,
+// //     //   topOffset: 30,
+// //     // });
+// //   }
+// // };
+// export const loginUser = (userData) => async (dispatch) => {
+//   dispatch(loginRequest());
 
-export const verifyCode = (code) => {
-  return (dispatch) => {
-    dispatch({ type: VERIFY_CODE_REQUEST });
+//   return fetch(`${API_URL}/api/v1/auth/login`, {
+//     method: "POST",
+//     headers: {
+//       "Content-Type": "application/json",
+//     },
+//     body: JSON.stringify(userData),
+//   })
+//     .then(async (response) => {
+//       if (!response.ok) {
+//         const data = await response.json();
+//         const errorMessage = data?.detail || data?.detail[0].msg;
 
-    return fetch(`${API_URL}/verify-email-by-mobile/${code}`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-      .then(async (response) => {
-        if (!response.ok) {
-          const data = await response.json();
+//         console.log(errorMessage);
+//         throw new Error(errorMessage);
+//       }
+//       const data = await response.json();
+//       const token = data?.access_token;
+//       await AsyncStorage.setItem("token", token);
+//       dispatch(loginSuccess(token));
+//       return data;
+//     })
+//     .catch((error) => {
+//       dispatch(loginFailure(error));
+//       throw error;
+//     });
+// };
 
-          const errorMessage = data?.error?.Code || "Произошла ошибка";
-          throw new Error(errorMessage);
-        }
+// export const sendEmail = (data) => {
+//   const email = data.email;
+//   const password = data.password;
+//   const password_confirm = data.password_confirm;
 
-        dispatch({ type: VERIFY_CODE_SUCCESS });
-      })
-      .catch((error) => {
-        dispatch({ type: VERIFY_CODE_FAILURE, payload: error });
-        throw error;
-      });
-  };
-};
-
-export const registerRequest = () => ({
-  type: REGISTER_REQUEST,
-});
-
-export const registerSuccess = () => ({
-  type: REGISTER_SUCCESS,
-});
-
-export const registerFailure = (error) => ({
-  type: REGISTER_FAILURE,
-  payload: error,
-});
-
-export const registerUser = (requestData) => {
-  return (dispatch) => {
-    dispatch(registerRequest());
-
-    return fetch(`${API_URL}/individual/registration`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(requestData),
-    })
-      .then((response) => {
-        if (!response.ok) {
-          return response.json().then((data) => {
-            const errorMessage = data?.error.Error || "Произошла ошибка";
-            console.log(errorMessage, "n");
-            throw new Error(errorMessage);
-          });
-        } else if (response.status >= 400) {
-          throw new Error("Некорректные данные");
-        }
-
-        return response.json();
-      })
-      .then((data) => {
-        console.log(data);
-        dispatch(registerSuccess(data));
-      })
-      .catch((error) => {
-        console.log(error);
-        dispatch(registerFailure(error));
-        Toast.show({
-          type: "error",
-          position: "top",
-          text1: "fefe",
-          text2: error.message,
-          visibilityTime: 3000,
-          autoHide: true,
-          topOffset: 30,
-        });
-      });
-  };
-};
-
-// export const sendEmail = (email) => {
-//   return async (dispatch) => {
+//   return (dispatch) => {
 //     dispatch({ type: SEND_EMAIL_REQUEST });
 
-//     try {
-//       const response = await fetch(
-//         `${API_URL}/check-email-by-mobile/${email}`,
-//         {
-//           method: "POST",
-//           headers: {
-//             "Content-Type": "application/json",
-//           },
-//           body: JSON.stringify({ email }),
+//     return fetch(`${API_URL}/api/v1/auth/register`, {
+//       method: "POST",
+//       headers: {
+//         "Content-Type": "application/json",
+//       },
+//       body: JSON.stringify({ email, password, password_confirm }),
+//     })
+//       .then(async (response) => {
+//         if (!response.ok) {
+//           const data = await response.json();
+//           const errorMessage = data?.detail || "Произошла ошибка";
+//           console.log(errorMessage);
+//           throw new Error(errorMessage);
 //         }
-//       );
 
-//       if (response.ok) {
 //         dispatch({ type: SEND_EMAIL_SUCCESS });
-//       } else {
-//         throw new Error("Failed to send email.");
-//       }
-//     } catch (error) {
-//       dispatch({ type: SEND_EMAIL_FAILURE, payload: error.message });
-//     }
+//         return data;
+//       })
+//       .catch((error) => {
+//         dispatch({ type: SEND_EMAIL_FAILURE, payload: error });
+//         throw error;
+//       });
 //   };
 // };
 
-// export const verifyCode = (code) => {
-//   return async (dispatch) => {
+// export const verifyCode = (email, code) => {
+//   return (dispatch) => {
 //     dispatch({ type: VERIFY_CODE_REQUEST });
 
-//     try {
-//       const response = await fetch(
-//         `${API_URL}/verify-email-by-mobile/${code}`,
-//         {
-//           method: "GET",
+//     return fetch(`${API_URL}/api/v1/auth/activate`, {
+//       method: "POST",
+//       headers: {
+//         "Content-Type": "application/json",
+//       },
+//       body: JSON.stringify({ email, code }),
+//     })
+//       .then(async (response) => {
+//         if (!response.ok) {
+//           const data = await response.json();
+//           const errorMessage = data?.detail || "Произошла ошибка";
+//           console.log(errorMessage);
+//           throw new Error(errorMessage);
 //         }
-//       );
 
-//       if (response.ok) {
 //         dispatch({ type: VERIFY_CODE_SUCCESS });
-//       } else {
-//         throw new Error("Invalid verification code.");
-//       }
-//     } catch (error) {
-//       dispatch({ type: VERIFY_CODE_FAILURE, payload: error.message });
-//     }
+//       })
+//       .catch((error) => {
+//         dispatch({ type: VERIFY_CODE_FAILURE, payload: error });
+//         throw error;
+//       });
 //   };
 // };
+
+// export const registerRequest = () => ({
+//   type: REGISTER_REQUEST,
+// });
+
+// export const registerSuccess = () => ({
+//   type: REGISTER_SUCCESS,
+// });
+
+// export const registerFailure = (error) => ({
+//   type: REGISTER_FAILURE,
+//   payload: error,
+// });
 
 // export const registerUser = (requestData) => {
 //   return (dispatch) => {
 //     dispatch(registerRequest());
 
-//     return fetch("${API_URL}/individual/registration", {
+//     return fetch(`${API_URL}/individual/registration`, {
 //       method: "POST",
 //       headers: {
 //         "Content-Type": "application/json",
@@ -251,185 +186,278 @@ export const registerUser = (requestData) => {
 //       body: JSON.stringify(requestData),
 //     })
 //       .then((response) => {
-//         console.log(response);
-
-//         if (response.ok) {
-//           return response.json();
-//         } else {
-//           throw new Error("Failed to register user.");
+//         if (!response.ok) {
+//           return response.json().then((data) => {
+//             const errorMessage = data?.error.Error || "Произошла ошибка";
+//             console.log(errorMessage, "n");
+//             throw new Error(errorMessage);
+//           });
+//         } else if (response.status >= 400) {
+//           throw new Error("Некорректные данные");
 //         }
+
+//         return response.json();
 //       })
 //       .then((data) => {
-//         console.log(data);
-//         const token = data.data.access_token;
-//         dispatch(loginSuccess(token));
-//         dispatch(registerSuccess());
+//         dispatch(registerSuccess(data));
 //       })
 //       .catch((error) => {
-//         dispatch(registerFailure(error.message));
-//         Toast.show({
-//           type: "error",
-//           position: "top",
-//           text1: "Ошибка",
-//           text2: error.message,
-//           visibilityTime: 3000,
-//           autoHide: true,
-//           topOffset: 30,
-//         });
+//         console.log(error);
+//         dispatch(registerFailure(error));
+//         // Toast.show({
+//         //   type: "error",
+//         //   position: "top",
+//         //   text1: "fefe",
+//         //   text2: error.message,
+//         //   visibilityTime: 3000,
+//         //   autoHide: true,
+//         //   topOffset: 30,
+//         // });
 //       });
 //   };
 // };
 
-// import {
-//   SEND_EMAIL_REQUEST,
-//   SEND_EMAIL_SUCCESS,
-//   SEND_EMAIL_FAILURE,
-//   VERIFY_CODE_REQUEST,
-//   VERIFY_CODE_SUCCESS,
-//   VERIFY_CODE_FAILURE,
-// } from "./registerTypes";
+// // export const sendEmail = (email) => {
+// //   return async (dispatch) => {
+// //     dispatch({ type: SEND_EMAIL_REQUEST });
 
-// export const sendEmail = (email) => {
-//   return async (dispatch) => {
-//     dispatch({ type: SEND_EMAIL_REQUEST });
+// //     try {
+// //       const response = await fetch(
+// //         `${API_URL}/check-email-by-mobile/${email}`,
+// //         {
+// //           method: "POST",
+// //           headers: {
+// //             "Content-Type": "application/json",
+// //           },
+// //           body: JSON.stringify({ email }),
+// //         }
+// //       );
 
-//     try {
-//       const response = await fetch(
-//         `http://206.81.16.41:8080/auth/check-email/${email}`,
-//         {
-//           method: "POST",
-//           headers: {
-//             "Content-Type": "application/json",
-//           },
-//         }
-//       );
-//       const data = await response.json();
+// //       if (response.ok) {
+// //         dispatch({ type: SEND_EMAIL_SUCCESS });
+// //       } else {
+// //         throw new Error("Failed to send email.");
+// //       }
+// //     } catch (error) {
+// //       dispatch({ type: SEND_EMAIL_FAILURE, payload: error.message });
+// //     }
+// //   };
+// // };
 
-//       if (response.ok) {
-//         dispatch({ type: SEND_EMAIL_SUCCESS, payload: data.message });
-//       } else {
-//         dispatch({ type: SEND_EMAIL_FAILURE, payload: data.error });
-//       }
-//     } catch (error) {
-//       dispatch({ type: SEND_EMAIL_FAILURE, payload: error.message });
-//     }
-//   };
-// };
+// // export const verifyCode = (code) => {
+// //   return async (dispatch) => {
+// //     dispatch({ type: VERIFY_CODE_REQUEST });
 
-// export const verifyCode = (code) => {
-//   return async (dispatch) => {
-//     dispatch({ type: VERIFY_CODE_REQUEST });
+// //     try {
+// //       const response = await fetch(
+// //         `${API_URL}/verify-email-by-mobile/${code}`,
+// //         {
+// //           method: "GET",
+// //         }
+// //       );
 
-//     try {
-//       const response = await fetch(
-//         `http://206.81.16.41:8080/auth/verify-email/${code}`,
-//         {
-//           method: "GET",
-//         }
-//       );
+// //       if (response.ok) {
+// //         dispatch({ type: VERIFY_CODE_SUCCESS });
+// //       } else {
+// //         throw new Error("Invalid verification code.");
+// //       }
+// //     } catch (error) {
+// //       dispatch({ type: VERIFY_CODE_FAILURE, payload: error.message });
+// //     }
+// //   };
+// // };
 
-//       if (response.ok) {
-//         dispatch({ type: VERIFY_CODE_SUCCESS });
-//       } else {
-//         throw new Error("Invalid verification code.");
-//       }
-//     } catch (error) {
-//       dispatch({ type: VERIFY_CODE_FAILURE, payload: error.message });
-//     }
-//   };
-// };
+// // export const registerUser = (requestData) => {
+// //   return (dispatch) => {
+// //     dispatch(registerRequest());
 
-// actions.js
+// //     return fetch("${API_URL}/individual/registration", {
+// //       method: "POST",
+// //       headers: {
+// //         "Content-Type": "application/json",
+// //       },
+// //       body: JSON.stringify(requestData),
+// //     })
+// //       .then((response) => {
+// //         console.log(response);
 
-// export const logoutRequest = () => ({
-//   type: LOGOUT_REQUEST,
-// });
+// //         if (response.ok) {
+// //           return response.json();
+// //         } else {
+// //           throw new Error("Failed to register user.");
+// //         }
+// //       })
+// //       .then((data) => {
+// //         console.log(data);
+// //         const token = data.data.access_token;
+// //         dispatch(loginSuccess(token));
+// //         dispatch(registerSuccess());
+// //       })
+// //       .catch((error) => {
+// //         dispatch(registerFailure(error.message));
+// //         Toast.show({
+// //           type: "error",
+// //           position: "top",
+// //           text1: "Ошибка",
+// //           text2: error.message,
+// //           visibilityTime: 3000,
+// //           autoHide: true,
+// //           topOffset: 30,
+// //         });
+// //       });
+// //   };
+// // };
 
-// export const logoutSuccess = () => ({
-//   type: LOGOUT_SUCCESS,
-// });
+// // import {
+// //   SEND_EMAIL_REQUEST,
+// //   SEND_EMAIL_SUCCESS,
+// //   SEND_EMAIL_FAILURE,
+// //   VERIFY_CODE_REQUEST,
+// //   VERIFY_CODE_SUCCESS,
+// //   VERIFY_CODE_FAILURE,
+// // } from "./registerTypes";
 
-// export const logoutFailure = (error) => ({
-//   type: LOGOUT_FAILURE,
-//   payload: error,
-// });
-// export const logoutUser = () => {
-//   return async (dispatch, getState) => {
-//     const token = getState().signIn.token;
-//     dispatch(logoutRequest());
+// // export const sendEmail = (email) => {
+// //   return async (dispatch) => {
+// //     dispatch({ type: SEND_EMAIL_REQUEST });
 
-//     try {
-//       // Вызов API для выхода
-//       const response = await fetch("${API_URL}/logout/", {
-//         method: "GET",
-//         headers: {
-//           "Content-Type": "application/json",
-//           Authorization: `Bearer ${token}`,
-//         },
-//       });
+// //     try {
+// //       const response = await fetch(
+// //         `http://206.81.16.41:8080/auth/check-email/${email}`,
+// //         {
+// //           method: "POST",
+// //           headers: {
+// //             "Content-Type": "application/json",
+// //           },
+// //         }
+// //       );
+// //       const data = await response.json();
 
-//       if (!response.ok) {
-//         throw new Error(`HTTP error! status: ${response.status}`);
-//       }
+// //       if (response.ok) {
+// //         dispatch({ type: SEND_EMAIL_SUCCESS, payload: data.message });
+// //       } else {
+// //         dispatch({ type: SEND_EMAIL_FAILURE, payload: data.error });
+// //       }
+// //     } catch (error) {
+// //       dispatch({ type: SEND_EMAIL_FAILURE, payload: error.message });
+// //     }
+// //   };
+// // };
 
-//       // Удаление токена из AsyncStorage
-//       await AsyncStorage.removeItem("token");
+// // export const verifyCode = (code) => {
+// //   return async (dispatch) => {
+// //     dispatch({ type: VERIFY_CODE_REQUEST });
 
-//       dispatch(logoutSuccess());
-//     } catch (error) {
-//       dispatch(logoutFailure(error.message));
-//       Toast.show({
-//         type: "error",
-//         position: "top",
-//         text1: "Ошибка",
-//         text2: error.message,
-//         visibilityTime: 3000,
-//         autoHide: true,
-//         topOffset: 30,
-//       });
-//     }
-//   };
-// };
-// export const loginUser = (userData) => {
-//   return async (dispatch) => {
-//     dispatch({ type: LOGIN_REQUEST });
+// //     try {
+// //       const response = await fetch(
+// //         `http://206.81.16.41:8080/auth/verify-email/${code}`,
+// //         {
+// //           method: "GET",
+// //         }
+// //       );
 
-//     try {
-//       const response = await fetch("${API_URL}/login", {
-//         method: "POST",
-//         headers: {
-//           "Content-Type": "application/json",
-//         },
-//         body: JSON.stringify(userData),
-//       });
+// //       if (response.ok) {
+// //         dispatch({ type: VERIFY_CODE_SUCCESS });
+// //       } else {
+// //         throw new Error("Invalid verification code.");
+// //       }
+// //     } catch (error) {
+// //       dispatch({ type: VERIFY_CODE_FAILURE, payload: error.message });
+// //     }
+// //   };
+// // };
 
-//       if (response.ok) {
-//         const data = await response.json();
-//         const token = data.data.access_token;
-//         console.log(token);
-//         await dispatch(loginSuccess(token));
-//         return data;
-//       } else if (response.status >= 400) {
-//         console.log(response.status);
-//         throw new Error("Некорректные данные");
-//       } else if (response.status >= 500) {
-//         throw new Error("Ошибка с сервером");
-//       } else {
-//         throw new Error("Неизвестная ошибка");
-//       }
-//     } catch (error) {
-//       console.log(error)
-//       dispatch({ type: LOGIN_FAILURE, payload: error.message });
-//       Toast.show({
-//         type: "error",
-//         position: "top",
-//         text1: "Ошибка",
-//         text2: error.message,
-//         visibilityTime: 3000,
-//         autoHide: true,
-//         topOffset: 30,
-//       });
-//       throw error;
-//     }
-//   };
-// };
+// // actions.js
+
+// // export const logoutRequest = () => ({
+// //   type: LOGOUT_REQUEST,
+// // });
+
+// // export const logoutSuccess = () => ({
+// //   type: LOGOUT_SUCCESS,
+// // });
+
+// // export const logoutFailure = (error) => ({
+// //   type: LOGOUT_FAILURE,
+// //   payload: error,
+// // });
+// // export const logoutUser = () => {
+// //   return async (dispatch, getState) => {
+// //     const token = getState().signIn.token;
+// //     dispatch(logoutRequest());
+
+// //     try {
+// //       // Вызов API для выхода
+// //       const response = await fetch("${API_URL}/logout/", {
+// //         method: "GET",
+// //         headers: {
+// //           "Content-Type": "application/json",
+// //           Authorization: `Bearer ${token}`,
+// //         },
+// //       });
+
+// //       if (!response.ok) {
+// //         throw new Error(`HTTP error! status: ${response.status}`);
+// //       }
+
+// //       // Удаление токена из AsyncStorage
+// //       await AsyncStorage.removeItem("token");
+
+// //       dispatch(logoutSuccess());
+// //     } catch (error) {
+// //       dispatch(logoutFailure(error.message));
+// //       Toast.show({
+// //         type: "error",
+// //         position: "top",
+// //         text1: "Ошибка",
+// //         text2: error.message,
+// //         visibilityTime: 3000,
+// //         autoHide: true,
+// //         topOffset: 30,
+// //       });
+// //     }
+// //   };
+// // };
+// // export const loginUser = (userData) => {
+// //   return async (dispatch) => {
+// //     dispatch({ type: LOGIN_REQUEST });
+
+// //     try {
+// //       const response = await fetch("${API_URL}/login", {
+// //         method: "POST",
+// //         headers: {
+// //           "Content-Type": "application/json",
+// //         },
+// //         body: JSON.stringify(userData),
+// //       });
+
+// //       if (response.ok) {
+// //         const data = await response.json();
+// //         const token = data.data.access_token;
+// //         console.log(token);
+// //         await dispatch(loginSuccess(token));
+// //         return data;
+// //       } else if (response.status >= 400) {
+// //         console.log(response.status);
+// //         throw new Error("Некорректные данные");
+// //       } else if (response.status >= 500) {
+// //         throw new Error("Ошибка с сервером");
+// //       } else {
+// //         throw new Error("Неизвестная ошибка");
+// //       }
+// //     } catch (error) {
+// //       console.log(error)
+// //       dispatch({ type: LOGIN_FAILURE, payload: error.message });
+// //       Toast.show({
+// //         type: "error",
+// //         position: "top",
+// //         text1: "Ошибка",
+// //         text2: error.message,
+// //         visibilityTime: 3000,
+// //         autoHide: true,
+// //         topOffset: 30,
+// //       });
+// //       throw error;
+// //     }
+// //   };
+// // };

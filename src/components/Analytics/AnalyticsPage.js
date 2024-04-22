@@ -9,7 +9,8 @@ import {
 import { useRoute } from "@react-navigation/native";
 import { Skeleton } from "@rneui/base";
 import { LinearGradient } from "expo-linear-gradient";
-
+import i18n from "../i18n/i18n";
+import * as Localization from "expo-localization";
 const AnalyticsPage = () => {
   const route = useRoute();
   const { transactions, loading } = route.params;
@@ -168,7 +169,7 @@ const AnalyticsPage = () => {
             marginBottom: 20,
           }}
         >
-          Нет данных о расходах
+          {i18n.t("noCostData")}
         </Text>
       </View>
     );
@@ -184,6 +185,7 @@ const AnalyticsPage = () => {
         : null
     );
   };
+
   return (
     <LinearGradient
       style={{ flex: 1 }}
@@ -191,23 +193,32 @@ const AnalyticsPage = () => {
       end={{ x: 0, y: 0 }}
       colors={["#241270", "#140A4F", "#000"]}
     >
-      <SafeAreaView style={{ flex: 1}}>
+      <SafeAreaView style={{ flex: 1 }}>
         <Text
           style={{
             color: "#fff",
             paddingHorizontal: 10,
-            paddingTop: 10,
+            paddingTop: 20,
             fontSize: 25,
             textAlign: "center",
           }}
         >
-          Все расходы
+          {i18n.t("allExpenses")}
         </Text>
 
         {selectedDay && (
-          <View style={{ paddingVertical: 20, paddingHorizontal: 10 , flex: 1, alignItems: 'center' }}>
+          <View
+            style={{
+              paddingVertical: 20,
+              paddingHorizontal: 10,
+              flex: 1,
+              alignItems: "center",
+            }}
+          >
             <Text style={{ color: "#fff", fontSize: 16, marginBottom: 5 }}>
-              {selectedDay ? `Расход за ${selectedDay.date}` : null}
+              {selectedDay
+                ? `${i18n.t("expenseFor")} ${selectedDay.date}`
+                : null}
             </Text>
             <Text style={{ color: "#fff", fontSize: 16 }}>
               {selectedDay ? `${selectedDay.expenses.totalAmount}` : null}
@@ -233,7 +244,6 @@ const AnalyticsPage = () => {
                 }}
                 key={index}
               >
-                {console.log(expense.totalAmount)}
                 <View>
                   <Text
                     style={{
@@ -242,11 +252,14 @@ const AnalyticsPage = () => {
                       marginBottom: 5,
                     }}
                   >
-                    За{" "}
-                    {new Date(expense.startDate).toLocaleString("default", {
-                      month: "long",
-                      year: "numeric",
-                    })}
+                    {i18n.t("for")}{" "}
+                    {new Date(expense.startDate).toLocaleString(
+                      Localization.locale,
+                      {
+                        month: "long",
+                        year: "numeric",
+                      }
+                    )}
                   </Text>
                   <Text
                     style={{ color: "#fff", fontSize: 20, fontWeight: 500 }}

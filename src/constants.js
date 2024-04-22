@@ -1,7 +1,2 @@
-export const overview = "Главная";
-export const payments = "Платежи";
-export const favorites = "Избранное";
-export const settings = "Еще";
-export const signIn = "signIn";
-export const register = "Register";
-export const API_URL = 'http://coffee.microret.com:8088'
+export const API_URL = "http://192.168.88.19:8000";
+export const GOOGLE_API_KEY = "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";
