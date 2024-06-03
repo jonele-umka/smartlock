@@ -10,9 +10,11 @@ import React from "react";
 import i18n from "../../components/i18n/i18n";
 import { SafeAreaView as SafeAreaViewContext } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
+import { useNavigation } from "@react-navigation/core";
 const Profile = () => {
   const SafeAreaWrapper =
     Platform.OS === "android" ? SafeAreaViewContext : SafeAreaView;
+  const navigation = useNavigation();
 
   return (
     <SafeAreaWrapper
@@ -113,7 +115,7 @@ const Profile = () => {
         </View>
         <TouchableOpacity
           onPress={() => {
-            navigation.navigate("Результаты поиска");
+            navigation.goBack();
           }}
           style={{
             elevation: 5,

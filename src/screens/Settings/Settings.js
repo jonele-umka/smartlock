@@ -28,9 +28,9 @@ import { API_URL } from "../../constants";
 import * as ImagePicker from "expo-image-picker";
 // link
 const Link = ({ title, onClick, icon, disabled = false }) => {
-  const isDarkModeEnabled = useSelector(
-    (state) => state.theme.isDarkModeEnabled
-  );
+  // const isDarkModeEnabled = useSelector(
+  //   (state) => state.theme.isDarkModeEnabled
+  // );
   let iconComponent;
 
   switch (icon) {
@@ -320,9 +320,9 @@ const Settings = () => {
   }, []);
 
   // redux
-  const isDarkModeEnabled = useSelector(
-    (state) => state.theme.isDarkModeEnabled
-  );
+  // const isDarkModeEnabled = useSelector(
+  //   (state) => state.theme.isDarkModeEnabled
+  // );
 
   const SafeAreaWrapper =
     Platform.OS === "android" ? SafeAreaViewContext : SafeAreaView;
@@ -499,10 +499,17 @@ const Settings = () => {
           ]}
         >
           <Link
+            title={"Редактировать профиль"}
+            onClick={() => {
+              navigation.navigate("Редактировать профиль");
+            }}
+            icon={"person"}
+          />
+          <Link
             title={i18n.t("changePassword")}
-            // onClick={() => {
-            //   navigation.navigate("Смена пароля");
-            // }}
+            onClick={() => {
+              navigation.navigate("Смена пароля");
+            }}
             icon={"lock"}
           />
           <Link

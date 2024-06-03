@@ -36,7 +36,7 @@ export default function Map({ location }) {
       mapRef.current?.animateCamera(
         {
           center: {
-            latitude: location.latitude + -0.0050,
+            latitude: location.latitude + -0.005,
             longitude: location.longitude,
           },
           zoom: 15,
@@ -44,24 +44,7 @@ export default function Map({ location }) {
         { duration: 1500 }
       );
     }
-
-    navigation.setOptions({
-      headerLeft: () => (
-        <TouchableOpacity onPress={focusMap}>
-          <View style={{ padding: 10 }}>
-            <Text>Focus</Text>
-          </View>
-        </TouchableOpacity>
-      ),
-    });
   }, [location]);
-
-  const focusMap = () => {
-    mapRef.current?.animateCamera(
-      { center: -0.0050, zoom: 15 },
-      { duration: 1500 }
-    );
-  };
 
   const onMarkerSelected = (marker) => {
     Alert.alert(marker.name);
@@ -72,10 +55,9 @@ export default function Map({ location }) {
   };
 
   const onRegionChange = (region) => {
-    console.log(region);
+    console.log("kkk: ", region);
   };
 
-  console.log("location.coords", location);
   return (
     <View style={{ flex: 1 }}>
       <MapView

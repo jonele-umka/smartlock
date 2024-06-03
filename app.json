@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "Smartlock",
+    "name": "Smart Locks",
     "slug": "smartlock",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -14,26 +14,18 @@
     "ios": {
       "supportsTablet": true,
       "splash": {
-<<<<<<< HEAD
-        "image": "./src/assets/apkIcons/icon.png",
-        "resizeMode": "contain"
-      },
-      "config": {
-        "googleMapsApiKey": "AIzaSyBvwtsqmVTETIZtsUUcmkW0nNUBeET_MeY"
-=======
         "image": "./src/assets/apkIcons/splashImg.png",
         "resizeMode": "cover"
->>>>>>> f197eaaaae4752be8ef2f168da1b153613fee086
       },
       "infoPlist": {
         "NSPhotoLibraryUsageDescription": "Разрешение на доступ к вашей галерее",
         "NSCameraUsageDescription": "Разрешение на доступ к вашей камере",
-        "NSFaceIDUsageDescription": "Allow $(Smartlock) to use Face ID."
+        "NSFaceIDUsageDescription": "Allow $(Smart Locks) to use Face ID."
       }
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./src/assets/iconHotel.png",
+        "foregroundImage": "./src/assets/apkIcons/adaptive-icon.png",
         "backgroundColor": "#fff"
       },
       "config": {
@@ -54,7 +46,6 @@
         "android.permission.ACCESS_FINE_LOCATION",
         "android.permission.FOREGROUND_SERVICE"
       ],
-      "useNextNotificationsApi": true,
       "package": "com.jonele_umka.smartlock"
     },
     "web": {
@@ -67,9 +58,15 @@
     },
     "plugins": [
       [
+        "@react-native-google-signin/google-signin",
+        {
+          "iosUrlScheme": "com.googleusercontent.apps._some_id_here_"
+        }
+      ],
+      [
         "expo-local-authentication",
         {
-          "faceIDPermission": "Allow $(Smartlock) to use Face ID."
+          "faceIDPermission": "Allow $(Smart Lock) to use Face ID."
         }
       ],
       [
@@ -81,7 +78,7 @@
       [
         "expo-location",
         {
-          "locationAlwaysAndWhenInUsePermission": "Allow $(Smartlock) to use your location."
+          "locationAlwaysAndWhenInUsePermission": "Allow $(Smart Lock) to use your location."
         }
       ],
       "expo-localization"

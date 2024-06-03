@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
-import { sendEmail } from "../../../Store/SignIn/SignInAction";
+import { sendEmail } from "../../../Store/authSlice/authSlice";
 import {
   SafeAreaView,
   Text,
@@ -14,17 +14,14 @@ import { SafeAreaView as SafeAreaViewContext } from "react-native-safe-area-cont
 
 import { useNavigation } from "@react-navigation/core";
 import i18n from "../../../components/i18n/i18n";
-<<<<<<< HEAD
 import Ionicons from "react-native-vector-icons/Ionicons";
 import Feather from "react-native-vector-icons/Feather";
-=======
 import { LinearGradient } from "expo-linear-gradient";
->>>>>>> f197eaaaae4752be8ef2f168da1b153613fee086
 
 const SignUpEmail = () => {
-  const isDarkModeEnabled = useSelector(
-    (state) => state.theme.isDarkModeEnabled
-  );
+  //   const isDarkModeEnabled = useSelector(
+  //     (state) => state.theme.isDarkModeEnabled
+  //   );
   const {
     control,
     handleSubmit,
@@ -32,14 +29,21 @@ const SignUpEmail = () => {
   } = useForm();
   const dispatch = useDispatch();
   const navigation = useNavigation();
-  // const loading = useSelector((state) => state.signIn.loading);
+  const loading = useSelector((state) => state.auth.loading);
   const [error, setError] = useState("");
-  const onSubmit = async (data) => {
+
+  const onSubmit = async (email) => {
     try {
-      await dispatch(sendEmail(data));
-      // navigation.navigate("Код", { email: data.email });
-    } catch (errors) {
-      setError(errors.message);
+      const response = await dispatch(sendEmail(email));
+
+      if (response.type === "auth/sendEmail/fulfilled") {
+        navigation.navigate("Код", { email: email.Email });
+      } else {
+        setError(response.payload);
+      }
+    } catch (error) {
+      console.error("Ошибка при входе:", error);
+      setError(error.message);
     }
   };
 
@@ -47,20 +51,16 @@ const SignUpEmail = () => {
     Platform.OS === "android" ? SafeAreaViewContext : SafeAreaView;
 
   return (
-    <LinearGradient
+    <SafeAreaWrapper
       style={[
-<<<<<<< HEAD
         { flex: 1, backgroundColor: "#fff" },
-=======
-        { flex: 1 },
->>>>>>> f197eaaaae4752be8ef2f168da1b153613fee086
+
         // isDarkModeEnabled && { backgroundColor: "#191a1d" },
       ]}
       start={{ x: 2.4, y: 1.1 }}
       end={{ x: 0, y: 0 }}
       colors={["#241270", "#140A4F", "#000"]}
     >
-<<<<<<< HEAD
       <View
         style={{
           paddingHorizontal: 10,
@@ -92,18 +92,15 @@ const SignUpEmail = () => {
                 borderBottomColor: "#000",
                 paddingRight: 10,
                 paddingVertical: 10,
-                borderBottomColor:
-                  errors.email || error === "user already exists"
-                    ? "red"
-                    : "#000",
+                borderBottomColor: errors.Email ? "red" : "#000",
               }}
             >
               <Feather name="mail" style={{ color: "#b8b8b8", fontSize: 20 }} />
               <Controller
                 control={control}
-                name="email"
+                name="Email"
                 rules={{
-                  required: i18n.t("fillInThisField"),
+                  required: i18n.t("fillInTheField"),
                   pattern: {
                     value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
                     message: i18n.t("pleaseEnterAValidEmailAddress"),
@@ -127,14 +124,9 @@ const SignUpEmail = () => {
                 )}
               />
             </View>
-            {errors.email && (
+            {errors.Email && (
               <Text style={{ color: "red", fontSize: 12, marginTop: 7 }}>
-                {errors.email.message}
-              </Text>
-            )}
-            {error === "user already exists" && (
-              <Text style={{ color: "red", fontSize: 12, marginTop: 7 }}>
-                {error}
+                {errors.Email.message}
               </Text>
             )}
           </View>
@@ -148,13 +140,13 @@ const SignUpEmail = () => {
                 borderBottomColor: "#000",
                 paddingRight: 10,
                 paddingVertical: 10,
-                borderBottomColor: errors.password ? "red" : "#000",
+                borderBottomColor: errors.Password ? "red" : "#000",
               }}
             >
               <Feather name="lock" style={{ color: "#b8b8b8", fontSize: 20 }} />
               <Controller
                 control={control}
-                name="password"
+                name="Password"
                 rules={{
                   required: i18n.t("fillInTheField"),
                   minLength: {
@@ -185,16 +177,11 @@ const SignUpEmail = () => {
                 )}
               />
             </View>
-            {errors.password && (
+            {errors.Password && (
               <Text style={{ color: "red", fontSize: 12, marginTop: 7 }}>
-                {errors.password.message}
+                {errors.Password.message}
               </Text>
             )}
-            {/* {error && (
-              <Text style={{ color: "red", fontSize: 12, marginTop: 7 }}>
-                {error}
-              </Text>
-            )} */}
           </View>
           <View>
             <View
@@ -206,16 +193,13 @@ const SignUpEmail = () => {
                 borderBottomColor: "#000",
                 paddingRight: 10,
                 paddingVertical: 10,
-                borderBottomColor:
-                  errors.password_confirm || error === "passwords do not match"
-                    ? "red"
-                    : "#000",
+                borderBottomColor: errors.PasswordConfirm ? "red" : "#000",
               }}
             >
               <Feather name="lock" style={{ color: "#b8b8b8", fontSize: 20 }} />
               <Controller
                 control={control}
-                name="password_confirm"
+                name="PasswordConfirm"
                 rules={{
                   required: i18n.t("fillInTheField"),
                   minLength: {
@@ -246,14 +230,9 @@ const SignUpEmail = () => {
                 )}
               />
             </View>
-            {errors.password_confirm && (
+            {errors.PasswordConfirm && (
               <Text style={{ color: "red", fontSize: 12, marginTop: 7 }}>
-                {errors.password_confirm.message}
-              </Text>
-            )}
-            {error === "passwords do not match" && (
-              <Text style={{ color: "red", fontSize: 12, marginTop: 7 }}>
-                {error}
+                {errors.PasswordConfirm.message}
               </Text>
             )}
           </View>
@@ -263,134 +242,49 @@ const SignUpEmail = () => {
           <ActivityIndicator
             size="large"
             style={{ marginTop: 40 }}
-            color={"#000"}
+            color={"#02AAB0"}
           />
         ) : (
           <TouchableOpacity
             onPress={handleSubmit(onSubmit)}
-            disabled={loading}
             style={{
-              marginTop: 30,
-              padding: 15,
-              backgroundColor: "#000",
-              borderRadius: 20,
+              elevation: 5,
               shadowColor: "#000",
-              shadowOffset: {
-                width: 0,
-                height: 10,
-=======
-      <SafeAreaWrapper
-        style={[
-          { flex: 1 },
-          // isDarkModeEnabled && { backgroundColor: "#191a1d" },
-        ]}
-      >
-        <View
-          style={{
-            paddingHorizontal: 10,
-            paddingVertical: 20,
-          }}
-        >
-          <Text
-            style={[
-              {
-                fontSize: 20,
-                textAlign: "center",
-                marginBottom: 30,
-                paddingTop: 10,
-                color: "#fff",
-              },
-              // isDarkModeEnabled ? { color: "#fff" } : { color: "#191a1d" },
-            ]}
-          >
-            {i18n.t("enterEmail")}
-          </Text>
-          <Controller
-            control={control}
-            rules={{
-              required: i18n.t("fillInTheField"),
-              pattern: {
-                value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                message: i18n.t("pleaseEnterAValidEmailAddress"),
->>>>>>> f197eaaaae4752be8ef2f168da1b153613fee086
-              },
+              shadowOffset: { width: 0, height: 2 },
+              shadowOpacity: 0.2,
+              shadowRadius: 10,
+              marginTop: 30,
             }}
-<<<<<<< HEAD
           >
-            <Text style={{ color: "#fff", textAlign: "center", fontSize: 20 }}>
-              {i18n.t("next")}
-=======
-            render={({ field: { onChange, value } }) => (
-              <TextInput
-                placeholderTextColor={"#9c9c9c"}
-                value={value}
-                onChangeText={(text) => {
-                  onChange(text);
-                  setError("");
-                }}
-                placeholder={i18n.t("enterEmail")}
-                style={{
-                  color: "#fff",
-                  fontSize: 16,
-                  backgroundColor: "rgba(255,255,255,0.05)",
-                  paddingHorizontal: 10,
-                  paddingVertical: 15,
-                  borderRadius: 10,
-                  borderWidth: errors.email || error == 400 ? 1 : 0,
-                  borderColor:
-                    errors.email || error == 400
-                      ? "red"
-                      : "rgba(255,255,255,0.05)",
-                }}
-              />
-            )}
-            name="email"
-          />
-          {errors.email && (
-            <Text style={{ color: "red", fontSize: 12, marginTop: 7 }}>
-              {errors.email.message}
->>>>>>> f197eaaaae4752be8ef2f168da1b153613fee086
-            </Text>
-          )}
-          {error == 400 && (
-            <Text style={{ color: "red", fontSize: 12, marginTop: 7 }}>
-              {i18n.t("invalidEmail")}
-            </Text>
-          )}
-          {loading ? (
-            <ActivityIndicator
-              size="large"
-              style={{ marginTop: 30 }}
-              color={"#fff"}
-            />
-          ) : (
-            <TouchableOpacity
-              onPress={handleSubmit(onSubmit)}
-              disabled={loading}
+            <LinearGradient
+              colors={["#02AAB0", "#00CDAC"]}
               style={{
-                marginTop: 20,
-                padding: 15,
-                backgroundColor: "#5d00e6",
+                paddingVertical: 15,
+                textAlign: "center",
                 borderRadius: 10,
-                shadowColor: "#5d00e6",
-                shadowOffset: {
-                  width: 0,
-                  height: 10,
-                },
-                shadowOpacity: 0.3,
-                shadowRadius: 10,
               }}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
             >
               <Text
-                style={{ color: "#fff", textAlign: "center", fontSize: 20 }}
+                style={{
+                  color: "#fff",
+                  textAlign: "center",
+                  fontSize: 20,
+                }}
               >
-                {i18n.t("next")}
+                Отправить
               </Text>
-            </TouchableOpacity>
-          )}
-        </View>
-      </SafeAreaWrapper>
-    </LinearGradient>
+            </LinearGradient>
+          </TouchableOpacity>
+        )}
+        {error == 400 && (
+          <Text style={{ color: "red", fontSize: 12, marginTop: 7 }}>
+            {i18n.t("invalidEmail")}
+          </Text>
+        )}
+      </View>
+    </SafeAreaWrapper>
   );
 };
 

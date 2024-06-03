@@ -110,9 +110,9 @@ const Questions = () => {
   const onPress = (page) => {
     clickHandler(page);
   };
-  const isDarkModeEnabled = useSelector(
-    (state) => state.theme.isDarkModeEnabled
-  );
+  // const isDarkModeEnabled = useSelector(
+  //   (state) => state.theme.isDarkModeEnabled
+  // );
   const reviewsData = [
     {
       name: "User 1",

@@ -30,9 +30,9 @@ import { API_URL } from "../constants";
 
 // link
 const Link = ({ title, onClick, icon, disabled = false }) => {
-  const isDarkModeEnabled = useSelector(
-    (state) => state.theme.isDarkModeEnabled
-  );
+  // const isDarkModeEnabled = useSelector(
+  //   (state) => state.theme.isDarkModeEnabled
+  // );
   let iconComponent;
 
   switch (icon) {
@@ -128,36 +128,6 @@ const SettingsScreen = () => {
     };
     checkBiometricAvailability();
   }, []);
-  const handleLogout = async () => {
-    try {
-      const response = await fetch(`${API_URL}/logout`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ refresh_token }),
-      });
-
-      if (response.ok) {
-        const responseBody = await response.text();
-        console.log("Response Body:", responseBody);
-
-        navigation.navigate("Войти");
-        await AsyncStorage.removeItem("login");
-        await AsyncStorage.removeItem("password");
-        await AsyncStorage.removeItem("pinCode");
-        await AsyncStorage.removeItem("biometricEnabled");
-      } else {
-        console.log("Ошибка при выходе:", response.status, response.statusText);
-
-        const errorBody = await response.text();
-        console.log("Error Body:", errorBody);
-      }
-    } catch (error) {
-      console.log("Error during logout:", error);
-    }
-  };
 
   const changeLanguage = async (newLanguage) => {
     Localization.locale = newLanguage;
@@ -243,9 +213,9 @@ const SettingsScreen = () => {
   }, []);
 
   // redux
-  const isDarkModeEnabled = useSelector(
-    (state) => state.theme.isDarkModeEnabled
-  );
+  // const isDarkModeEnabled = useSelector(
+  //   (state) => state.theme.isDarkModeEnabled
+  // );
 
   // button
   // const translateXValue = useRef(
@@ -347,7 +317,6 @@ const SettingsScreen = () => {
             <TouchableOpacity
               onPress={() => {
                 toggleModal();
-                handleLogout();
               }}
             >
               <Text style={{ fontSize: 18 }}>{i18n.t("yes")}</Text>

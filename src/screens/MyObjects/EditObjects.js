@@ -12,7 +12,7 @@ import React, { useState } from "react";
 import { SafeAreaView as SafeAreaViewContext } from "react-native-safe-area-context";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import * as ImagePicker from "expo-image-picker";
-import ImageView from "react-native-image-viewing";
+// import ImageView from "react-native-image-viewing";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { useNavigation } from "@react-navigation/native";
 import { LinearGradient } from "expo-linear-gradient";

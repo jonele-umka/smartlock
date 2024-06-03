@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   Text,
   View,
@@ -22,13 +22,14 @@ import * as LocalAuthentication from "expo-local-authentication";
 import * as Localization from "expo-localization";
 import i18n from "../components/i18n/i18n";
 import { Dialog } from "@rneui/themed";
-import { API_URL } from "../constants";
+
 import * as ImagePicker from "expo-image-picker";
+import { logoutUser } from "../Store/authSlice/authSlice";
 // link
 const Link = ({ title, onClick, icon, disabled = false }) => {
-  const isDarkModeEnabled = useSelector(
-    (state) => state.theme.isDarkModeEnabled
-  );
+  // const isDarkModeEnabled = useSelector(
+  //   (state) => state.theme.isDarkModeEnabled
+  // );
 
   return (
     <TouchableOpacity onPress={onClick} disabled={disabled}>
@@ -92,15 +93,21 @@ const Link = ({ title, onClick, icon, disabled = false }) => {
 
 const ProfileScreen = () => {
   const navigation = useNavigation();
+  // const API_URL = process.env.API_URL;
+
   // language
   // const actionSheetRef = useRef();
   // const token = useSelector((state) => state.signIn.token);
   // const userName = useSelector((state) => state.signIn.userName);
   // const refresh_token = useSelector((state) => state.signIn.refreshToken);
   // const [language, setLanguage] = useState(Localization.locale);
-  const [modal, setModal] = useState(false);
   // const [hasFingerprint, setHasFingerprint] = useState(false);
+  const dispatch = useDispatch();
+  const [modal, setModal] = useState(false);
   const [image, setImage] = useState(null);
+  const toggleModal = () => {
+    setModal(!modal);
+  };
   // const createImageFromBlob = async (blob) => {
   //   return new Promise((resolve, reject) => {
   //     const reader = new FileReader();
@@ -202,37 +209,20 @@ const ProfileScreen = () => {
   //   };
   //   checkBiometricAvailability();
   // }, []);
-  // const handleLogout = async () => {
-  //   try {
-  //     const response = await fetch(`${API_URL}/logout`, {
-  //       method: "POST",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //         Authorization: `Bearer ${token}`,
-  //       },
-  //       body: JSON.stringify({ refresh_token }),
-  //     });
 
-  //     if (response.ok) {
-  //       const responseBody = await response.text();
-  //       console.log("Response Body:", responseBody);
+  const handleLogout = async () => {
+    try {
+      const response = await dispatch(logoutUser());
 
-  //       navigation.navigate("Войти");
-  //       await AsyncStorage.removeItem("login");
-  //       await AsyncStorage.removeItem("password");
-  //       await AsyncStorage.removeItem("pinCode");
-  //       await AsyncStorage.removeItem("biometricEnabled");
-  //     } else {
-  //       console.log("Ошибка при выходе:", response.status, response.statusText);
-
-  //       const errorBody = await response.text();
-  //       console.log("Error Body:", errorBody);
-  //     }
-  //   } catch (error) {
-  //     console.log("Error during logout:", error);
-  //   }
-  // };
-
+      if (response.type === "auth/logout/fulfilled") {
+        navigation.navigate("Войти");
+      } else {
+        console.log("Не удалось выйти");
+      }
+    } catch (error) {
+      console.error("Ошибка при выходе:", error);
+    }
+  };
   // const changeLanguage = async (newLanguage) => {
   //   Localization.locale = newLanguage;
 
@@ -318,9 +308,9 @@ const ProfileScreen = () => {
   // }, []);
 
   // redux
-  const isDarkModeEnabled = useSelector(
-    (state) => state.theme.isDarkModeEnabled
-  );
+  // const isDarkModeEnabled = useSelector(
+  //   (state) => state.theme.isDarkModeEnabled
+  // );
 
   const SafeAreaWrapper =
     Platform.OS === "android" ? SafeAreaViewContext : SafeAreaView;
@@ -419,18 +409,28 @@ const ProfileScreen = () => {
             }}
             icon={"pin"}
           /> */}
-            <Link
+            {/* <Link
               title={"Редактировать профиль"}
               onClick={() => {
                 navigation.navigate("Редактировать профиль");
               }}
               icon={"person"}
-            />
+            /> */}
 
             <Link
               title={"Управление объектами"}
               onClick={() => navigation.navigate("Управление объектами")}
               icon={"home"}
+            />
+            <Link
+              title={"Сдать жильё"}
+              onClick={() => navigation.navigate("Сдать жильё")}
+              icon={"key"}
+            />
+            <Link
+              title={"Настройки"}
+              onClick={() => navigation.navigate("Настройки")}
+              icon={"settings"}
             />
             <Link
               title={"Платежи и выплаты"}
@@ -442,10 +442,10 @@ const ProfileScreen = () => {
               // onClick={() => navigation.navigate("Помощь")}
               icon={"help"}
             />
-
             <Link
               title={i18n.t("logOut")}
               textColor={"#cc4949"}
+              onClick={toggleModal}
               icon={"logout"}
             />
           </View>

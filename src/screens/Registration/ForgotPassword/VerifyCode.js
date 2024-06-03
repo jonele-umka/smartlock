@@ -14,7 +14,7 @@
 // import { useNavigation, useRoute } from "@react-navigation/core";
 // import { resendCode, verifyCode } from "../../../Store/authSlice/authSlice";
 
-// const SignUpCode = () => {
+// const VerifyCodeForgotPassword = () => {
 //   const { control, handleSubmit, formState: { errors } } = useForm();
 //   const dispatch = useDispatch();
 //   const navigation = useNavigation();
@@ -160,7 +160,7 @@
 //   );
 // };
 
-// export default SignUpCode;
+// export default VerifyCodeForgotPassword;
 import React, { useState, useEffect, useRef } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
@@ -176,68 +176,69 @@ import {
 import { SafeAreaView as SafeAreaViewContext } from "react-native-safe-area-context";
 import i18n from "../../../components/i18n/i18n";
 import { useNavigation, useRoute } from "@react-navigation/core";
-import { resendCode, verifyCode } from "../../../Store/authSlice/authSlice";
+
+import Toast from "react-native-toast-message";
 import { LinearGradient } from "expo-linear-gradient";
 
-const SignUpCode = () => {
+const VerifyCodeForgotPassword = () => {
   const {
     control,
     handleSubmit,
     formState: { errors },
-    setValue,
   } = useForm();
-  const dispatch = useDispatch();
+
   const navigation = useNavigation();
-  const loading = useSelector((state) => state.auth.loading);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [canResend, setCanResend] = useState(true);
-  const [timer, setTimer] = useState(60);
+
   const route = useRoute();
   const { email } = route.params;
 
+  const API_URL = process.env.API_URL;
+
   const inputs = useRef([]);
-
-  useEffect(() => {
-    let interval;
-    if (!canResend) {
-      interval = setInterval(() => {
-        setTimer((prevTimer) => {
-          if (prevTimer <= 1) {
-            clearInterval(interval);
-            setCanResend(true);
-            return 60;
-          }
-          return prevTimer - 1;
-        });
-      }, 1000);
-    }
-    return () => clearInterval(interval);
-  }, [canResend]);
-
-  const resend = async () => {
-    try {
-      await dispatch(resendCode(email));
-      setCanResend(false);
-    } catch (error) {
-      console.error("Ошибка при повторной отправке кода:", error);
-      setError(error.message);
-    }
-  };
 
   const onSubmit = async (data) => {
     const code = Object.values(data).join("");
-    console.log("code", code);
-    try {
-      const response = await dispatch(verifyCode(code));
 
-      if (response.type === "auth/verifyCode/fulfilled") {
-        navigation.navigate("Войти");
-      } else {
-        setError(response.payload);
+    try {
+      setLoading(true);
+      const response = await fetch(
+        `${API_URL}/api/auth/verify_forgot_password/${code}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (!response.ok) {
+        const responseDataError = await response.json();
+        const errorMessage =
+          responseDataError.error.Message || "Произошла ошибка";
+        console.log("g", errorMessage);
+        setError(errorMessage);
+        setLoading(false);
+
+        Toast.show({
+          type: "error",
+          position: "top",
+          text2: errorMessage,
+          visibilityTime: 3000,
+          autoHide: true,
+          topOffset: 30,
+        });
+        console.log("errorMessage", responseDataError);
       }
+      const responseData = await response.json();
+      navigation.navigate("Создать новый пароль", { email: email });
+      setLoading(false);
+
+      return responseData;
     } catch (error) {
-      console.error("Ошибка при входе:", error);
-      setError(error.message);
+      console.log(error);
+      setLoading(false);
     }
   };
 
@@ -307,23 +308,8 @@ const SignUpCode = () => {
             {errors.code.message}
           </Text>
         )}
+
         {error === "exception:wrong-verification-code" && (
-          <Text style={{ color: "red", fontSize: 12, marginTop: 15 }}>
-            {i18n.t("invalidPassword")}
-          </Text>
-        )}
-        {canResend ? (
-          <TouchableOpacity onPress={resend}>
-            <Text style={{ color: "#007bff", fontSize: 18, marginTop: 20 }}>
-              Отправить код повторно
-            </Text>
-          </TouchableOpacity>
-        ) : (
-          <Text style={{ color: "#000", marginTop: 10 }}>
-            Повторная отправка кода возможна через {timer} секунд
-          </Text>
-        )}
-        {error === "invalid activation code" && (
           <Text style={{ color: "red", fontSize: 12, marginTop: 7 }}>
             {i18n.t("inСorrectCode")}
           </Text>
@@ -373,4 +359,4 @@ const SignUpCode = () => {
   );
 };
 
-export default SignUpCode;
+export default VerifyCodeForgotPassword;

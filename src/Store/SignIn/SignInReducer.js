@@ -14,7 +14,6 @@
 // } from "./SignInTypes";
 // import AsyncStorage from "@react-native-async-storage/async-storage";
 
-<<<<<<< HEAD
 // const initialState = {
 //   loading: false,
 //   error: null,
@@ -59,54 +58,6 @@
 //       return { ...state, loading: false };
 //     case VERIFY_CODE_FAILURE:
 //       return { ...state, loading: false, error: action.payload };
-=======
-const initialState = {
-  loading: false,
-  error: null,
-  isLoggedIn: false,
-  token: null,
-  isRegistered: false,
-  userName: "",
-  refreshToken: null,
-};
-
-const signInReducer = (state = initialState, action) => {
-  switch (action.type) {
-    case LOGIN_REQUEST:
-      return {
-        ...state,
-        loading: true,
-        error: null,
-      };
-    case LOGIN_SUCCESS:
-      return {
-        ...state,
-        token: action.payload.token,
-        userName: action.payload.userName,
-        refreshToken: action.payload.refreshToken,
-        loading: false,
-        error: null,
-        isLoggedIn: true,
-      };
-    case LOGIN_FAILURE:
-      return {
-        ...state,
-        loading: false,
-        error: action.payload,
-      };
-    case SEND_EMAIL_REQUEST:
-      return { ...state, loading: true, error: null };
-    case SEND_EMAIL_SUCCESS:
-      return { ...state, loading: false };
-    case SEND_EMAIL_FAILURE:
-      return { ...state, loading: false, error: action.payload };
-    case VERIFY_CODE_REQUEST:
-      return { ...state, loading: true, error: null };
-    case VERIFY_CODE_SUCCESS:
-      return { ...state, loading: false };
-    case VERIFY_CODE_FAILURE:
-      return { ...state, loading: false, error: action.payload };
->>>>>>> f197eaaaae4752be8ef2f168da1b153613fee086
 
 //     case REGISTER_REQUEST:
 //       return {

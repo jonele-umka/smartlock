@@ -15,9 +15,9 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 const ListFacilities = ({ facilitiesData }) => {
   const navigation = useNavigation();
 
-  const isDarkModeEnabled = useSelector(
-    (state) => state.theme.isDarkModeEnabled
-  );
+  // const isDarkModeEnabled = useSelector(
+  //   (state) => state.theme.isDarkModeEnabled
+  // );
 
   const renderItem = ({ item }) => {
     return (

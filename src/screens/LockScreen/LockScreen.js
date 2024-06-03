@@ -18,7 +18,7 @@ const PinLockScreen = () => {
     try {
       // Отправка POST-запроса с использованием fetch
       const response = await fetch(
-        "http://server.microret.com:80/lock/unlock/1",
+        "https://server.microret.com/lock/unlock/1",
         {
           method: "POST",
           headers: {
@@ -43,7 +43,7 @@ const PinLockScreen = () => {
     try {
       // Отправка POST-запроса с использованием fetch
       const response = await fetch(
-        "http://server.microret.com:80/lock/lock/1",
+        "https://server.microret.com/lock/lock/1",
         {
           method: "POST",
           headers: {

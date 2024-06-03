@@ -11,67 +11,64 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView as SafeAreaViewContext } from "react-native-safe-area-context";
-
-import { useNavigation } from "@react-navigation/core";
-import i18n from "../../components/i18n/i18n";
-import { LinearGradient } from "expo-linear-gradient";
-// import { API_URL } from "../../constants";
+import Feather from "react-native-vector-icons/Feather";
+import { useNavigation, useRoute } from "@react-navigation/core";
+import i18n from "../../../components/i18n/i18n";
 import Toast from "react-native-toast-message";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import Feather from "react-native-vector-icons/Feather";
-const ChangePassword = () => {
+import { LinearGradient } from "expo-linear-gradient";
+
+const CreateNewPassword = () => {
+  const route = useRoute();
+  const { email } = route.params;
   const {
     control,
     handleSubmit,
     formState: { errors },
     getValues,
-  } = useForm();
+  } = useForm({
+    defaultValues: {
+      Email: email,
+    },
+  });
   const API_URL = process.env.API_URL;
   const SafeAreaWrapper =
     Platform.OS === "android" ? SafeAreaViewContext : SafeAreaView;
-  const dispatch = useDispatch();
   const navigation = useNavigation();
-
-  const loading = useSelector((state) => state.auth.loading);
+  const [loading, setLoading] = useState(false);
   const token = useSelector((state) => state.auth.token);
-
   const [confirmError, setConfirmError] = useState("");
-  const [oldError, setOldError] = useState("");
 
   const handleChangePassword = async () => {
     try {
-      const CurrentPassword = getValues("CurrentPassword");
+      const Email = getValues("Email");
+      console.log(Email);
       const NewPassword = getValues("NewPassword");
       const NewPasswordConfirm = getValues("NewPasswordConfirm");
-      const storedPassword = await AsyncStorage.getItem("password");
+      setLoading(true);
 
-      if (CurrentPassword !== storedPassword) {
-        console.log("object");
-        setOldError("Неверный старый пароль");
-        return;
-      }
       if (NewPassword !== NewPasswordConfirm) {
-        console.log("feeee");
         setConfirmError("Пароли не совпадают");
         return;
       }
 
-      const response = await fetch(`${API_URL}/api/auth/change_password`, {
+      const response = await fetch(`${API_URL}/api/auth/create_new_password`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
-          CurrentPassword,
+          Email,
           NewPassword,
           NewPasswordConfirm,
         }),
       });
 
       if (response.ok) {
-        console.log("success");
         await AsyncStorage.setItem("password", NewPasswordConfirm);
+        setLoading(false);
+
         Toast.show({
           type: "success",
           position: "top",
@@ -80,11 +77,14 @@ const ChangePassword = () => {
           autoHide: true,
           topOffset: 30,
         });
-        navigation.navigate("Главная страница");
+        setLoading(false);
+        navigation.navigate("Войти");
       } else {
+        setLoading(false);
         console.log("Ошибка", "Не удалось изменить пароль.");
       }
     } catch (error) {
+      setLoading(false);
       console.error("Не удалось изменить пароль.", error);
     }
   };
@@ -120,7 +120,7 @@ const ChangePassword = () => {
         >
           <View style={{ marginBottom: 30 }}>
             <Text style={{ marginBottom: 15, fontWeight: 500, fontSize: 16 }}>
-              Старый пароль
+              Email
             </Text>
             <View
               style={{
@@ -129,33 +129,20 @@ const ChangePassword = () => {
                 paddingRight: 10,
                 paddingBottom: 10,
                 borderBottomColor:
-                  errors.password_confirm === "passwords do not match"
-                    ? "red"
-                    : "#000",
+                  errors.Email === "passwords do not match" ? "red" : "#000",
               }}
             >
               <Controller
                 control={control}
-                name="CurrentPassword"
-                rules={{
-                  required: i18n.t("fillInTheField"),
-                  minLength: {
-                    value: 8,
-                    message: i18n.t("passwordMinEight"),
-                  },
-                  pattern: {
-                    value: /^[^\sа-яА-Я]+$/i,
-                    message: i18n.t("enterInLatin"),
-                  },
-                }}
+                name="Email"
+                rules={{ required: true }}
                 render={({ field }) => (
                   <TextInput
-                    type="Пароль"
-                    placeholder={"********"}
+                    placeholder={i18n.t("enterEmail")}
                     placeholderTextColor="#b8b8b8"
+                    defaultValue={email}
                     onChangeText={(value) => {
                       field.onChange(value);
-                        setOldError("");
                     }}
                     value={field.value}
                     style={{
@@ -166,14 +153,9 @@ const ChangePassword = () => {
                 )}
               />
             </View>
-            {errors.CurrentPassword && (
+            {errors.Email && (
               <Text style={{ color: "red", fontSize: 12, marginTop: 7 }}>
-                {errors.CurrentPassword.message}
-              </Text>
-            )}
-            {oldError && (
-              <Text style={{ color: "red", fontSize: 12, marginTop: 7 }}>
-                {oldError}
+                {i18n.t("enterEmail")}
               </Text>
             )}
           </View>
@@ -268,7 +250,7 @@ const ChangePassword = () => {
                     placeholderTextColor="#b8b8b8"
                     onChangeText={(value) => {
                       field.onChange(value);
-                        setConfirmError("");
+                      setConfirmError("");
                     }}
                     value={field.value}
                     style={{
@@ -296,28 +278,40 @@ const ChangePassword = () => {
           <ActivityIndicator
             size="large"
             style={{ marginTop: 40, marginBottom: 30 }}
-            color={"#000"}
+            color={"#02AAB0"}
           />
         ) : (
           <TouchableOpacity
             onPress={handleSubmit(handleChangePassword)}
-            disabled={loading}
             style={{
-              marginTop: 30,
-              padding: 15,
-              backgroundColor: "#000",
-              borderRadius: 10,
+              elevation: 5,
               shadowColor: "#000",
-              marginBottom: 30,
-              shadowOffset: {
-                width: 0,
-                height: 10,
-              },
+              shadowOffset: { width: 0, height: 2 },
+              shadowOpacity: 0.2,
+              shadowRadius: 10,
+              marginVertical: 30,
             }}
           >
-            <Text style={{ color: "#fff", textAlign: "center", fontSize: 20 }}>
-              {i18n.t("next")}
-            </Text>
+            <LinearGradient
+              colors={["#02AAB0", "#00CDAC"]}
+              style={{
+                paddingVertical: 15,
+                textAlign: "center",
+                borderRadius: 10,
+              }}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
+            >
+              <Text
+                style={{
+                  color: "#fff",
+                  textAlign: "center",
+                  fontSize: 20,
+                }}
+              >
+                Войти
+              </Text>
+            </LinearGradient>
           </TouchableOpacity>
         )}
       </View>
@@ -325,4 +319,4 @@ const ChangePassword = () => {
   );
 };
 
-export default ChangePassword;
+export default CreateNewPassword;

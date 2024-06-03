@@ -1,196 +1,84 @@
-import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
-import {
-  Text,
-  View,
-  StyleSheet,
-  TextInput,
-  ScrollView,
-  SafeAreaView,
-  Platform,
-  ImageBackground,
-  TouchableOpacity,
-  Image,
-} from "react-native";
-import Fontisto from "react-native-vector-icons/Fontisto";
+import React from "react";
+import { Text, View, ScrollView, SafeAreaView, Platform } from "react-native";
+import Feather from "react-native-vector-icons/Feather";
 import { SafeAreaView as SafeAreaViewContext } from "react-native-safe-area-context";
 import ListCard from "../components/List/HomeListCard/ListCard";
-import ListCardTwo from "../components/List/HomeListCard/ListCardTwo";
-import ListCardThree from "../components/List/HomeListCard/ListCardThree";
-import HotelsScreen from "./HotelsScreen/HotelsScreen";
-import { BlurView } from "expo-blur";
+import Header from "../components/Header/Header";
+import ListCategories from "../components/List/ListCategories/ListCategories";
+import ObjectList from "../components/ObjectList/ObjectList";
 
-const transferItems = [
+const hotels = [
   {
-    title: "Перенос счетов",
+    title: "Rixos",
     image:
-      "https://www.intechnic.com/hubfs/Blog/Featured%20Images/Best%20Hotel%20Website%20Designs.jpg",
+      "https://www.newworldhotels.com/wp-content/uploads/2014/05/Mobile-NWHBR-Exterior.jpg",
+    price: 12000,
+    location: "Маями",
   },
   {
-    title: "Отправить деньги",
+    title: "Hayat",
     image:
-      "https://www.intechnic.com/hubfs/Blog/Featured%20Images/Best%20Hotel%20Website%20Designs.jpg",
+      "https://imageio.forbes.com/specials-images/imageserve/5ec567daf2098c0006c6036e/Kimpton-Shanghai-Hotel/960x0.jpg?format=jpg&width=960",
+    price: 6000,
+    location: "Турция",
   },
   {
-    title: "Запросить деньги",
+    title: "Jannat",
     image:
-      "https://www.intechnic.com/hubfs/Blog/Featured%20Images/Best%20Hotel%20Website%20Designs.jpg",
+      "https://static.theceomagazine.net/wp-content/uploads/2023/04/26003004/Atlantis-the-royal-e1682434586859.jpg",
+    price: 22500,
+    location: "Иссык куль",
   },
   {
-    title: "Оплатить счета",
+    title: "Sanjyra",
     image:
-      "https://www.intechnic.com/hubfs/Blog/Featured%20Images/Best%20Hotel%20Website%20Designs.jpg",
+      "https://www.luxuryhotelawards.com/wp-content/uploads/sites/8/2023/09/The-Granite-Luxury-Hotel-entrance-view-scaled-2.jpg",
+    price: 75000,
+    location: "Гавайим",
   },
 ];
 
-const productItems = [
+const categories = [
   {
-    title: "Валютный своп",
-    image:
-      "https://mk-turkey.ru/media/images/tourism/3198cb1b-4782-4516-ba89-a2dddcbd16fb.jpg",
+    title: "Пляж",
   },
   {
-    title: "Купить страховку",
-    image:
-      "https://mk-turkey.ru/media/images/tourism/3198cb1b-4782-4516-ba89-a2dddcbd16fb.jpg",
+    title: "Горы",
   },
   {
-    title: "Buy stocks",
-    image:
-      "https://mk-turkey.ru/media/images/tourism/3198cb1b-4782-4516-ba89-a2dddcbd16fb.jpg",
+    title: "Водопады",
   },
   {
-    title: "Купить акции",
-    image:
-      "https://mk-turkey.ru/media/images/tourism/3198cb1b-4782-4516-ba89-a2dddcbd16fb.jpg",
+    title: "Город",
   },
 ];
 
-const topUpItems = [
-  {
-    title: "Входящий банковский перевод",
-    image:
-      "https://assets.langhamhotels.com/is/image/langhamhotelsstage/tlhkg-langham-hong-kongopti:Medium?wid=675&hei=380",
-  },
-  {
-    title: "Исходящий банковский перевод",
-    image:
-      "https://assets.langhamhotels.com/is/image/langhamhotelsstage/tlhkg-langham-hong-kongopti:Medium?wid=675&hei=380",
-  },
-];
 const HomeScreen = ({ navigation }) => {
-  const [data, setData] = useState([]);
-  const isDarkModeEnabled = useSelector(
-    (state) => state.theme.isDarkModeEnabled
-  );
+  // const isDarkModeEnabled = useSelector(
+  //   (state) => state.theme.isDarkModeEnabled
+  // );
   const clickHandler = (page) =>
     navigation.push("Главная страница", { screen: page });
 
   const SafeAreaWrapper =
     Platform.OS === "android" ? SafeAreaViewContext : SafeAreaView;
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch("http://server.microret.com:80/room", {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
-
-        if (response.ok) {
-          const jsonData = await response.json();
-          console.log(jsonData.data[0].Locks[0].LockName);
-          setData(jsonData);
-          // Здесь вы можете обработать полученные данные
-        } else {
-          console.error("Ошибка при получении данных:", response.status);
-        }
-      } catch (error) {
-        console.error("Ошибка при отправке запроса:", error);
-      }
-    };
-    fetchData();
-  }, []);
 
   return (
     <ScrollView
-      style={{ backgroundColor: "#fff" }}
-      contentContainerStyle={{ paddingVertical: 20 }}
+      style={{ backgroundColor: "#fff", flex: 1 }}
+      // contentContainerStyle={{ paddingVertical: 20 }}
     >
-      <SafeAreaWrapper
-        style={[
-          {
-            flex: 1,
-            // paddingHorizontal: 10,
-          },
-          // isDarkModeEnabled && { backgroundColor: "#191a1d" },
-        ]}
-      >
-        {/* <View
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "space-between",
-            paddingHorizontal: 10,
-            marginBottom: 40,
-          }}
-        >
-          <Text
-            style={[
-              {
-                fontSize: 30,
-                textAlign: "center",
-                fontWeight: 600,
-                color: "#191a1d",
-              },
-              // isDarkModeEnabled && {
-              //   color: "#fff",
-              // },
-            ]}
-          >
-            Умные замки
-          </Text>
-          <Image
-            style={{ width: 30, height: 30 }}
-            source={{
-              uri: "https://static.vecteezy.com/system/resources/previews/019/896/008/original/male-user-avatar-icon-in-flat-design-style-person-signs-illustration-png.png",
-            }}
-          />
-        </View> */}
+      <SafeAreaWrapper>
+        <Header />
+        <ListCategories clickHandler={clickHandler} items={categories} />
+        <ListCard clickHandler={clickHandler} items={hotels} />
 
-        {/* <View style={styles.list}>
-          <View>
-            <ListCard
-              clickHandler={clickHandler}
-              items={transferItems}
-              title={"Рекомендуемые"}
-            />
-          </View>
-          <View>
-            <ListCardTwo
-              clickHandler={clickHandler}
-              items={productItems}
-              title={"Ближе к вам"}
-            />
-          </View>
-          <View>
-            <ListCardThree
-              clickHandler={clickHandler}
-              items={topUpItems}
-              title={"Популярные"}
-            />
-          </View>
-        </View> */}
-
-        <View style={{ paddingHorizontal: 10, marginBottom: 20 }}>
-          {/* <Text style={{ fontSize: 25, fontWeight: 500 }}>Рекомендуемые</Text> */}
+        {/* <View style={{ paddingHorizontal: 10, marginVertical: 20 }}>
           <View
             style={{
               flexDirection: "row",
               columnGap: 20,
               flexWrap: "wrap",
-              marginTop: 10,
             }}
           >
             <View style={{ flex: 1, rowGap: 20 }}>
@@ -304,30 +192,51 @@ const HomeScreen = ({ navigation }) => {
               </View>
             </View>
           </View>
+        </View> */}
+
+        <View style={{ paddingHorizontal: 10 }}>
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+              marginBottom: 15,
+            }}
+          >
+            <Text
+              style={{
+                fontSize: 30,
+                fontWeight: 500,
+              }}
+            >
+              Топ отели
+            </Text>
+
+            <View
+              style={{
+                backgroundColor: "#f0f0f0",
+                borderRadius: 100,
+                padding: 5,
+              }}
+            >
+              <Feather name="arrow-right" style={{ fontSize: 30 }} />
+            </View>
+          </View>
+          <ObjectList />
         </View>
-        <View>
-          <HotelsScreen />
-        </View>
-        <View>
+
+        {/* <View>
           {data &&
             data.data &&
             data.data[0] &&
             data.data[0].Locks &&
             data.data[0].Locks.map((lock, index) => (
-              <Text key={index}>{lock.LockName}</Text>
+              <Text key={index}>{lock.LockID}</Text>
             ))}
-        </View>
+        </View> */}
       </SafeAreaWrapper>
     </ScrollView>
   );
 };
-
-const styles = StyleSheet.create({
-  list: {
-    flexDirection: "column",
-    rowGap: 25,
-    marginBottom: 20,
-  },
-});
 
 export default HomeScreen;

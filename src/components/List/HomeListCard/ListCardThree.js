@@ -15,9 +15,9 @@ const ListCardThree = ({ items, title, clickHandler }) => {
   const onPress = (page) => {
     clickHandler(page);
   };
-  const isDarkModeEnabled = useSelector(
-    (state) => state.theme.isDarkModeEnabled
-  );
+  // const isDarkModeEnabled = useSelector(
+  //   (state) => state.theme.isDarkModeEnabled
+  // );
   const renderItem = ({ item }) => {
     return (
       <TouchableOpacity

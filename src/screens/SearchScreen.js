@@ -14,9 +14,9 @@ import * as Location from "expo-location";
 export const SearchScreen = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
-  const isDarkModeEnabled = useSelector(
-    (state) => state.theme.isDarkModeEnabled
-  );
+  // const isDarkModeEnabled = useSelector(
+  //   (state) => state.theme.isDarkModeEnabled
+  // );
 
   // const incoming = useSelector((state) => state.transactions.incoming);
   // const outgoing = useSelector((state) => state.transactions.transactions);
@@ -36,6 +36,7 @@ export const SearchScreen = () => {
       }
 
       let location = await Location.getCurrentPositionAsync({});
+      console.log('eee: ', location?.coords)
       setLocation(location?.coords);
     })();
   }, []);

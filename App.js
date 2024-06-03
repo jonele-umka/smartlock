@@ -18,51 +18,43 @@ const App = () => {
       if (storedLanguage) {
         Localization.locale = storedLanguage;
       } else {
-<<<<<<< HEAD
         Localization.locale = "ru";
       }
     });
 
-=======
-        Localization.locale = "en";
-      }
-    });
+    // if (Platform.OS === "android") {
+    //   const registerForPushNotificationsAsync = async () => {
+    //     Notifications.setNotificationChannelAsync("default", {
+    //       name: "Default Channel",
+    //       importance: Notifications.AndroidImportance.MAX,
+    //       vibrationPattern: [0, 250, 250, 250],
+    //       lightColor: "#FF231F7C",
+    //     });
 
-    // Execute the following code only on Android
->>>>>>> f197eaaaae4752be8ef2f168da1b153613fee086
-    if (Platform.OS === "android") {
-      const registerForPushNotificationsAsync = async () => {
-        Notifications.setNotificationChannelAsync("default", {
-          name: "Default Channel",
-          importance: Notifications.AndroidImportance.MAX,
-          vibrationPattern: [0, 250, 250, 250],
-          lightColor: "#FF231F7C",
-        });
+    //     try {
+    //       const { status: existingStatus } =
+    //         await Notifications.getPermissionsAsync();
+    //       let finalStatus = existingStatus;
 
-        try {
-          const { status: existingStatus } =
-            await Notifications.getPermissionsAsync();
-          let finalStatus = existingStatus;
+    //       if (existingStatus !== "granted") {
+    //         const { status } = await Notifications.requestPermissionsAsync();
+    //         finalStatus = status;
+    //       }
 
-          if (existingStatus !== "granted") {
-            const { status } = await Notifications.requestPermissionsAsync();
-            finalStatus = status;
-          }
+    //       if (finalStatus !== "granted") {
+    //         console.log("Failed to get push token for push notification!");
+    //         return;
+    //       }
 
-          if (finalStatus !== "granted") {
-            console.log("Failed to get push token for push notification!");
-            return;
-          }
+    //       const token = (await Notifications.getExpoPushTokenAsync()).data;
+    //       console.log("Expo Push Token:", token);
+    //     } catch (error) {
+    //       console.error("Error during push token retrieval:", error);
+    //     }
+    //   };
 
-          const token = (await Notifications.getExpoPushTokenAsync()).data;
-          console.log("Expo Push Token:", token);
-        } catch (error) {
-          console.error("Error during push token retrieval:", error);
-        }
-      };
-
-      registerForPushNotificationsAsync();
-    }
+    //   registerForPushNotificationsAsync();
+    // }
   }, []);
 
   // useEffect(() => {
