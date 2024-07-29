@@ -22,7 +22,7 @@ import QuestionsInput from "../../components/Questions/QuestionsInput";
 import ReviewsInput from "../../components/ReviewsInput/ReviewsInput";
 import BottomSheet from "@gorhom/bottom-sheet";
 import ActionSheet from "react-native-actions-sheet";
-import ImageView from "react-native-image-viewing";
+// import ImageView from "react-native-image-viewing";
 import { useForm, Controller } from "react-hook-form";
 import { LinearGradient } from "expo-linear-gradient";
 const ConfirmationScreen = () => {
@@ -105,8 +105,8 @@ const ConfirmationScreen = () => {
   return (
     <View style={{ paddingBottom: 20, backgroundColor: "#fff" }}>
       <ScrollView style={{ backgroundColor: "#fff" }}>
-        {/* <View style={{ position: "relative" }}>
-          <CarouselImage />
+        <View style={{ position: "relative" }}>
+          <CarouselImage images={images} />
           <View style={{ position: "absolute", right: 10, top: 5 }}>
             {favoritesClick ? (
               <TouchableOpacity onPress={handleFavorites}>
@@ -124,7 +124,7 @@ const ConfirmationScreen = () => {
               </TouchableOpacity>
             )}
           </View>
-        </View> */}
+        </View>
 
         <View style={{ paddingHorizontal: 10, marginTop: 20 }}>
           <Text style={{ fontSize: 22, fontWeight: 700, marginBottom: 5 }}>
@@ -192,14 +192,14 @@ const ConfirmationScreen = () => {
               </TouchableOpacity>
             ))}
           </View>
-          <ImageView
+          {/* <ImageView
             images={images.map((image) => ({
               uri: image.uri,
             }))}
             imageIndex={selectedImageIndex}
             visible={visible}
             onRequestClose={() => setIsVisible(false)}
-          />
+          /> */}
           <View style={{ marginTop: 20 }}>
             <Text style={{ fontSize: 22, fontWeight: 600, marginBottom: 15 }}>
               Местоположение

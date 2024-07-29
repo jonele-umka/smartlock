@@ -11,68 +11,102 @@ import {
   SafeAreaView,
   ActivityIndicator,
   Platform,
+  Button,
 } from "react-native";
 import { SafeAreaView as SafeAreaViewContext } from "react-native-safe-area-context";
+import * as WebBrowser from "expo-web-browser";
 // import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { LinearGradient } from "expo-linear-gradient";
 import Ionicons from "react-native-vector-icons/Ionicons";
-
+import * as Google from "expo-auth-session/providers/google";
 import Feather from "react-native-vector-icons/Feather";
-
 import i18n from "../../components/i18n/i18n";
-import { loginGoogle, loginUser } from "../../Store/authSlice/authSlice";
-
+import { loginUser } from "../../Store/authSlice/authSlice";
+import * as Linking from "expo-linking";
+ 
+WebBrowser.maybeCompleteAuthSession();
 const SignIn = () => {
   const {
     control,
     handleSubmit,
     formState: { errors },
   } = useForm();
+  const dispatch = useDispatch();
+  const loading = useSelector((state) => state.auth.loading);
+  const navigation = useNavigation();
   // const isDarkModeEnabled = useSelector(
   //   (state) => state.theme.isDarkModeEnabled
   // );
+
   const [error, setError] = useState("");
   const [isPasswordHidden, setIsPasswordHidden] = useState(true);
   const togglePasswordVisibility = () => {
     setIsPasswordHidden((prev) => !prev);
   };
-  const loading = useSelector((state) => state.auth.loading);
+  const [token, setToken] = useState("");
+  const [userInfo, setUserInfo] = useState(null);
 
-  const dispatch = useDispatch();
-
-  const navigation = useNavigation();
-
-  // const goToCreateAccount = () => {
-  //   navigation.navigate("Email");
-  // };
-
-  // const onSubmit = async (userData) => {
-  //   try {
-  //     await dispatch(loginUser(userData));
-  //     navigation.navigate("Главная");
-  //   } catch (error) {
-  //     setError(error);
-  //   }
-  // };
-  // const onSubmit = async (userData) => {
-  //   try {
-  //     const data = await dispatch(loginUser(userData));
-
-  //     if (data && data?.data && data?.data?.access_token) {
-  //       await AsyncStorage.setItem("token", data?.data?.access_token);
-  //       navigation.navigate("Главная страница");
-  //     } else {
-  //       console.error("Ошибка при входе");
-  //     }
-  //   } catch (error) {
-  //     console.error("Ошибка при входе:", error);
-  //   }
-  // };
-  console.log(loading)
-  const googleAuth = async () => {
-    await dispatch(loginGoogle());
+  const e = () => {
+    Linking.openURL("exp://");
   };
+
+  // const [request, response, promptAsync] = Google.useAuthRequest({
+  //   clientId:
+  //     "490567224593-a6av57bn9betj1ajnnoe1noo77tgbc3q.apps.googleusercontent.com",
+  //   redirectUri: "http://127.0.0.1:8081",
+  // });
+
+  // useEffect(() => {
+  //   handleEffect();
+  // }, [response]);
+  // async function handleEffect() {
+  //   const user = await getLocalUser();
+  //   if (!user) {
+  //     if (response?.type === "success") {
+  //       setToken(response.authentication.accessToken);
+  //       getUserInfo(response.authentication.accessToken);
+  //       console.log("Access Token: ", response.authentication.accessToken);
+  //     }
+  //   } else {
+  //     setUserInfo(user);
+
+  //     // Linking.openURL("exp://");
+  //     console.log("loaded locally");
+  //   }
+  // }
+  // console.log(response?.type);
+
+  // const getLocalUser = async () => {
+  //   const data = await AsyncStorage.getItem("@user");
+  //   console.log(data);
+  //   if (!data) return null;
+  //   return JSON.parse(data);
+  // };
+
+  // const getUserInfo = async (token) => {
+  //   if (!token) return;
+  //   try {
+  //     const response = await fetch(
+  //       "https://www.googleapis.com/userinfo/v2/me",
+  //       {
+  //         headers: { Authorization: `Bearer ${token}` },
+  //       }
+  //     );
+
+  //     if (!response.ok) {
+  //       throw new Error("Failed to fetch user info");
+  //     }
+
+  //     const user = await response.json();
+
+  //     await AsyncStorage.setItem("@user", JSON.stringify(user));
+  //     setUserInfo(user);
+  //   } catch (error) {
+  //     console.error("Error fetching user info:", error);
+  //   }
+  // };
+
   const onSubmit = async (userData) => {
     console.log(userData);
     try {
@@ -308,9 +342,7 @@ const SignIn = () => {
           </TouchableOpacity>
         )}
 
-        <TouchableOpacity
-        //  style={{ marginBottom: 30 }}
-        >
+        <TouchableOpacity style={{ marginBottom: 30 }}>
           <Text
             style={[
               {
@@ -348,7 +380,6 @@ const SignIn = () => {
           <View style={{ flex: 1, height: 1, backgroundColor: "#000" }} />
         </View>
         <TouchableOpacity
-          onPress={googleAuth}
           style={{
             paddingVertical: 13,
             paddingHorizontal: 10,
@@ -383,6 +414,66 @@ const SignIn = () => {
             <Text style={{ fontSize: 18 }}>Продолжить с Google </Text>
           </View>
         </TouchableOpacity>
+        {/* <Button title="url" onPress={() => AsyncStorage.setItem("@user")} />
+        {!userInfo ? (
+          <TouchableOpacity
+            onPress={() => {
+              promptAsync();
+            }}
+            style={{
+              paddingVertical: 13,
+              paddingHorizontal: 10,
+              backgroundColor: "#fff",
+              borderRadius: 10,
+              marginHorizontal: 10,
+              shadowColor: "#000",
+              alignSelf: "center",
+              marginTop: 30,
+              shadowOffset: {
+                width: 0,
+                height: 10,
+              },
+              shadowOpacity: 0.3,
+              shadowRadius: 10,
+              elevation: 5,
+            }}
+          >
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                columnGap: 10,
+                justifyContent: "center",
+              }}
+            >
+              <Image
+                source={require("../../assets/google.png")}
+                style={{ width: 20, height: 20 }}
+              />
+
+              <Text style={{ fontSize: 18 }}>Продолжить с Google </Text>
+            </View>
+          </TouchableOpacity>
+        ) : (
+          <View style={{ borderWidth: 1, borderRadius: 15, padding: 15 }}>
+            {userInfo?.picture && (
+              <Image
+                source={{ uri: userInfo?.picture }}
+                style={{ width: 100, height: 100, borderRadius: 50 }}
+              />
+            )}
+
+            <Text style={{ fontSize: 20, fontWeight: "bold" }}>
+              Email: {userInfo.email}
+            </Text>
+            <Text style={{ fontSize: 20, fontWeight: "bold" }}>
+              Verified: {userInfo.verified_email ? "yes" : "no"}
+            </Text>
+            <Text style={{ fontSize: 20, fontWeight: "bold" }}>
+              Name: {userInfo.name}
+            </Text>
+          </View>
+        )} */}
       </View>
     </SafeAreaWrapper>
   );

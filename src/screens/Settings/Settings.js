@@ -31,7 +31,6 @@ const Link = ({ title, onClick, icon, disabled = false }) => {
   // const isDarkModeEnabled = useSelector(
   //   (state) => state.theme.isDarkModeEnabled
   // );
-  let iconComponent;
 
   switch (icon) {
     case "pin":
@@ -97,143 +96,10 @@ const Settings = () => {
   // const refresh_token = useSelector((state) => state.signIn.refreshToken);
   const [language, setLanguage] = useState(Localization.locale);
   const [modal, setModal] = useState(false);
-  // const [hasFingerprint, setHasFingerprint] = useState(false);
-  // const [image, setImage] = useState(null);
-  // const createImageFromBlob = async (blob) => {
-  //   return new Promise((resolve, reject) => {
-  //     const reader = new FileReader();
-  //     reader.onloadend = () => {
-  //       resolve(reader.result);
-  //     };
-  //     reader.onerror = reject;
-  //     reader.readAsDataURL(blob);
-  //   });
-  // };
-  // useEffect(() => {
-  //   const fetchAvatar = async () => {
-  //     try {
-  //       const response = await fetch(`${API_URL}/individuals/avatar`, {
-  //         method: "GET",
-  //         headers: {
-  //           Authorization: `Bearer ${token}`,
-  //         },
-  //       });
-
-  //       if (response.ok) {
-  //         const blob = await response.blob();
-  //         const imageUrl = await createImageFromBlob(blob);
-  //         setImage(imageUrl);
-  //       } else {
-  //         console.error(
-  //           "Failed to fetch avatar. Server returned:",
-  //           response.status,
-  //           response.statusText
-  //         );
-  //       }
-  //     } catch (error) {
-  //       console.error("Error fetching avatar", error);
-  //     }
-  //   };
-
-  //   fetchAvatar();
-  // }, []);
-
-  // const pickImage = async () => {
-  //   try {
-  //     let result = await ImagePicker.launchImageLibraryAsync({
-  //       mediaTypes: ImagePicker.MediaTypeOptions.All,
-  //       allowsEditing: true,
-  //       aspect: [4, 3],
-  //       quality: 1,
-  //     });
-
-  //     if (!result.canceled) {
-  //       setImage(result.assets[0].uri);
-  //       // uploadImage(result.assets[0].uri);
-  //     }
-  //   } catch (error) {
-  //     console.error("Ошибка при выборе изображения", error);
-  //   }
-  // };
-
-  // const uploadImage = async (uri) => {
-  //   try {
-  //     const formData = new FormData();
-  //     formData.append("avatar", {
-  //       uri,
-  //       name: "image.jpg",
-  //       type: "image/jpg",
-  //     });
-
-  //     const response = await fetch(`${API_URL}/individuals/upload`, {
-  //       method: "POST",
-  //       body: formData,
-  //       headers: {
-  //         Authorization: `Bearer ${token}`,
-  //       },
-  //     });
-
-  //     if (response.ok) {
-  //       console.log("Image uploaded successfully");
-  //     } else {
-  //       console.error(
-  //         "Failed to upload image. Server returned:",
-  //         response.status,
-  //         response.statusText
-  //       );
-
-  //       // Добавьте вывод тела ответа, если нужно
-  //       const responseBody = await response.text();
-  //       console.error("Response body:", responseBody);
-  //     }
-  //   } catch (error) {
-  //     console.error("Error uploading image", error);
-  //   }
-  // };
 
   const toggleModal = () => {
     setModal(!modal);
   };
-
-  // useEffect(() => {
-  //   const checkBiometricAvailability = async () => {
-  //     const supported = await LocalAuthentication.hasHardwareAsync();
-  //     if (supported) {
-  //       setHasFingerprint(true);
-  //     }
-  //   };
-  //   checkBiometricAvailability();
-  // }, []);
-  // const handleLogout = async () => {
-  //   try {
-  //     const response = await fetch(`${API_URL}/logout`, {
-  //       method: "POST",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //         Authorization: `Bearer ${token}`,
-  //       },
-  //       body: JSON.stringify({ refresh_token }),
-  //     });
-
-  //     if (response.ok) {
-  //       const responseBody = await response.text();
-  //       console.log("Response Body:", responseBody);
-
-  //       navigation.navigate("Войти");
-  //       await AsyncStorage.removeItem("login");
-  //       await AsyncStorage.removeItem("password");
-  //       await AsyncStorage.removeItem("pinCode");
-  //       await AsyncStorage.removeItem("biometricEnabled");
-  //     } else {
-  //       console.log("Ошибка при выходе:", response.status, response.statusText);
-
-  //       const errorBody = await response.text();
-  //       console.log("Error Body:", errorBody);
-  //     }
-  //   } catch (error) {
-  //     console.log("Error during logout:", error);
-  //   }
-  // };
 
   const changeLanguage = async (newLanguage) => {
     Localization.locale = newLanguage;
@@ -246,83 +112,6 @@ const Settings = () => {
       console.error("Ошибка при сохранении языка в AsyncStorage:", error);
     }
   };
-
-  // switch biometric
-  const [isEnabled, setIsEnabled] = useState(false);
-
-  const toggleSwitch = async () => {
-    // Если включаем, то запрашиваем отпечаток
-    if (!isEnabled) {
-      try {
-        const result = await LocalAuthentication.authenticateAsync({
-          promptMessage:
-            "Подтвердите отпечатком пальца для включения входа по биометрии",
-        });
-
-        if (result.success) {
-          // Если отпечаток подтвержден, меняем состояние и сохраняем в AsyncStorage
-          const newIsEnabled = !isEnabled;
-          setIsEnabled(newIsEnabled);
-
-          AsyncStorage.setItem(
-            "biometricEnabled",
-            newIsEnabled ? "true" : "false"
-          )
-            .then(() => {
-              console.log("Информация о входе по биометрии сохранена");
-            })
-            .catch((error) => {
-              console.error(
-                "Ошибка при сохранении предпочтений по биометрии:",
-                error
-              );
-            });
-        } else {
-          console.log("Пользователь отказался от входа по биометрии");
-        }
-      } catch (error) {
-        console.error("Ошибка при запросе отпечатка пальца:", error);
-      }
-    } else {
-      // Если выключаем, меняем состояние и сохраняем в AsyncStorage
-      const newIsEnabled = !isEnabled;
-      setIsEnabled(newIsEnabled);
-
-      AsyncStorage.setItem("biometricEnabled", newIsEnabled ? "true" : "false")
-        .then(() => {
-          console.log("Информация о входе по биометрии сохранена");
-        })
-        .catch((error) => {
-          console.error(
-            "Ошибка при сохранении предпочтений по биометрии:",
-            error
-          );
-        });
-    }
-  };
-
-  useEffect(() => {
-    const checkBiometricPreference = async () => {
-      try {
-        const biometricEnabled = await AsyncStorage.getItem("biometricEnabled");
-
-        if (biometricEnabled === "true") {
-          setIsEnabled(true);
-        } else {
-          setIsEnabled(false);
-        }
-      } catch (error) {
-        console.error("Ошибка при чтении предпочтений по биометрии:", error);
-      }
-    };
-
-    checkBiometricPreference();
-  }, []);
-
-  // redux
-  // const isDarkModeEnabled = useSelector(
-  //   (state) => state.theme.isDarkModeEnabled
-  // );
 
   const SafeAreaWrapper =
     Platform.OS === "android" ? SafeAreaViewContext : SafeAreaView;
@@ -499,34 +288,30 @@ const Settings = () => {
           ]}
         >
           <Link
-            title={"Редактировать профиль"}
+            title={"Изменить Email"}
             onClick={() => {
-              navigation.navigate("Редактировать профиль");
+              navigation.navigate("Изменить почту");
             }}
-            icon={"person"}
+            icon={"lock"}
           />
           <Link
             title={i18n.t("changePassword")}
             onClick={() => {
               navigation.navigate("Смена пароля");
             }}
-            icon={"lock"}
           />
           <Link
             title={"Публичность профиля"}
             // onClick={() => navigation.navigate("Сдать жилье")}
-            icon={"home"}
           />
 
           <Link
             title={i18n.t("notifications")}
             // onClick={() => navigation.navigate("Помощь")}
-            icon={"email-fast-outline"}
           />
           <Link
             title={"Удаление аккаунта"}
             // onClick={() => navigation.navigate("Сдать жилье")}
-            icon={"home"}
           />
         </View>
       </View>

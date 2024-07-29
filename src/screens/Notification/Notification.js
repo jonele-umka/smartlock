@@ -1,271 +1,180 @@
-// import React, { useEffect, useState, useRef } from "react";
-// import {
-//   View,
-//   Text,
-//   ScrollView,
-//   ActivityIndicator,
-//   SafeAreaView,
-// } from "react-native";
-// import { LinearGradient } from "expo-linear-gradient";
-// import {
-//   fetchTransactions,
-//   fetchTransactionsIncoming,
-//   markNotificationsAsRead,
-// } from "../../Store/Transactions/transctionsActions";
-// import { useSelector, useDispatch } from "react-redux";
-// import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-// import Entypo from "react-native-vector-icons/Entypo";
-// import { API_URL } from "../../constants";
-// import i18n from "../../components/i18n/i18n";
+import React, { useEffect, useState, useRef } from "react";
+import {
+  View,
+  Text,
+  ScrollView,
+  ActivityIndicator,
+  SafeAreaView,
+  FlatList,
+  Image,
+  TouchableOpacity,
+} from "react-native";
 
-// const Notification = () => {
-//   const dispatch = useDispatch();
-//   // const incoming = useSelector((state) => state.transactions.incoming);
-//   // const outgoing = useSelector((state) => state.transactions.transactions);
-//   // const transactions = [...outgoing, ...incoming];
-//   // const loading = useSelector((state) => state.transactions.loading);
-//   // const token = useSelector((state) => state.signIn.token);
-//   const [balance, setBalance] = useState("");
-//   const scrollViewRef = useRef();
+import { useSelector, useDispatch } from "react-redux";
+import { useNavigation } from "@react-navigation/core";
 
-//   useEffect(() => {
-//     // Check if scrollViewRef is defined before calling scrollToEnd
-//     if (scrollViewRef.current) {
-//       scrollViewRef.current.scrollToEnd({ animated: true });
-//     }
-//   }, [scrollViewRef.current]);
+import { fetchNotifications } from "../../Store/notificationsSlice/notificationsSlice";
 
-//   // loadHistory
-//   const currencySymbols = {
-//     USD: "$",
-//     EUR: "€",
-//     RUB: "₽",
-//     KGS: "C",
-//     USDT: "₮",
-//     ETH: "Ξ",
-//     BTC: "₿",
-//   };
- 
-//   // useEffect(() => {
-//   //   if (token) {
-//   //     dispatch(fetchTransactionsIncoming());
-//   //     dispatch(fetchTransactions());
-//   //     fetch(`${API_URL}/wallets/balance`, {
-//   //       method: "GET",
-//   //       headers: {
-//   //         "Content-Type": "application/json",
-//   //         Authorization: `Bearer ${token}`,
-//   //       },
-//   //     })
-//   //       .then((response) => {
-//   //         if (!response.ok) {
-//   //           return response.json().then((data) => {
-//   //             const errorMessage = data?.Error || "Произошла ошибка";
-//   //             throw new Error(errorMessage);
-//   //           });
-//   //         }
-//   //         return response.json();
-//   //       })
-//   //       .then((data) => {
-//   //         const newBalances = {};
-//   //         data.data.forEach((item) => {
-//   //           newBalances[item.WalletSubAccount.AccountNumber] =
-//   //             item.WalletSubAccount.Balance;
-//   //         });
-//   //         setBalance(newBalances);
-//   //       })
-//   //       .catch((error) => {
-//   //         console.error(error);
-//   //       });
-//   //   }
-//   // }, [token, dispatch]);
- 
+const Notification = () => {
+  const dispatch = useDispatch();
+  const navigation = useNavigation();
+  const API_URL = process.env.API_URL;
 
-//   const formatDate = (dateString) => {
-//     const date = new Date(dateString);
-//     const year = date.getFullYear();
-//     const month = String(date.getMonth() + 1).padStart(2, "0");
-//     const day = String(date.getDate()).padStart(2, "0");
-//     const hours = String(date.getHours()).padStart(2, "0");
-//     const minutes = String(date.getMinutes()).padStart(2, "0");
-//     const seconds = String(date.getSeconds()).padStart(2, "0");
+  const status = useSelector((state) => state.notifications.status);
+  const error = useSelector((state) => state.notifications.error);
+  const token = useSelector((state) => state.auth.token);
+  const notification = useSelector(
+    (state) => state.notifications.notifications
+  );
+  // запрос уведомлений
+  useEffect(() => {
+    dispatch(fetchNotifications(token));
+  }, [dispatch, token]);
 
-//     return `${day}.${month}.${year} ${hours}:${minutes}:${seconds}`;
-//   };
-//   if (loading) {
-//     return (
-//       <LinearGradient
-//         style={[
-//           { flex: 1 },
-//           // isDarkModeEnabled && { backgroundColor: "#191a1d" },
-//         ]}
-//         start={{ x: 2.4, y: 1.1 }}
-//         end={{ x: 0, y: 0 }}
-//         colors={["#241270", "#140A4F", "#000"]}
-//       >
-//         <View
-//           style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
-//         >
-//           <ActivityIndicator
-//             size="large"
-//             style={{ marginTop: 30 }}
-//             color={"#fff"}
-//           />
-//         </View>
-//       </LinearGradient>
-//     );
-//   } else {
-//     return (
-//       <LinearGradient
-//         style={[
-//           { flex: 1 },
-//           // isDarkModeEnabled && { backgroundColor: "#191a1d" },
-//         ]}
-//         start={{ x: 2.4, y: 1.1 }}
-//         end={{ x: 0, y: 0 }}
-//         colors={["#241270", "#140A4F", "#000"]}
-//       >
-//         <ScrollView
-//           ref={scrollViewRef}
-//           onContentSizeChange={() =>
-//             scrollViewRef.current.scrollToEnd({ animated: true })
-//           }
-//           style={styles.chatThread}
-//         >
-//           <SafeAreaView style={{ flex: 1 }}>
-//             {transactions.map((transaction, index) => {
-//               const isOutgoing = outgoing.includes(transaction);
-//               const isIncoming = incoming.includes(transaction);
+  const markNotificationAsRead = async (notificationId) => {
+    try {
+      const response = await fetch(
+        `${API_URL}/notification/read/${notificationId}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      if (response.ok) {
+        dispatch(fetchNotifications(token));
+      } else {
+        console.error(
+          `Не удалось пометить уведомление с ID ${notificationId} как прочитанное.`
+        );
+      }
+    } catch (error) {
+      console.error("Ошибка при отправке запроса PATCH:", error);
+    }
+  };
 
-//               return (
-//                 <View
-//                   key={index}
-//                   style={[
-//                     styles.messageContainer,
-//                     isOutgoing
-//                       ? styles.outgoingMessage
-//                       : styles.incomingMessage,
-//                   ]}
-//                 >
-//                   <View
-//                     style={
-//                       isOutgoing
-//                         ? styles.outgoingMessageBlock
-//                         : styles.incomingMessageBlock
-//                     }
-//                   >
-//                     {transaction.Status === "Completed" && (
-//                       <MaterialCommunityIcons
-//                         name="check-circle"
-//                         style={{ color: "#2CE02B", fontSize: 35 }}
-//                       />
-//                     )}
-//                     {transaction.Status === "Canceled" && (
-//                       <Entypo
-//                         name="circle-with-cross"
-//                         style={{ color: "#9D0038", fontSize: 35 }}
-//                       />
-//                     )}
-//                     {transaction.Status === "Performed" && (
-//                       <Entypo
-//                         name="back-in-time"
-//                         style={{
-//                           color: "grey",
-//                           fontSize: 35,
-//                         }}
-//                       />
-//                     )}
-//                     <View style={styles.message}>
-//                       <Text style={styles.messageText}>
-//                         {i18n.t("transfers")}: {transaction.SumSender}
-//                         {""}{" "}
-//                         {
-//                           currencySymbols[
-//                             transaction.CurrencySender.CurrencyCode
-//                           ]
-//                         }
-//                       </Text>
+  // если загрузка или неуспешно
+  if (status === "loading") {
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <ActivityIndicator size="large" color="#0000ff" />
+      </View>
+    );
+  }
 
-//                       <Text style={styles.messageText}>
-//                         {isIncoming ? i18n.t("from") : i18n.t("to")} :{" "}
-//                         {isIncoming ? "****" : ""}
-//                         {isIncoming
-//                           ? transaction.ReceiverRequisites.slice(-4)
-//                           : transaction.ReceiverRequisites}
-//                       </Text>
+  if (status === "failed") {
+    return (
+      <SafeAreaView style={{ flex: 1, paddingVertical: 10 }}>
+        <Text style={{ fontSize: 16, color: "red" }}>{error}</Text>
+      </SafeAreaView>
+    );
+  }
+  // формат даты
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    const hours = String(date.getHours()).padStart(2, "0");
+    const minutes = String(date.getMinutes()).padStart(2, "0");
+    const seconds = String(date.getSeconds()).padStart(2, "0");
 
-//                       <Text style={styles.messageText}>
-//                         {i18n.t("card")}: {transaction.SenderRequisites}
-//                       </Text>
+    return `${day}.${month}.${year} ${hours}:${minutes}:${seconds}`;
+  };
+  return (
+    <ScrollView style={{ flex: 1, padding: 10, backgroundColor: "#fff" }}>
+      <SafeAreaView style={{ flex: 1 }}>
+        <Text
+          style={{
+            fontSize: 30,
+            marginBottom: 20,
+            color: "#000",
+            fontWeight: 600,
+          }}
+        >
+          Уведомления
+        </Text>
+        <View style={{ flexDirection: "column", rowGap: 20 }}>
+          {notification.map((notification) => (
+            <View key={notification.ID}>
+              <TouchableOpacity
+                onPress={() => {
+                  markNotificationAsRead(notification.ID);
+                  navigation.navigate("Просмотр уведомлений", {
+                    text: notification.Notification.Text,
+                  });
+                }}
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  columnGap: 10,
+                  padding: 16,
+                  borderRadius: 10,
+                  backgroundColor: "#fff",
+                  shadowColor: "#000",
+                  shadowOffset: { width: 0, height: 2 },
+                  shadowOpacity: 0.2,
+                  shadowRadius: 10,
+                }}
+              >
+                <Image
+                  source={require("../../assets/notification.png")}
+                  style={{ width: 40, height: 40 }}
+                />
+                <View style={{ flex: 1 }}>
+                  <Text
+                    style={{ fontSize: 20, fontWeight: 500, marginBottom: 5 }}
+                  >
+                    {notification.Notification.Title}
+                  </Text>
+                  <Text style={{ fontSize: 16 }}>
+                    {notification.Notification.Text}
+                  </Text>
+                  <Text
+                    style={{
+                      alignSelf: "flex-end",
+                      color: "#000",
+                      marginTop: 10,
+                      fontSize: 14,
+                    }}
+                  >
+                    {formatDate(notification.CreatedAt)}
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            </View>
+          ))}
+        </View>
+      </SafeAreaView>
+    </ScrollView>
+  );
+  //   if (loading) {
+  //     return (
+  //       <LinearGradient
+  //         style={[
+  //           { flex: 1 },
+  //           // isDarkModeEnabled && { backgroundColor: "#191a1d" },
+  //         ]}
+  //         start={{ x: 2.4, y: 1.1 }}
+  //         end={{ x: 0, y: 0 }}
+  //         colors={["#241270", "#140A4F", "#000"]}
+  //       >
+  //         <View
+  //           style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+  //         >
+  //           <ActivityIndicator
+  //             size="large"
+  //             style={{ marginTop: 30 }}
+  //             color={"#fff"}
+  //           />
+  //         </View>
+  //       </LinearGradient>
+  //     );
+  //   } else {
 
-//                       {transaction.Status === "Completed" && (
-//                         <Text style={styles.messageText}>
-//                           {i18n.t("available")}:{" "}
-//                           {balance[transaction.SenderRequisites]}
-//                         </Text>
-//                       )}
-//                       <Text
-//                         style={{
-//                           alignSelf: "flex-end",
-//                           color: "#fff",
-//                           marginTop: 10,
-//                           fontSize: 14,
-//                         }}
-//                       >
-//                         {formatDate(transaction.CreatedAt)}
-//                       </Text>
-//                     </View>
-//                   </View>
-//                 </View>
-//               );
-//             })}
-//           </SafeAreaView>
-//         </ScrollView>
-//       </LinearGradient>
-//     );
-//   }
-// };
+  //   }
+};
 
-// const styles = {
-//   container: {
-//     flex: 1,
-//     paddingBottom: 20,
-//   },
-//   chatThread: {
-//     flex: 1,
-//     paddingHorizontal: 10,
-//   },
-//   messageContainer: {
-//     marginBottom: 20,
-//     alignItems: "flex-end",
-//   },
-//   outgoingMessageBlock: {
-//     flexDirection: "row-reverse",
-//     alignItems: "flex-end",
-//     columnGap: 10,
-//   },
-//   incomingMessageBlock: {
-//     flexDirection: "row",
-//     alignItems: "flex-end",
-//     columnGap: 10,
-//   },
-//   message: {
-//     padding: 16,
-//     borderRadius: 10,
-//     backgroundColor: "rgba(93, 0, 230, 0.2)",
-//     flexDirection: "column",
-//     rowGap: 5,
-//   },
-//   messageText: {
-//     fontSize: 16,
-//     color: "#fff",
-//   },
-//   incomingMessage: {
-//     alignItems: "flex-start",
-//   },
-//   outgoingMessage: {
-//     alignItems: "flex-end",
-//   },
-// };
-
-// export default Notification;
+export default Notification;

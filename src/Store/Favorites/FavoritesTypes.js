@@ -1,2 +1,0 @@
-export const LOAD_FAVORITES = "LOAD_FAVORITES";
-export const SET_LOADING = "SET_LOADING";

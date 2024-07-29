@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   View,
+  Platform,
 } from "react-native";
 import { SafeAreaView as SafeAreaViewContext } from "react-native-safe-area-context";
 

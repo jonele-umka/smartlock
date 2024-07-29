@@ -8,6 +8,7 @@ import {
   ImageBackground,
 } from "react-native";
 import Fontisto from "react-native-vector-icons/Fontisto";
+import CustomText from "../../CustomText/CustomText";
 
 const ListCard = ({ items, clickHandler }) => {
   const onPress = (page) => {
@@ -23,21 +24,23 @@ const ListCard = ({ items, clickHandler }) => {
         <ImageBackground
           style={styles.imageBackground}
           source={{
-            uri: item.image
+            uri: item.image,
           }}
         >
           <View style={styles.overlay} />
           <View style={styles.contentContainer}>
-            <Text style={styles.title}>{item.title}</Text>
+            <CustomText style={styles.title}>{item.title}</CustomText>
           </View>
           <View style={styles.bottomContent}>
             <View style={styles.locationContainer}>
               <Fontisto name="map-marker-alt" style={styles.locationIcon} />
-              <Text style={styles.locationText}>{item.location}</Text>
+              <CustomText style={styles.locationText}>
+                {item.location}
+              </CustomText>
             </View>
             <View style={styles.priceContainer}>
-              <Text style={styles.price}>KGS {item.price}</Text>
-              <Text style={styles.priceDescription}>ночь</Text>
+              <CustomText style={styles.price}>KGS {item.price}</CustomText>
+              <CustomText style={styles.priceDescription}>ночь</CustomText>
             </View>
           </View>
         </ImageBackground>
@@ -53,7 +56,10 @@ const ListCard = ({ items, clickHandler }) => {
     <View>
       <View>
         <FlatList
-          contentContainerStyle={{ paddingHorizontal: 10, marginBottom: 30 }}
+          contentContainerStyle={{
+            paddingHorizontal: 10,
+            marginTop: 15,
+          }}
           showsHorizontalScrollIndicator={false}
           showsVerticalScrollIndicator={false}
           data={items}

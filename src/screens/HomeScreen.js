@@ -1,11 +1,22 @@
-import React from "react";
-import { Text, View, ScrollView, SafeAreaView, Platform } from "react-native";
+import React, { useEffect } from "react";
+import {
+  Text,
+  View,
+  ScrollView,
+  SafeAreaView,
+  Platform,
+  ImageBackground,
+} from "react-native";
 import Feather from "react-native-vector-icons/Feather";
 import { SafeAreaView as SafeAreaViewContext } from "react-native-safe-area-context";
 import ListCard from "../components/List/HomeListCard/ListCard";
 import Header from "../components/Header/Header";
 import ListCategories from "../components/List/ListCategories/ListCategories";
-import ObjectList from "../components/ObjectList/ObjectList";
+import ObjectList from "./Objects/ObjectList/ObjectList";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchNotifications } from "../Store/notificationsSlice/notificationsSlice";
+import CustomText from "../components/CustomText/CustomText";
+import { fetchAccommodations } from "../Store/accommodationSlice/accommodationSlice";
 
 const hotels = [
   {
@@ -41,22 +52,36 @@ const hotels = [
 const categories = [
   {
     title: "Пляж",
+    image: require("../assets/beach.png"),
   },
   {
     title: "Горы",
+    image: require("../assets/mountains.png"),
   },
   {
     title: "Водопады",
+    image: require("../assets/waterfall.png"),
   },
   {
     title: "Город",
+    image: require("../assets/city.png"),
   },
 ];
 
 const HomeScreen = ({ navigation }) => {
-  // const isDarkModeEnabled = useSelector(
-  //   (state) => state.theme.isDarkModeEnabled
-  // );
+  const dispatch = useDispatch();
+  // notifications
+  const token = useSelector((state) => state.auth.token);
+  const accommodation = useSelector(
+    (state) => state.accommodation.accommodations
+  );
+ console.log(token)
+  useEffect(() => {
+    dispatch(fetchNotifications(token));
+    dispatch(fetchAccommodations());
+  }, [dispatch, token]);
+
+  // list
   const clickHandler = (page) =>
     navigation.push("Главная страница", { screen: page });
 
@@ -65,136 +90,48 @@ const HomeScreen = ({ navigation }) => {
 
   return (
     <ScrollView
-      style={{ backgroundColor: "#fff", flex: 1 }}
-      // contentContainerStyle={{ paddingVertical: 20 }}
+      style={{
+        flex: 1,
+        backgroundColor: "#fff",
+      }}
+      contentContainerStyle={{ paddingVertical: 20 }}
     >
-      <SafeAreaWrapper>
+      <SafeAreaWrapper style={{ paddingBottom: 100 }}>
         <Header />
         <ListCategories clickHandler={clickHandler} items={categories} />
-        <ListCard clickHandler={clickHandler} items={hotels} />
-
-        {/* <View style={{ paddingHorizontal: 10, marginVertical: 20 }}>
-          <View
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "center",
+            paddingHorizontal: 10,
+          }}
+        >
+          <CustomText
             style={{
-              flexDirection: "row",
-              columnGap: 20,
-              flexWrap: "wrap",
+              fontSize: 25,
+              fontWeight: 500,
             }}
           >
-            <View style={{ flex: 1, rowGap: 20 }}>
-              <View style={{ borderRadius: 20, overflow: "hidden" }}>
-                <ImageBackground
-                  style={{
-                    height: 150,
-                    justifyContent: "flex-end",
-                    paddingBottom: 10,
-                  }}
-                  source={{
-                    uri: "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-                  }}
-                  onPress={() => navigation.navigate("Данные об отеле")}
-                >
-                  <View
-                    style={{
-                      paddingHorizontal: 10,
-                      backgroundColor: "rgba(0,0,0,0.5)",
-                    }}
-                  >
-                    <TouchableOpacity
-                      style={{ marginBottom: 5 }}
-                      onPress={() => navigation.navigate("Данные об отеле")}
-                    >
-                      <Text
-                        style={{
-                          fontSize: 16,
+            Популярные
+          </CustomText>
 
-                          color: "#fff",
-                        }}
-                      >
-                        Рекомендуемые
-                      </Text>
-                    </TouchableOpacity>
-                  </View>
-                </ImageBackground>
-              </View>
-              <View style={{ borderRadius: 20, overflow: "hidden" }}>
-                <ImageBackground
-                  style={{
-                    height: 150,
-                    justifyContent: "flex-end",
-                    paddingBottom: 10,
-                  }}
-                  source={{
-                    uri: "https://images.unsplash.com/photo-1629340038197-191832a53546?q=80&w=2094&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-                  }}
-                  onPress={() => navigation.navigate("Данные об отеле")}
-                >
-                  <View
-                    style={{
-                      paddingHorizontal: 10,
-                      backgroundColor: "rgba(0,0,0,0.5)",
-                    }}
-                  >
-                    <TouchableOpacity
-                      style={{ marginBottom: 5 }}
-                      onPress={() => navigation.navigate("Данные об отеле")}
-                    >
-                      <Text
-                        style={{
-                          fontSize: 16,
-
-                          color: "#fff",
-                        }}
-                      >
-                        Ближе к вам
-                      </Text>
-                    </TouchableOpacity>
-                  </View>
-                </ImageBackground>
-              </View>
-            </View>
-
-            <View style={{ flex: 1 }}>
-              <View style={{ borderRadius: 20, overflow: "hidden" }}>
-                <ImageBackground
-                  style={{
-                    height: 320,
-                    justifyContent: "flex-end",
-                    paddingBottom: 10,
-                  }}
-                  source={{
-                    uri: "https://images.unsplash.com/photo-1580674684081-7617fbf3d745?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-                  }}
-                  onPress={() => navigation.navigate("Данные об отеле")}
-                >
-                  <View
-                    style={{
-                      paddingHorizontal: 10,
-                      backgroundColor: "rgba(0,0,0,0.5)",
-                    }}
-                  >
-                    <TouchableOpacity
-                      style={{ marginBottom: 5 }}
-                      onPress={() => navigation.navigate("Данные об отеле")}
-                    >
-                      <Text
-                        style={{
-                          fontSize: 16,
-
-                          color: "#fff",
-                        }}
-                      >
-                        Популярные
-                      </Text>
-                    </TouchableOpacity>
-                  </View>
-                </ImageBackground>
-              </View>
-            </View>
+          <View
+            style={{
+              backgroundColor: "#f7f7f7",
+              borderRadius: 100,
+              padding: 5,
+            }}
+          >
+            <Feather
+              name="arrow-right"
+              style={{ fontSize: 25, color: "#001510" }}
+            />
           </View>
-        </View> */}
+        </View>
+        <ListCard clickHandler={clickHandler} items={hotels} />
 
-        <View style={{ paddingHorizontal: 10 }}>
+        <View style={{ paddingHorizontal: 10, marginTop: 30 }}>
           <View
             style={{
               flexDirection: "row",
@@ -203,23 +140,26 @@ const HomeScreen = ({ navigation }) => {
               marginBottom: 15,
             }}
           >
-            <Text
+            <CustomText
               style={{
-                fontSize: 30,
+                fontSize: 25,
                 fontWeight: 500,
               }}
             >
               Топ отели
-            </Text>
+            </CustomText>
 
             <View
               style={{
-                backgroundColor: "#f0f0f0",
+                backgroundColor: "#f7f7f7",
                 borderRadius: 100,
                 padding: 5,
               }}
             >
-              <Feather name="arrow-right" style={{ fontSize: 30 }} />
+              <Feather
+                name="arrow-right"
+                style={{ fontSize: 25, color: "#001510" }}
+              />
             </View>
           </View>
           <ObjectList />

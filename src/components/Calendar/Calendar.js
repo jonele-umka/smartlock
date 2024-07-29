@@ -1,5 +1,12 @@
 import React, { useState } from "react";
-import { View, Modal, Pressable, TouchableOpacity, Text } from "react-native";
+import {
+  View,
+  Modal,
+  Pressable,
+  TouchableOpacity,
+  Text,
+  Platform,
+} from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { useForm } from "react-hook-form";
@@ -12,7 +19,8 @@ const Calendar = () => {
   const [selectedTwoDate, setSelectedTwoDate] = useState(
     new Date(selectedDate.getTime() + 24 * 60 * 60 * 1000)
   );
-  // первая дата
+
+  // функция для первой даты
   const handleShowDatePicker = () => {
     setShowDatePicker(!showDatePicker);
   };
@@ -24,7 +32,8 @@ const Calendar = () => {
       setValue("date", selectedDate);
     }
   };
-  // вторая дата
+
+  // функция для второй даты
   const handleShowDateTwoPicker = () => {
     setShowDateTwoPicker(!showDateTwoPicker);
   };
@@ -36,6 +45,7 @@ const Calendar = () => {
       setValue("dateTwo", selectedTwoDate);
     }
   };
+
   const formattedDate = selectedDate.toLocaleDateString("ru-RU", {
     day: "2-digit",
     month: "2-digit",
@@ -49,7 +59,6 @@ const Calendar = () => {
           flexDirection: "row",
           justifyContent: "space-between",
           columnGap: 10,
-          marginBottom: 10,
         }}
       >
         <View
@@ -103,6 +112,7 @@ const Calendar = () => {
           </TouchableOpacity>
         </View>
       </View>
+
       <Modal animationType="fade" transparent={true} visible={showDatePicker}>
         <Pressable
           style={{
@@ -114,16 +124,10 @@ const Calendar = () => {
         >
           <View
             style={{
-              backgroundColor: "black",
+              backgroundColor: "#f7f7f7",
               borderRadius: 20,
-              shadowColor: "#000",
-              shadowOffset: {
-                width: 0,
-                height: 2,
-              },
-              shadowOpacity: 0.25,
-              shadowRadius: 4,
-              elevation: 5,
+              paddingHorizontal: 10,
+              paddingVertical: 20,
             }}
           >
             <DateTimePicker
@@ -135,6 +139,7 @@ const Calendar = () => {
           </View>
         </Pressable>
       </Modal>
+
       <Modal
         animationType="fade"
         transparent={true}
@@ -150,16 +155,10 @@ const Calendar = () => {
         >
           <View
             style={{
-              backgroundColor: "black",
+              backgroundColor: "#f7f7f7",
               borderRadius: 20,
-              shadowColor: "#000",
-              shadowOffset: {
-                width: 0,
-                height: 2,
-              },
-              shadowOpacity: 0.25,
-              shadowRadius: 4,
-              elevation: 5,
+              paddingHorizontal: 10,
+              paddingVertical: 20,
             }}
           >
             <DateTimePicker

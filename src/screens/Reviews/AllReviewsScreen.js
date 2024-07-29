@@ -6,10 +6,11 @@ import {
   ScrollView,
   TouchableOpacity,
   TextInput,
+  Platform,
 } from "react-native";
 import React, { useState } from "react";
 import { SafeAreaView as SafeAreaViewContext } from "react-native-safe-area-context";
-import ImageView from "react-native-image-viewing";
+// import ImageView from "react-native-image-viewing";
 import Ionicons from "react-native-vector-icons/Ionicons";
 const AllReviewsScreen = () => {
   const images = [
@@ -140,14 +141,14 @@ const AllReviewsScreen = () => {
                     ))}
                   </View>
                   <Text style={{ lineHeight: 22 }}>{review.text}</Text>
-                  <ImageView
+                  {/* <ImageView
                     images={images.map((image) => ({
                       uri: image.uri,
                     }))}
                     imageIndex={selectedImageIndex}
                     visible={visible}
                     onRequestClose={() => setIsVisible(false)}
-                  />
+                  /> */}
                 </View>
               ))}
             </View>

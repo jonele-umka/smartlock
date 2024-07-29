@@ -249,15 +249,27 @@ const NavBar = () => {
       screenOptions={({ route }) => ({
         headerShown: false,
         // tabBarShowLabel: tr,
-
-        tabBarActiveTintColor: "#02AAB0",
-
+        tabBarActiveTintColor: "#000",
         tabBarInactiveTintColor: "grey",
         tabBarStyle: [
           // isDarkModeEnabled
           //   ? { backgroundColor: "#191a1d" }
           //   : { backgroundColor: "#f8f3ff" },
-          { borderTopWidth: 0, paddingTop: 10, backgroundColor: "#fff" },
+          {
+            // position: "absolute",
+            // bottom: 20,
+            // left: 20,
+            // right: 20,
+            // borderRadius: 20,
+            // height: 70,
+            backgroundColor: "#fff",
+            borderTopWidth: 0,
+            paddingVertical: 10,
+            shadowColor: "#000",
+            shadowOffset: { width: 0, height: 2 },
+            shadowOpacity: 0.2,
+            shadowRadius: 10,
+          },
         ],
 
         tabBarIcon: ({ focused, color, size }) => {
@@ -310,3 +322,54 @@ const NavBar = () => {
 };
 
 export default NavBar;
+
+/*
+         
+         .btn-grad {
+            background-image: linear-gradient(to right, #00c6ff 0%, #0072ff  51%, #00c6ff  100%);
+            margin: 10px;
+            padding: 15px 45px;
+            text-align: center;
+            text-transform: uppercase;
+            transition: 0.5s;
+            background-size: 200% auto;
+            color: white;            
+            box-shadow: 0 0 20px #eee;
+            border-radius: 10px;
+            display: block;
+          }
+                   
+         .btn-grad {
+            background-image: linear-gradient(to right, #0575E6 0%, #021B79  51%, #0575E6  100%);
+            margin: 10px;
+            padding: 15px 45px;
+            text-align: center;
+            text-transform: uppercase;
+            transition: 0.5s;
+            background-size: 200% auto;
+            color: white;            
+            box-shadow: 0 0 20px #eee;
+            border-radius: 10px;
+            display: block;
+          }
+
+       
+         
+         .btn-grad {
+            background-image: linear-gradient(to right, #00bf8f 0%, #001510  51%, #00bf8f  100%);
+            margin: 10px;
+            padding: 15px 45px;
+            text-align: center;
+            text-transform: uppercase;
+            transition: 0.5s;
+            background-size: 200% auto;
+            color: white;            
+            box-shadow: 0 0 20px #eee;
+            border-radius: 10px;
+            display: block;
+          }
+
+      
+         
+         
+*/

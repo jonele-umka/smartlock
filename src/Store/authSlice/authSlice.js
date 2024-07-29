@@ -25,16 +25,20 @@ export const loginUser = createAsyncThunk(
       }
 
       const data = await response.json();
+
       const token = data?.token;
+      const userProfile = data?.user?.Profile;
+      const owner = data?.user?.Role;
       const login = userData?.Email;
       const password = userData?.Password;
       await AsyncStorage.setItem("token", token);
       await AsyncStorage.setItem("login", login);
       await AsyncStorage.setItem("password", password);
 
-      return token;
+      return { token, userProfile, owner };
     } catch (error) {
-      return rejectWithValue(error);
+      console.log(error);
+      return rejectWithValue(error.toString());
     }
   }
 );
@@ -206,6 +210,7 @@ export const logoutUser = createAsyncThunk(
     }
   }
 );
+
 // Слайс
 const authSlice = createSlice({
   name: "auth",
@@ -213,11 +218,12 @@ const authSlice = createSlice({
     loading: false,
     error: null,
     token: null,
+    avatar: null,
     userName: "",
+    userProfile: null,
+    owner: null,
   },
-  reducers: {
-    // Вы можете добавлять дополнительные синхронные действия здесь
-  },
+  reducers: {},
   extraReducers: (builder) => {
     builder
       .addCase(loginUser.pending, (state) => {
@@ -225,7 +231,9 @@ const authSlice = createSlice({
         state.error = null;
       })
       .addCase(loginUser.fulfilled, (state, action) => {
-        state.token = action.payload;
+        state.token = action.payload.token;
+        state.userProfile = action.payload.userProfile;
+        state.owner = action.payload.owner;
         state.loading = false;
       })
       .addCase(loginUser.rejected, (state, action) => {
@@ -268,6 +276,7 @@ const authSlice = createSlice({
         state.loading = false;
         state.token = null;
         state.userName = "";
+        state.owner = null;
       })
       .addCase(logoutUser.rejected, (state, action) => {
         state.loading = false;

@@ -2,9 +2,9 @@ import {
   View,
   Text,
   SafeAreaView,
-  TextInput,
   TouchableOpacity,
   Image,
+  Platform,
 } from "react-native";
 import React from "react";
 import { SafeAreaView as SafeAreaViewContext } from "react-native-safe-area-context";
@@ -42,15 +42,12 @@ const PinLockScreen = () => {
   const handleLock = async () => {
     try {
       // Отправка POST-запроса с использованием fetch
-      const response = await fetch(
-        "https://server.microret.com/lock/lock/1",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const response = await fetch("https://server.microret.com/lock/lock/1", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
 
       if (response.ok) {
         // Если запрос выполнен успешно

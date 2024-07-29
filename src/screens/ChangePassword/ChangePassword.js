@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   View,
+  Platform,
 } from "react-native";
 import { SafeAreaView as SafeAreaViewContext } from "react-native-safe-area-context";
 
@@ -32,13 +33,15 @@ const ChangePassword = () => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
 
-  const loading = useSelector((state) => state.auth.loading);
+  const [loading, setLoading] = useState(false);
+
   const token = useSelector((state) => state.auth.token);
 
   const [confirmError, setConfirmError] = useState("");
   const [oldError, setOldError] = useState("");
 
   const handleChangePassword = async () => {
+    setLoading(true);
     try {
       const CurrentPassword = getValues("CurrentPassword");
       const NewPassword = getValues("NewPassword");
@@ -46,12 +49,10 @@ const ChangePassword = () => {
       const storedPassword = await AsyncStorage.getItem("password");
 
       if (CurrentPassword !== storedPassword) {
-        console.log("object");
         setOldError("Неверный старый пароль");
         return;
       }
       if (NewPassword !== NewPasswordConfirm) {
-        console.log("feeee");
         setConfirmError("Пароли не совпадают");
         return;
       }
@@ -70,21 +71,27 @@ const ChangePassword = () => {
       });
 
       if (response.ok) {
-        console.log("success");
+        setLoading(false);
+
+        // await AsyncStorage.removeItem("password");
         await AsyncStorage.setItem("password", NewPasswordConfirm);
-        Toast.show({
-          type: "success",
-          position: "top",
-          text2: i18n.t("youHaveSuccessfullyChangedYourPassword"),
-          visibilityTime: 3000,
-          autoHide: true,
-          topOffset: 30,
-        });
+        // Toast.show({
+        //   type: "success",
+        //   position: "top",
+        //   text2: i18n.t("youHaveSuccessfullyChangedYourPassword"),
+        //   visibilityTime: 3000,
+        //   autoHide: true,
+        //   topOffset: 30,
+        // });
         navigation.navigate("Главная страница");
       } else {
+        setLoading(false);
+
         console.log("Ошибка", "Не удалось изменить пароль.");
       }
     } catch (error) {
+      setLoading(false);
+
       console.error("Не удалось изменить пароль.", error);
     }
   };
@@ -155,7 +162,7 @@ const ChangePassword = () => {
                     placeholderTextColor="#b8b8b8"
                     onChangeText={(value) => {
                       field.onChange(value);
-                        setOldError("");
+                      setOldError("");
                     }}
                     value={field.value}
                     style={{
@@ -268,7 +275,7 @@ const ChangePassword = () => {
                     placeholderTextColor="#b8b8b8"
                     onChangeText={(value) => {
                       field.onChange(value);
-                        setConfirmError("");
+                      setConfirmError("");
                     }}
                     value={field.value}
                     style={{

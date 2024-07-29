@@ -6,6 +6,7 @@ import {
   ScrollView,
   TouchableOpacity,
   TextInput,
+  Platform
 } from "react-native";
 import React, { useState } from "react";
 import { SafeAreaView as SafeAreaViewContext } from "react-native-safe-area-context";

@@ -11,37 +11,40 @@ import i18n from "../i18n/i18n";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { LinearGradient } from "expo-linear-gradient";
 
-const Person = () => {
+const Person = ({
+  quantityPerson,
+  onChangeQuantityPerson,
+  quantityRooms,
+  onChangeQuantityRooms,
+  onSubmit,
+}) => {
   // гости
   const [modalQuests, setModalQuests] = useState(false);
+
   const handleQuests = () => {
     setModalQuests(!modalQuests);
   };
-  // количество взрослых
-  const [quantityPerson, setQuantityPerson] = useState(1);
 
   const increaseQuantityPerson = () => {
-    setQuantityPerson(quantityPerson + 1);
+    onChangeQuantityPerson(quantityPerson + 1);
   };
 
   const decreaseQuantityPerson = () => {
     if (quantityPerson > 1) {
-      setQuantityPerson(quantityPerson - 1);
+      onChangeQuantityPerson(quantityPerson - 1);
     }
   };
 
-  // количество детей
-  const [quantityKids, setQuantityKids] = useState(0);
-
-  const increaseQuantityKids = () => {
-    setQuantityKids(quantityKids + 1);
+  const increaseQuantityRooms = () => {
+    onChangeQuantityRooms(quantityRooms + 1);
   };
 
-  const decreaseQuantityKids = () => {
-    if (quantityKids > 0) {
-      setQuantityKids(quantityKids - 1);
+  const decreaseQuantityRooms = () => {
+    if (quantityRooms > 0) {
+      onChangeQuantityRooms(quantityRooms - 1);
     }
   };
+
   // switch
   const [isEnabled, setIsEnabled] = useState(false);
 
@@ -72,8 +75,8 @@ const Person = () => {
             <Ionicons name="person" style={{ fontSize: 18 }} />
             <Text>
               {quantityPerson} {quantityPerson && "взрослых"}{" "}
-              {quantityKids && quantityKids !== 0
-                ? `${quantityKids} детей`
+              {quantityRooms && quantityRooms !== 0
+                ? `${quantityRooms} комнат`
                 : ""}{" "}
             </Text>
           </View>
@@ -85,6 +88,7 @@ const Person = () => {
             flex: 1,
             justifyContent: "center",
             alignItems: "center",
+            backgroundColor: "rgba(0,0,0,0.5)",
           }}
         >
           <View
@@ -100,6 +104,7 @@ const Person = () => {
               shadowOpacity: 0.25,
               shadowRadius: 4,
               elevation: 5,
+              width: "90%",
             }}
           >
             <View
@@ -119,7 +124,7 @@ const Person = () => {
                     marginBottom: 3,
                   }}
                 >
-                  Взрослые
+                  Гости
                 </Text>
                 <Text style={{ color: "#b8b8b8" }}>От 18 лет</Text>
               </View>
@@ -176,9 +181,9 @@ const Person = () => {
                     marginBottom: 3,
                   }}
                 >
-                  Дети
+                  Комнаты
                 </Text>
-                <Text style={{ color: "#b8b8b8" }}>До 18 лет</Text>
+                <Text style={{ color: "#b8b8b8" }}>1-х комн</Text>
               </View>
               <View
                 style={{
@@ -188,7 +193,7 @@ const Person = () => {
                 }}
               >
                 <TouchableOpacity
-                  onPress={decreaseQuantityKids}
+                  onPress={decreaseQuantityRooms}
                   style={{
                     backgroundColor: "#02AAB0",
                     borderRadius: 8,
@@ -200,11 +205,11 @@ const Person = () => {
                 </TouchableOpacity>
 
                 <View>
-                  <Text style={{ fontSize: 20 }}>{quantityKids}</Text>
+                  <Text style={{ fontSize: 20 }}>{quantityRooms}</Text>
                 </View>
 
                 <TouchableOpacity
-                  onPress={increaseQuantityKids}
+                  onPress={increaseQuantityRooms}
                   style={{
                     backgroundColor: "#02AAB0",
                     borderRadius: 8,

@@ -1,31 +1,28 @@
-import React, { useEffect, useState } from "react";
-import { Image, View, StyleSheet } from "react-native";
-import { useSelector, useDispatch } from "react-redux";
-
-import { Skeleton } from "@rneui/themed";
-import Ionicons from "react-native-vector-icons/Ionicons";
+import React, { useEffect, useState, useRef, useCallback } from "react";
+import {
+  View,
+  StyleSheet,
+  TouchableOpacity,
+  Text,
+  Animated,
+  Platform,
+} from "react-native";
+import { useDispatch } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
-
-import { Badge } from "@rneui/themed";
-import i18n from "../components/i18n/i18n";
-import Search from "../components/Search/Search";
-import Map from "../components/Map/Map";
 import * as Location from "expo-location";
-export const SearchScreen = () => {
+import Map from "../components/Map/Map";
+import Search from "../components/Search/Search";
+import { LinearGradient } from "expo-linear-gradient";
+
+const SearchScreen = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
-  // const isDarkModeEnabled = useSelector(
-  //   (state) => state.theme.isDarkModeEnabled
-  // );
-
-  // const incoming = useSelector((state) => state.transactions.incoming);
-  // const outgoing = useSelector((state) => state.transactions.transactions);
-  // const transactions = [...outgoing, ...incoming];
-  // const loading = useSelector((state) => state.transactions.loading);
-  // const token = useSelector((state) => state.signIn.token);
 
   const [location, setLocation] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
+  const animatedHeight = useRef(new Animated.Value(0)).current;
+  const animatedOpacity = useRef(new Animated.Value(0)).current;
+  const [isSearchVisible, setIsSearchVisible] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -36,62 +33,121 @@ export const SearchScreen = () => {
       }
 
       let location = await Location.getCurrentPositionAsync({});
-      console.log('eee: ', location?.coords)
       setLocation(location?.coords);
     })();
   }, []);
 
-  let text = "Waiting..";
-  if (errorMsg) {
-    text = errorMsg;
-  } else if (location) {
-    text = JSON.stringify(location);
-  }
-  // const favorites = useSelector((state) => state.favorites.favorites);
-
-  // const [showActionsheet, setShowActionsheet] = React.useState(false);
-  // const handleClose = () => setShowActionsheet(!showActionsheet);
-  // const logout = () => {
-  //   // Очистить токен из хранилища
-  //   AsyncStorage.removeItem("token");
-  //   navigation.navigate("Войти");
-  // };
+  const handleSheetChanges = () => {
+    if (isSearchVisible) {
+      // Animate hiding the search component
+      Animated.parallel([
+        Animated.timing(animatedHeight, {
+          toValue: 0,
+          duration: 300,
+          useNativeDriver: false,
+        }),
+        Animated.timing(animatedOpacity, {
+          toValue: 0,
+          duration: 300,
+          useNativeDriver: false,
+        }),
+      ]).start(() => setIsSearchVisible(false));
+    } else {
+      setIsSearchVisible(true);
+      // Animate showing the search component
+      Animated.parallel([
+        Animated.timing(animatedHeight, {
+          toValue: 1,
+          duration: 300,
+          useNativeDriver: false,
+        }),
+        Animated.timing(animatedOpacity, {
+          toValue: 1,
+          duration: 300,
+          useNativeDriver: false,
+        }),
+      ]).start();
+    }
+  };
 
   return (
-    <View
-      style={[
-        { paddingVertical: 0, flex: 1 },
-        // isDarkModeEnabled && { backgroundColor: "#191a1d" },
-      ]}
-    >
-      <View style={{ paddingHorizontal: 10 }}>
-        {/* <View style={styles.header}>
-            <TouchableOpacity>
-              <Image
-                source={require("../assets/avatar.png")}
-                style={{ width: 35, height: 35 }}
-              />
-            </TouchableOpacity>
-          </View> */}
-      </View>
-      <View>
+    <View style={{ flex: 1 }}>
+      <View style={{ flex: isSearchVisible ? 1 : 1.15 }}>
         <Map location={location} />
+        {!isSearchVisible && (
+          <TouchableOpacity
+            onPress={() => handleSheetChanges()}
+            style={{
+              position: "absolute",
+              bottom: 50,
+              alignSelf: "center",
+              zIndex: 1,
+              elevation: 5,
+              shadowColor: "#000",
+              shadowOffset: { width: 0, height: 2 },
+              shadowOpacity: 0.2,
+              shadowRadius: 10,
+            }}
+          >
+            <LinearGradient
+              colors={["#02AAB0", "#00CDAC"]}
+              style={{
+                paddingVertical: 15,
+                paddingHorizontal: 30,
+                borderRadius: 10,
+              }}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
+            >
+              <Text
+                style={{
+                  color: "#fff",
+                  textAlign: "center",
+                  fontSize: 20,
+                }}
+              >
+                Поиск
+              </Text>
+            </LinearGradient>
+          </TouchableOpacity>
+        )}
       </View>
-
-      <View style={styles.searchContainer}>
-        <Search />
-      </View>
+      {isSearchVisible && (
+        <Animated.View
+          style={{
+            flex: animatedHeight,
+            opacity: animatedOpacity,
+          }}
+        >
+          <Search handleSheetChanges={handleSheetChanges} />
+        </Animated.View>
+      )}
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
+  searchButton: {
+    position: "absolute",
+    bottom: 50,
+    alignSelf: "center",
+    zIndex: 1,
+    elevation: 5,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 10,
   },
-
-  searchContainer: {
-    flex: 1,
+  searchButtonGradient: {
+    paddingVertical: 15,
+    paddingHorizontal: 30,
+    borderRadius: 10,
+  },
+  searchButtonText: {
+    color: "#fff",
+    textAlign: "center",
+    fontSize: 20,
   },
 });
+
 export default SearchScreen;

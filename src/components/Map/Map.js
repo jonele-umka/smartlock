@@ -36,10 +36,10 @@ export default function Map({ location }) {
       mapRef.current?.animateCamera(
         {
           center: {
-            latitude: location.latitude + -0.005,
+            latitude: location.latitude,
             longitude: location.longitude,
           },
-          zoom: 15,
+          zoom: 13,
         },
         { duration: 1500 }
       );
@@ -89,8 +89,8 @@ export default function Map({ location }) {
 
 const styles = StyleSheet.create({
   map: {
-    width: Dimensions.get("window").width,
-    height: Dimensions.get("window").height,
+    width: "100%",
+    height: "100%",
   },
 });
 /*

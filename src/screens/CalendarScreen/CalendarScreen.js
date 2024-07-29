@@ -4,6 +4,7 @@ import {
   SafeAreaView,
   TouchableOpacity,
   ScrollView,
+  Platform
 } from "react-native";
 import React from "react";
 import CalendarsFrom from "../../components/Calendars/CalendarsFrom";

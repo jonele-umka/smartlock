@@ -26,7 +26,7 @@ import * as Localization from "expo-localization";
 import i18n from "../components/i18n/i18n";
 import ActionSheet from "react-native-actions-sheet";
 import { Dialog } from "@rneui/themed";
-import { API_URL } from "../constants";
+ 
 
 // link
 const Link = ({ title, onClick, icon, disabled = false }) => {
