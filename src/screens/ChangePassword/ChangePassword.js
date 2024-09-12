@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   View,
+  Platform,
 } from "react-native";
 import { SafeAreaView as SafeAreaViewContext } from "react-native-safe-area-context";
 
@@ -16,9 +17,11 @@ import { useNavigation } from "@react-navigation/core";
 import i18n from "../../components/i18n/i18n";
 import { LinearGradient } from "expo-linear-gradient";
 // import { API_URL } from "../../constants";
-import Toast from "react-native-toast-message";
+
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import Feather from "react-native-vector-icons/Feather";
+import CustomText from "../../components/CustomText/CustomText";
+import SafeAreaWrapper from "../../components/SafeAreaWrapper/SafeAreaWrapper";
+
 const ChangePassword = () => {
   const {
     control,
@@ -27,18 +30,18 @@ const ChangePassword = () => {
     getValues,
   } = useForm();
   const API_URL = process.env.API_URL;
-  const SafeAreaWrapper =
-    Platform.OS === "android" ? SafeAreaViewContext : SafeAreaView;
-  const dispatch = useDispatch();
+
   const navigation = useNavigation();
 
-  const loading = useSelector((state) => state.auth.loading);
+  const [loading, setLoading] = useState(false);
+
   const token = useSelector((state) => state.auth.token);
 
   const [confirmError, setConfirmError] = useState("");
   const [oldError, setOldError] = useState("");
 
   const handleChangePassword = async () => {
+    setLoading(true);
     try {
       const CurrentPassword = getValues("CurrentPassword");
       const NewPassword = getValues("NewPassword");
@@ -46,12 +49,10 @@ const ChangePassword = () => {
       const storedPassword = await AsyncStorage.getItem("password");
 
       if (CurrentPassword !== storedPassword) {
-        console.log("object");
         setOldError("Неверный старый пароль");
         return;
       }
       if (NewPassword !== NewPasswordConfirm) {
-        console.log("feeee");
         setConfirmError("Пароли не совпадают");
         return;
       }
@@ -70,21 +71,27 @@ const ChangePassword = () => {
       });
 
       if (response.ok) {
-        console.log("success");
+        setLoading(false);
+
+        // await AsyncStorage.removeItem("password");
         await AsyncStorage.setItem("password", NewPasswordConfirm);
-        Toast.show({
-          type: "success",
-          position: "top",
-          text2: i18n.t("youHaveSuccessfullyChangedYourPassword"),
-          visibilityTime: 3000,
-          autoHide: true,
-          topOffset: 30,
-        });
+        // Toast.show({
+        //   type: "success",
+        //   position: "top",
+        //   text2: i18n.t("youHaveSuccessfullyChangedYourPassword"),
+        //   visibilityTime: 3000,
+        //   autoHide: true,
+        //   topOffset: 30,
+        // });
         navigation.navigate("Главная страница");
       } else {
+        setLoading(false);
+
         console.log("Ошибка", "Не удалось изменить пароль.");
       }
     } catch (error) {
+      setLoading(false);
+
       console.error("Не удалось изменить пароль.", error);
     }
   };
@@ -102,38 +109,28 @@ const ChangePassword = () => {
           paddingVertical: 20,
         }}
       >
-        <Text
+        <CustomText
           style={{
             fontSize: 40,
             marginBottom: 30,
-            color: "#000",
             fontWeight: 600,
           }}
         >
           Сменить пароль
-        </Text>
+        </CustomText>
 
         <View
           style={{
             marginBottom: 10,
           }}
         >
-          <View style={{ marginBottom: 30 }}>
-            <Text style={{ marginBottom: 15, fontWeight: 500, fontSize: 16 }}>
-              Старый пароль
-            </Text>
-            <View
-              style={{
-                borderBottomWidth: 0.5,
-                borderBottomColor: "#000",
-                paddingRight: 10,
-                paddingBottom: 10,
-                borderBottomColor:
-                  errors.password_confirm === "passwords do not match"
-                    ? "red"
-                    : "#000",
-              }}
+          <View style={{ marginBottom: 20 }}>
+            <CustomText
+              style={{ marginBottom: 15, fontWeight: 500, fontSize: 16 }}
             >
+              Старый пароль
+            </CustomText>
+            <View>
               <Controller
                 control={control}
                 name="CurrentPassword"
@@ -152,14 +149,22 @@ const ChangePassword = () => {
                   <TextInput
                     type="Пароль"
                     placeholder={"********"}
-                    placeholderTextColor="#b8b8b8"
+                    placeholderTextColor="#616992"
                     onChangeText={(value) => {
                       field.onChange(value);
-                        setOldError("");
+                      setOldError("");
                     }}
                     value={field.value}
                     style={{
-                      color: "#000",
+                      borderWidth: 1,
+                      paddingVertical: 10,
+                      paddingHorizontal: 10,
+                      borderRadius: 10,
+                      borderColor:
+                        errors.password_confirm === "passwords do not match"
+                          ? "red"
+                          : "#dee2f1",
+                      color: "#1C2863",
                       fontSize: 14,
                     }}
                   />
@@ -167,32 +172,23 @@ const ChangePassword = () => {
               />
             </View>
             {errors.CurrentPassword && (
-              <Text style={{ color: "red", fontSize: 12, marginTop: 7 }}>
+              <CustomText style={{ color: "red", fontSize: 12, marginTop: 7 }}>
                 {errors.CurrentPassword.message}
-              </Text>
+              </CustomText>
             )}
             {oldError && (
-              <Text style={{ color: "red", fontSize: 12, marginTop: 7 }}>
+              <CustomText style={{ color: "red", fontSize: 12, marginTop: 7 }}>
                 {oldError}
-              </Text>
+              </CustomText>
             )}
           </View>
-          <View style={{ marginBottom: 30 }}>
-            <Text style={{ marginBottom: 15, fontWeight: 500, fontSize: 16 }}>
-              Новый пароль
-            </Text>
-            <View
-              style={{
-                borderBottomWidth: 0.5,
-                borderBottomColor: "#000",
-                paddingRight: 10,
-                paddingBottom: 10,
-                borderBottomColor:
-                  errors.password_confirm === "passwords do not match"
-                    ? "red"
-                    : "#000",
-              }}
+          <View style={{ marginBottom: 20 }}>
+            <CustomText
+              style={{ marginBottom: 15, fontWeight: 500, fontSize: 16 }}
             >
+              Новый пароль
+            </CustomText>
+            <View>
               <Controller
                 control={control}
                 name="NewPassword"
@@ -211,14 +207,22 @@ const ChangePassword = () => {
                   <TextInput
                     type="Пароль"
                     placeholder={"********"}
-                    placeholderTextColor="#b8b8b8"
+                    placeholderTextColor="#616992"
                     onChangeText={(value) => {
                       field.onChange(value);
                       //   setError("");
                     }}
                     value={field.value}
                     style={{
-                      color: "#000",
+                      borderWidth: 1,
+                      paddingVertical: 10,
+                      paddingHorizontal: 10,
+                      borderRadius: 10,
+                      borderColor:
+                        errors.password_confirm === "passwords do not match"
+                          ? "red"
+                          : "#dee2f1",
+                      color: "#1C2863",
                       fontSize: 14,
                     }}
                   />
@@ -226,27 +230,18 @@ const ChangePassword = () => {
               />
             </View>
             {errors.NewPassword && (
-              <Text style={{ color: "red", fontSize: 12, marginTop: 7 }}>
+              <CustomText style={{ color: "red", fontSize: 12, marginTop: 7 }}>
                 {errors.NewPassword.message}
-              </Text>
+              </CustomText>
             )}
           </View>
           <View>
-            <Text style={{ marginBottom: 15, fontWeight: 500, fontSize: 16 }}>
-              Подтверждение пароля
-            </Text>
-            <View
-              style={{
-                borderBottomWidth: 0.5,
-                borderBottomColor: "#000",
-                paddingRight: 10,
-                paddingBottom: 10,
-                borderBottomColor:
-                  errors.password_confirm === "passwords do not match"
-                    ? "red"
-                    : "#000",
-              }}
+            <CustomText
+              style={{ marginBottom: 15, fontWeight: 500, fontSize: 16 }}
             >
+              Подтверждение пароля
+            </CustomText>
+            <View>
               <Controller
                 control={control}
                 name="NewPasswordConfirm"
@@ -265,14 +260,22 @@ const ChangePassword = () => {
                   <TextInput
                     type="Пароль"
                     placeholder={"********"}
-                    placeholderTextColor="#b8b8b8"
+                    placeholderTextColor="#616992"
                     onChangeText={(value) => {
                       field.onChange(value);
-                        setConfirmError("");
+                      setConfirmError("");
                     }}
                     value={field.value}
                     style={{
-                      color: "#000",
+                      borderWidth: 1,
+                      paddingVertical: 10,
+                      paddingHorizontal: 10,
+                      borderRadius: 10,
+                      borderColor:
+                        errors.password_confirm === "passwords do not match"
+                          ? "red"
+                          : "#dee2f1",
+                      color: "#1C2863",
                       fontSize: 14,
                     }}
                   />
@@ -280,14 +283,14 @@ const ChangePassword = () => {
               />
             </View>
             {errors.NewPasswordConfirm && (
-              <Text style={{ color: "red", fontSize: 12, marginTop: 7 }}>
+              <CustomText style={{ color: "red", fontSize: 12, marginTop: 7 }}>
                 {errors.NewPasswordConfirm.message}
-              </Text>
+              </CustomText>
             )}
             {confirmError && (
-              <Text style={{ color: "red", fontSize: 12, marginTop: 7 }}>
+              <CustomText style={{ color: "red", fontSize: 12, marginTop: 7 }}>
                 {confirmError}
-              </Text>
+              </CustomText>
             )}
           </View>
         </View>
@@ -295,8 +298,8 @@ const ChangePassword = () => {
         {loading ? (
           <ActivityIndicator
             size="large"
-            style={{ marginTop: 40, marginBottom: 30 }}
-            color={"#000"}
+            style={{ marginTop: 40 }}
+            color={"#4B5DFF"}
           />
         ) : (
           <TouchableOpacity
@@ -305,19 +308,17 @@ const ChangePassword = () => {
             style={{
               marginTop: 30,
               padding: 15,
-              backgroundColor: "#000",
               borderRadius: 10,
               shadowColor: "#000",
               marginBottom: 30,
-              shadowOffset: {
-                width: 0,
-                height: 10,
-              },
+              backgroundColor: "#4B5DFF",
             }}
           >
-            <Text style={{ color: "#fff", textAlign: "center", fontSize: 20 }}>
+            <CustomText
+              style={{ color: "#fff", textAlign: "center", fontSize: 20 }}
+            >
               {i18n.t("next")}
-            </Text>
+            </CustomText>
           </TouchableOpacity>
         )}
       </View>

@@ -9,7 +9,7 @@
 // } from "@react-navigation/drawer";
 // import Ionicons from "react-native-vector-icons/Ionicons";
 // // import AntDesign from "react-native-vector-icons/AntDesign";
-// import SearchScreen from "../screens/SearchScreen";
+// import mapScreen from "../screens/mapScreen";
 // import HomeScreen from "../screens/HomeScreen";
 // // import FavoritesScreen from "../screens/FavoritesScreen";
 
@@ -50,7 +50,7 @@
 
 // const NavBar = () => {
 //   const home = i18n.t("home");
-//   const search = i18n.t("search");
+//   const map = i18n.t("map");
 //   const reservation = i18n.t("Бронь");
 //   const favorites = i18n.t("favorites");
 //   const profile = i18n.t("profile");
@@ -108,15 +108,15 @@
 //         }}
 //       />
 //       <Drawer.Screen
-//         name={search}
-//         component={SearchScreen}
+//         name={map}
+//         component={mapScreen}
 //         options={{
 //           title: Platform.OS === "android" ? "" : "Поиск",
 //           title: "Умные технологии",
-//           drawerLabel: search,
+//           drawerLabel: map,
 //           drawerIcon: ({ focused, color, size }) => (
 //             <Ionicons
-//               name={focused ? "search-circle" : "search-circle-outline"}
+//               name={focused ? "map-circle" : "map-circle-outline"}
 //               size={size}
 //               color={color}
 //             />
@@ -223,7 +223,7 @@ import React from "react";
 import { useSelector } from "react-redux";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Ionicons from "react-native-vector-icons/Ionicons";
-import SearchScreen from "../screens/SearchScreen";
+import MapScreen from "../screens/MapScreen";
 import HomeScreen from "../screens/HomeScreen";
 import FavoritesScreen from "../screens/FavoritesScreen";
 import profileScreen from "../screens/ProfileScreen";
@@ -235,7 +235,7 @@ const Tab = createBottomTabNavigator();
 
 const NavBar = () => {
   const home = i18n.t("home");
-  const search = i18n.t("search");
+  const map = "Карта";
   const reservation = i18n.t("Бронь");
   const favorites = i18n.t("favorites");
   const profile = i18n.t("more");
@@ -249,15 +249,27 @@ const NavBar = () => {
       screenOptions={({ route }) => ({
         headerShown: false,
         // tabBarShowLabel: tr,
-
-        tabBarActiveTintColor: "#02AAB0",
-
-        tabBarInactiveTintColor: "grey",
+        tabBarActiveTintColor: "#594BFF",
+        tabBarInactiveTintColor: "rgba(97, 105, 146, 0.8)",
         tabBarStyle: [
           // isDarkModeEnabled
           //   ? { backgroundColor: "#191a1d" }
           //   : { backgroundColor: "#f8f3ff" },
-          { borderTopWidth: 0, paddingTop: 10, backgroundColor: "#fff" },
+          {
+            // position: "absolute",
+            // bottom: 20,
+            // left: 20,
+            // right: 20,
+            // borderRadius: 20,
+            // height: 70,
+            backgroundColor: "#EFF2F6",
+            borderTopWidth: 0,
+            paddingVertical: 10,
+            shadowColor: "#000",
+            shadowOffset: { width: 0, height: 2 },
+            shadowOpacity: 0.2,
+            shadowRadius: 10,
+          },
         ],
 
         tabBarIcon: ({ focused, color, size }) => {
@@ -266,8 +278,8 @@ const NavBar = () => {
 
           if (rn === home) {
             iconName = focused ? "home" : "home-outline";
-          } else if (rn === search) {
-            iconName = focused ? "search-circle" : "search-circle-outline";
+          } else if (rn === map) {
+            iconName = focused ? "map" : "map-outline";
           } else if (rn === reservation) {
             return focused ? (
               <Image
@@ -301,7 +313,7 @@ const NavBar = () => {
       })}
     >
       <Tab.Screen name={home} component={HomeScreen} />
-      <Tab.Screen name={search} component={SearchScreen} />
+      <Tab.Screen name={map} component={MapScreen} />
       <Tab.Screen name={reservation} component={ReservationScreen} />
       <Tab.Screen name={favorites} component={FavoritesScreen} />
       <Tab.Screen name={profile} component={profileScreen} />
@@ -310,3 +322,69 @@ const NavBar = () => {
 };
 
 export default NavBar;
+
+/*
+         
+         .btn-grad {
+            background-image: linear-gradient(to right, #00c6ff 0%, #0072ff  51%, #00c6ff  100%);
+            margin: 10px;
+            padding: 15px 45px;
+            text-align: center;
+            text-transform: uppercase;
+            transition: 0.5s;
+            background-size: 200% auto;
+            color: white;            
+            box-shadow: 0 0 20px #eee;
+            border-radius: 10px;
+            display: block;
+          }
+                   
+         .btn-grad {
+            background-image: linear-gradient(to right, #0575E6 0%, #021B79  51%, #0575E6  100%);
+            margin: 10px;
+            padding: 15px 45px;
+            text-align: center;
+            text-transform: uppercase;
+            transition: 0.5s;
+            background-size: 200% auto;
+            color: white;            
+            box-shadow: 0 0 20px #eee;
+            border-radius: 10px;
+            display: block;
+          }
+
+       
+         
+         .btn-grad {
+            background-image: linear-gradient(to right, #00bf8f 0%, #001510  51%, #00bf8f  100%);
+            margin: 10px;
+            padding: 15px 45px;
+            text-align: center;
+            text-transform: uppercase;
+            transition: 0.5s;
+            background-size: 200% auto;
+            color: white;            
+            box-shadow: 0 0 20px #eee;
+            border-radius: 10px;
+            display: block;
+          }
+
+      
+                  
+         .btn-grad {
+            background-image: linear-gradient(to right, #FF512F 0%, #F09819  51%, #FF512F  100%);
+            margin: 10px;
+            padding: 15px 45px;
+            text-align: center;
+            text-transform: uppercase;
+            transition: 0.5s;
+            background-size: 200% auto;
+            color: white;            
+            box-shadow: 0 0 20px #eee;
+            border-radius: 10px;
+            display: block;
+          }
+ 
+         
+         
+*/

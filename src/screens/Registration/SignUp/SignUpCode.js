@@ -178,6 +178,8 @@ import i18n from "../../../components/i18n/i18n";
 import { useNavigation, useRoute } from "@react-navigation/core";
 import { resendCode, verifyCode } from "../../../Store/authSlice/authSlice";
 import { LinearGradient } from "expo-linear-gradient";
+import CustomText from "../../../components/CustomText/CustomText";
+import SafeAreaWrapper from "../../../components/SafeAreaWrapper/SafeAreaWrapper";
 
 const SignUpCode = () => {
   const {
@@ -241,22 +243,21 @@ const SignUpCode = () => {
     }
   };
 
-  const SafeAreaWrapper =
-    Platform.OS === "android" ? SafeAreaViewContext : SafeAreaView;
-
+ 
   return (
     <SafeAreaWrapper style={{ flex: 1, backgroundColor: "#fff" }}>
       <View style={{ paddingHorizontal: 10, paddingVertical: 20 }}>
         <Text
           style={{
-            fontSize: 40,
-            marginBottom: 30,
+            fontSize: 30,
+            marginBottom: 20,
             color: "#000",
-            fontWeight: "600",
+            fontWeight: 600,
           }}
         >
           {i18n.t("enterACode")}
         </Text>
+
         <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
           {[...Array(6)].map((_, index) => (
             <Controller
@@ -332,7 +333,7 @@ const SignUpCode = () => {
           <ActivityIndicator
             size="large"
             style={{ marginTop: 40 }}
-            color={"#02AAB0"}
+            color={"#4B5DFF"}
           />
         ) : (
           <TouchableOpacity
@@ -343,29 +344,22 @@ const SignUpCode = () => {
               shadowOffset: { width: 0, height: 2 },
               shadowOpacity: 0.2,
               shadowRadius: 10,
-              marginTop: 30,
+              marginVertical: 30,
+              backgroundColor: "#4B5DFF",
+              paddingVertical: 15,
+              textAlign: "center",
+              borderRadius: 10,
             }}
           >
-            <LinearGradient
-              colors={["#02AAB0", "#00CDAC"]}
+            <CustomText
               style={{
-                paddingVertical: 15,
+                color: "#fff",
                 textAlign: "center",
-                borderRadius: 10,
+                fontSize: 20,
               }}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 0 }}
             >
-              <Text
-                style={{
-                  color: "#fff",
-                  textAlign: "center",
-                  fontSize: 20,
-                }}
-              >
-                Отправить
-              </Text>
-            </LinearGradient>
+              Войти
+            </CustomText>
           </TouchableOpacity>
         )}
       </View>

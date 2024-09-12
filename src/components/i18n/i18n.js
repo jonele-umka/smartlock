@@ -343,7 +343,7 @@ const translations = {
     transferCryptoScreen: "Перевод",
     cardDetailsScreen: "Детали карты",
     analyticsPageScreen: "Страница аналитики",
-    notificationScreen: "Уведомление",
+    notificationScreen: "Уведомления",
     transactionsScreen: "История переводов",
     oldPassword: "Старый пароль",
     newPassword: "Новый пароль",

@@ -1,286 +1,284 @@
-import {
-  ActivityIndicator,
-  SafeAreaView,
-  Text,
-  View,
-  TouchableOpacity,
-  ScrollView,
-  RefreshControl,
-  Image,
-} from "react-native";
-import React, {
-  useEffect,
-  useState,
-  useMemo,
-  useRef,
-  useCallback,
-} from "react";
-import { SafeAreaView as SafeAreaViewContext } from "react-native-safe-area-context";
-import Ionicons from "react-native-vector-icons/Ionicons";
-import Entypo from "react-native-vector-icons/Entypo";
+import { Text, ScrollView, View, ActivityIndicator, RefreshControl } from "react-native";
+import React, { useEffect, useState } from "react";
+import { fetchReservation } from "../Store/reservationSlice/reservationSlice";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  deleteFavorite,
-  fetchFavorites,
-} from "../Store/Favorites/FavoritesAction";
-import i18n from "../components/i18n/i18n";
-import { useNavigation } from "@react-navigation/native";
-import { Tooltip } from "@rneui/themed";
+import SafeAreaWrapper from "../components/SafeAreaWrapper/SafeAreaWrapper";
+import CustomText from "../components/CustomText/CustomText";
+import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 
+import SimpleLineIcons from "react-native-vector-icons/SimpleLineIcons";
+ 
 const ReservationScreen = () => {
+  const token = useSelector((state) => state.auth.token);
+  const reservation = useSelector((state) => state.reservation.reservation);
+  const status = useSelector((state) => state.reservation.status);
   const dispatch = useDispatch();
-  const navigation = useNavigation();
-  // const loading = useSelector((state) => state.favorites.loading);
-  const [selectedTemplateDelete, setSelectedTemplateDelete] = useState(null);
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [selectedTemplate, setSelectedTemplate] = useState(null);
   const [refreshing, setRefreshing] = useState(false);
 
-  // const favorites = useSelector((state) => state.favorites.favorites);
-  // const token = useSelector((state) => state.signIn.token);
-
-  const handleTemplatePress = (template) => {
-    setSelectedTemplate(template);
+  // Функция, выполняющаяся при обновлении
+  const onRefresh = () => {
+    setRefreshing(true);
+    dispatch(fetchReservation(token));
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 500);
   };
   useEffect(() => {
-    dispatch(fetchFavorites(token));
+    if (token) {
+      dispatch(fetchReservation(token));
+    }
   }, [dispatch, token]);
 
-  const onRefresh = async () => {
-    setRefreshing(true);
-    await dispatch(fetchFavorites(token));
-    setRefreshing(false);
-  };
-
-  const deleteTransferTemplate = async (id) => {
-    console.log(id);
-    try {
-      await dispatch(deleteFavorite(id, token));
-    } catch (error) {
-      console.error("Ошибка при удалении элемента:", error);
-    }
-  };
-
-  const handleDeletePress = (id) => {
-    setShowDeleteModal(!showDeleteModal);
-    setSelectedTemplateDelete(id);
-  };
-
-  const snapPoints = useMemo(() => ["10%", "50%"]);
-
-  const bottomSheetRef = useRef(null);
-  const handleSheetChanges = useCallback((index) => {
-    if (index === 0) {
-      bottomSheetRef.current?.collapse();
-    } else {
-      bottomSheetRef.current?.expand();
-    }
-  }, []);
-  const SafeAreaWrapper =
-    Platform.OS === "android" ? SafeAreaViewContext : SafeAreaView;
-
-  if (loading) {
+  if (status === "loading") {
     return (
-      <View
-        style={{
-          flex: 1,
-          justifyContent: "center",
-          alignItems: "center",
-          backgroundColor: "#fff",
-        }}
-      >
-        <ActivityIndicator size="large" color={"#000"} />
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <ActivityIndicator size="large" color="#4B5DFF" />
       </View>
-    );
-  }
-  if (!favorites.length) {
-    return (
-      <SafeAreaWrapper
-        style={{
-          flex: 1,
-          justifyContent: "center",
-          alignItems: "center",
-          backgroundColor: "#fff",
-        }}
-      >
-        <View>
-          <Image
-            source={require("../assets/booking-outline.png")}
-            style={{ width: 200, height: 200 }}
-          />
-          <Text
-            style={{
-              color: "#000",
-              textAlign: "center",
-              marginTop: 20,
-              fontSize: 20,
-            }}
-          >
-            Нет забронированных номеров
-          </Text>
-        </View>
-      </SafeAreaWrapper>
     );
   }
   return (
     <ScrollView
-      style={{ paddingVertical: 20, flex: 1, backgroundColor: "#fff" }}
+      style={{
+        flex: 1,
+        backgroundColor: "#fff",
+      }}
+      contentContainerStyle={{
+        paddingHorizontal: 10,
+        paddingTop: 20,
+        paddingBottom: 40,
+      }}
       refreshControl={
-        <RefreshControl onRefresh={onRefresh} refreshing={refreshing} />
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
       }
     >
-      <SafeAreaWrapper
-        style={{
-          flex: 1,
-          paddingHorizontal: 10,
-          paddingBottom: 40,
-        }}
-      >
-        <Text
+      <SafeAreaWrapper>
+        <CustomText
           style={{
-            color: "#000",
             fontSize: 30,
             textAlign: "center",
             marginBottom: 25,
           }}
         >
-          Ваши избранные
-        </Text>
-
-        {favorites && (
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "center",
-              flexWrap: "wrap",
-              columnGap: 10,
-              rowGap: 20,
-            }}
-          >
-            {favorites?.data?.map((favorite, index) => (
-              <>
-                <TouchableOpacity
-                  onPress={() => handleTemplatePress(favorite)}
-                  key={favorite.ID}
+          {reservation && reservation.length > 0
+            ? "Ваши брони"
+            : "Нет забронированных номеров"}
+        </CustomText>
+        <View style={{ flexDirection: "column", rowGap: 20 }}>
+          {reservation &&
+            reservation
+              .slice()
+              .reverse()
+              .map((reservation) => (
+                <View
+                  key={reservation.ID}
                   style={{
-                    justifyContent: "flex-start",
-                    alignItems: "flex-start",
-                    alignSelf: "auto",
-                    borderRadius: 20,
-                    paddingTop: 15,
-                    paddingRight: 5,
-                    paddingBottom: 15,
-                    paddingLeft: 15,
-                    width: 110,
-                    backgroundColor: "rgba(255,255,255,0.05)",
-                    shadowColor: "rgba(255,255,255,0.05)",
-                    shadowOffset: {
-                      width: 0,
-                      height: 2,
-                    },
-                    shadowOpacity: 0.1,
-                    shadowRadius: 8.84,
-                    elevation: 5,
+                    paddingHorizontal: 10,
+                    paddingVertical: 20,
+                    borderRadius: 10,
+                    borderWidth: 1,
+                    borderColor: "rgba(97, 105, 146, 0.2)",
                   }}
                 >
+                  <CustomText
+                    style={{
+                      textAlign: "center",
+                      fontWeight: 500,
+                      fontSize: 18,
+                      marginBottom: 20,
+                    }}
+                  >
+                    {reservation?.Accommodation?.Title}
+                  </CustomText>
                   <View
                     style={{
                       flexDirection: "row",
-                      justifyContent: "space-between",
-                      width: "100%",
+                      columnGap: 5,
+                      marginBottom: 10,
                     }}
                   >
-                    <View>
+                    <View
+                      style={{
+                        flex: 1,
+                        borderWidth: 1,
+                        borderColor: "rgba(75,93,355,0.2)",
+                        borderRadius: 10,
+                        paddingVertical: 10,
+                        paddingHorizontal: 15,
+                      }}
+                    >
+                      <View style={{ flexDirection: "column" }}>
+                        <CustomText
+                          style={{
+                            color: "#616992",
+                            fontSize: 14,
+                            marginBottom: 2,
+                          }}
+                        >
+                          Цена:
+                        </CustomText>
+                        <CustomText style={{ fontWeight: 500, fontSize: 16 }}>
+                          {reservation?.TotalSum} сом
+                        </CustomText>
+                      </View>
+                    </View>
+                    <View
+                      style={{
+                        flex: 1,
+                        borderWidth: 1,
+                        borderColor: "rgba(75,93,355,0.2)",
+                        borderRadius: 10,
+                        paddingVertical: 10,
+                        paddingHorizontal: 15,
+                      }}
+                    >
+                      <View style={{ flexDirection: "column" }}>
+                        <CustomText
+                          style={{
+                            color: "#616992",
+                            fontSize: 14,
+                            marginBottom: 2,
+                          }}
+                        >
+                          Количество гостей:
+                        </CustomText>
+                        <CustomText style={{ fontWeight: 500, fontSize: 16 }}>
+                          {reservation?.PeopleQuantity}
+                        </CustomText>
+                      </View>
+                    </View>
+                  </View>
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      columnGap: 5,
+                      marginBottom: 10,
+                    }}
+                  >
+                    <View
+                      style={{
+                        flex: 1,
+                        borderWidth: 1,
+                        borderColor: "rgba(75,93,355,0.2)",
+                        borderRadius: 10,
+                        paddingVertical: 10,
+                        paddingHorizontal: 15,
+                      }}
+                    >
+                      <View style={{ flexDirection: "column" }}>
+                        <CustomText
+                          style={{
+                            color: "#616992",
+                            fontSize: 14,
+                            marginBottom: 2,
+                          }}
+                        >
+                          Дата въезда:
+                        </CustomText>
+                        <CustomText style={{ fontWeight: 500, fontSize: 16 }}>
+                          {reservation?.StartDate}
+                        </CustomText>
+                      </View>
+                    </View>
+                    <View
+                      style={{
+                        flex: 1,
+                        borderWidth: 1,
+                        borderColor: "rgba(75,93,355,0.2)",
+                        borderRadius: 10,
+                        paddingVertical: 10,
+                        paddingHorizontal: 15,
+                      }}
+                    >
+                      <View style={{ flexDirection: "column" }}>
+                        <CustomText
+                          style={{
+                            color: "#616992",
+                            fontSize: 14,
+                            marginBottom: 2,
+                          }}
+                        >
+                          <Text>Дата выезда: </Text>
+                        </CustomText>
+                        <CustomText style={{ fontWeight: 500, fontSize: 16 }}>
+                          {reservation?.EndDate}
+                        </CustomText>
+                      </View>
+                    </View>
+                  </View>
+                  {reservation.KeyboardPwd && (
+                    <View style={{ flexDirection: "column", marginBottom: 20 }}>
+                      <CustomText
+                        style={{
+                          color: "#616992",
+                          fontSize: 14,
+                          marginBottom: 2,
+                        }}
+                      >
+                        Пароль:
+                      </CustomText>
+                      <CustomText style={{ fontWeight: 500, fontSize: 16 }}>
+                        {reservation?.KeyboardPwd}
+                      </CustomText>
+                    </View>
+                  )}
+                  {reservation?.WithAnimals ? (
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        borderWidth: 1,
+                        borderColor: "#57d673",
+                        padding: 10,
+                        borderRadius: 10,
+                      }}
+                    >
                       <View
                         style={{
-                          backgroundColor: "#5d00e6",
-                          borderRadius: 10,
-                          padding: 5,
+                          flexDirection: "row",
+                          columnGap: 10,
+                          alignItems: "center",
                         }}
                       >
-                        <Ionicons
-                          name={"star-outline"}
-                          size={25}
-                          color={"#000"}
+                        <SimpleLineIcons
+                          name="check"
+                          style={{ color: "#57d673", fontSize: 25 }}
                         />
+
+                        <CustomText style={{ color: "green" }}>
+                          С животными можно
+                        </CustomText>
                       </View>
-                      <Text
+                    </View>
+                  ) : (
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        borderWidth: 1,
+                        borderColor: "rgba(243, 106,123,0.2)",
+                        padding: 10,
+                        borderRadius: 10,
+                      }}
+                    >
+                      <View
                         style={{
-                          flexWrap: "wrap",
-                          fontSize: 14,
-                          paddingTop: 10,
-                          color: "#000",
-                          fontWeight: 500,
+                          flexDirection: "row",
+                          columnGap: 10,
+                          alignItems: "center",
                         }}
                       >
-                        {favorite?.Name}
-                      </Text>
-                    </View>
+                        <MaterialIcons
+                          name="error"
+                          style={{ color: "#F36A7B", fontSize: 25 }}
+                        />
 
-                    <Entypo
-                      onPress={() => {
-                        // setSelectedTemplate(favorite);
-                        handleDeletePress(favorite.ID);
-                      }}
-                      name={"dots-three-vertical"}
-                      style={{
-                        fontSize: 15,
-                        color: "#000",
-                      }}
-                    />
-                  </View>
-                  {/* {showDeleteModal &&
-                      selectedTemplateDelete === favorite.ID && (
-                        <Tooltip
-                          width={200}
-                          onClose={() => setShowDeleteModal(false)}
-                          placement="top"
-                          backgroundColor={"#000"}
-                        >
-                          <View
-                            style={{
-                              flexDirection: "row",
-                              justifyContent: "flex-end",
-                              marginTop: 5,
-                            }}
-                          >
-                            <TouchableOpacity
-                              onPress={() => {
-                                setShowDeleteModal(true);
-                                deleteTransferTemplate(selectedTemplateDelete);
-                              }}
-                            >
-                              <Text style={{ color: "#b8b8b8" }}>Delete</Text>
-                            </TouchableOpacity>
-                          </View>
-                        </Tooltip>
-                      )} */}
-                  {showDeleteModal &&
-                    selectedTemplateDelete === favorite.ID && (
-                      <Tooltip
-                        popover={
-                          <Text
-                            onPress={() => {
-                              setShowDeleteModal(false);
-                              deleteTransferTemplate(selectedTemplateDelete);
-                            }}
-                          >
-                            {i18n.t("delete")}
-                          </Text>
-                        }
-                        visible={
-                          showDeleteModal &&
-                          selectedTemplateDelete === favorite.ID
-                        }
-                        backgroundColor={"#000"}
-                        onClose={() => setShowDeleteModal(false)}
-                      />
-                    )}
-                </TouchableOpacity>
-              </>
-            ))}
-          </View>
-        )}
+                        <CustomText style={{ color: "#F36A7B" }}>
+                          С животными нельзя
+                        </CustomText>
+                      </View>
+                    </View>
+                  )}
+                </View>
+              ))}
+        </View>
       </SafeAreaWrapper>
     </ScrollView>
   );

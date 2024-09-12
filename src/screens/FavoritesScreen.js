@@ -1,71 +1,56 @@
+import React, { useEffect, useState } from "react";
 import {
-  ActivityIndicator,
   SafeAreaView,
   Text,
-  View,
-  TouchableOpacity,
   ScrollView,
-  RefreshControl,
-  Modal,
-  Pressable,
-  Button,
+  Platform,
+  View,
+  ActivityIndicator,
+  TouchableOpacity,
+  Image,
+  ImageBackground,
 } from "react-native";
-import React, { useEffect, useState } from "react";
-import { SafeAreaView as SafeAreaViewContext } from "react-native-safe-area-context";
+import Fontisto from "react-native-vector-icons/Fontisto";
 import Ionicons from "react-native-vector-icons/Ionicons";
-import Entypo from "react-native-vector-icons/Entypo";
+import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+import { SafeAreaView as SafeAreaViewContext } from "react-native-safe-area-context";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  deleteFavorite,
   fetchFavorites,
-} from "../Store/Favorites/FavoritesAction";
-import { LinearGradient } from "expo-linear-gradient";
-import i18n from "../components/i18n/i18n";
-import { useNavigation } from "@react-navigation/native";
-import { Tooltip } from "@rneui/themed";
+  removeFavorite,
+} from "../Store/favoritesSlice/favoritesSlice";
+// import Objects from "../components/Objects/Objects";
+import { BlurView } from "expo-blur";
+import { useNavigation } from "@react-navigation/core";
+import CustomText from "../components/CustomText/CustomText";
+import Objects from "../components/ObjectsComponent/Objects";
+import { RefreshControl } from "react-native";
+import SafeAreaWrapper from "../components/SafeAreaWrapper/SafeAreaWrapper";
+
 const FavoritesScreen = () => {
-  const dispatch = useDispatch();
   const navigation = useNavigation();
-  // const loading = useSelector((state) => state.favorites.loading);
-  const [selectedTemplateDelete, setSelectedTemplateDelete] = useState(null);
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [selectedTemplate, setSelectedTemplate] = useState(null);
+
+  const token = useSelector((state) => state.auth.token);
+  const status = useSelector((state) => state.favorites.status);
+  const favorites = useSelector((state) => state.favorites.favorites);
+  const API_URL = process.env.API_URL;
+  const dispatch = useDispatch();
   const [refreshing, setRefreshing] = useState(false);
 
-  // const favorites = useSelector((state) => state.favorites.favorites);
-  // const token = useSelector((state) => state.signIn.token);
-
-  const handleTemplatePress = (template) => {
-    setSelectedTemplate(template);
-     
+  // Функция, выполняющаяся при обновлении
+  const onRefresh = () => {
+    setRefreshing(true);
+    dispatch(fetchFavorites(token));
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 500);
   };
+
   useEffect(() => {
     dispatch(fetchFavorites(token));
   }, [dispatch, token]);
 
-  const onRefresh = async () => {
-    setRefreshing(true);
-    await dispatch(fetchFavorites(token));
-    setRefreshing(false);
-  };
-
-  const deleteTransferTemplate = async (id) => {
-    console.log(id);
-    try {
-      await dispatch(deleteFavorite(id, token));
-    } catch (error) {
-      console.error("Ошибка при удалении элемента:", error);
-    }
-  };
-
-  const handleDeletePress = (id) => {
-    setShowDeleteModal(!showDeleteModal);
-    setSelectedTemplateDelete(id);
-  };
-  const SafeAreaWrapper =
-    Platform.OS === "android" ? SafeAreaViewContext : SafeAreaView;
-
-  if (loading) {
+  if (status === "loading") {
     return (
       <View
         style={{
@@ -75,195 +60,193 @@ const FavoritesScreen = () => {
           backgroundColor: "#fff",
         }}
       >
-        <ActivityIndicator size="large" color={"#000"} />
+        <ActivityIndicator size="large" color="#4B5DFF" />
       </View>
-    );
-  }
-  if (!favorites.length) {
-    return (
-      <SafeAreaWrapper
-        style={{
-          flex: 1,
-          justifyContent: "center",
-          alignItems: "center",
-          backgroundColor: "#fff",
-        }}
-      >
-        <View>
-          <Ionicons name="star-outline" size={200} color="#000" />
-          <Text
-            style={{
-              color: "#000",
-              textAlign: "center",
-              marginTop: 20,
-              fontSize: 20,
-            }}
-          >
-            Нет избранных
-          </Text>
-        </View>
-      </SafeAreaWrapper>
     );
   }
   return (
     <ScrollView
-      style={{ paddingVertical: 20, flex: 1, backgroundColor: "#fff" }}
+      style={{
+        flex: 1,
+        backgroundColor: "#fff",
+      }}
+      contentContainerStyle={{
+        paddingHorizontal: 10,
+        paddingTop: 20,
+        paddingBottom: 40,
+      }}
       refreshControl={
-        <RefreshControl onRefresh={onRefresh} refreshing={refreshing} />
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
       }
     >
-      <SafeAreaWrapper
-        style={{
-          flex: 1,
-          paddingHorizontal: 10,
-          paddingBottom: 40,
-        }}
-      >
-        <Text
+      <SafeAreaWrapper>
+        <CustomText
           style={{
-            color: "#000",
             fontSize: 30,
             textAlign: "center",
             marginBottom: 25,
           }}
         >
-          Ваши избранные
-        </Text>
-
-        {favorites && (
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "center",
-              flexWrap: "wrap",
-              columnGap: 10,
-              rowGap: 20,
-            }}
-          >
-            {favorites?.data?.map((favorite, index) => (
-              <>
-                <TouchableOpacity
-                  onPress={() => handleTemplatePress(favorite)}
-                  key={favorite.ID}
+          {favorites && favorites.length > 0
+            ? "Ваши избранные"
+            : "Нет избранных"}
+        </CustomText>
+        <View style={{ flexDirection: "column", rowGap: 20, flexWrap: "wrap" }}>
+          {favorites &&
+            favorites.map((items) => (
+              <ImageBackground
+                key={items.Accommodation.ID}
+                style={{
+                  width: "100%",
+                  height: 220,
+                  justifyContent: "space-between",
+                  paddingTop: 10,
+                  borderRadius: 20,
+                  overflow: "hidden",
+                }}
+                resizeMode={
+                  items?.Accommodation?.Images &&
+                  items?.Accommodation?.Images.length > 0 &&
+                  items?.Accommodation?.Images[0].ImageUrl
+                    ? "cover"
+                    : "contain"
+                }
+                source={
+                  items?.Accommodation?.Images &&
+                  items?.Accommodation?.Images.length > 0 &&
+                  items?.Accommodation?.Images[0].ImageUrl
+                    ? {
+                        uri: `${API_URL}/${items?.Accommodation?.Images[0].ImageUrl}`,
+                      }
+                    : require("../assets/noImg.png")
+                }
+              >
+                {console.log(items.Accommodation)}
+                <View
                   style={{
-                    justifyContent: "flex-start",
-                    alignItems: "flex-start",
-                    alignSelf: "auto",
-                    borderRadius: 20,
-                    paddingTop: 15,
-                    paddingRight: 5,
-                    paddingBottom: 15,
-                    paddingLeft: 15,
-                    width: 110,
-                    backgroundColor: "rgba(255,255,255,0.05)",
-                    shadowColor: "rgba(255,255,255,0.05)",
-                    shadowOffset: {
-                      width: 0,
-                      height: 2,
-                    },
-                    shadowOpacity: 0.1,
-                    shadowRadius: 8.84,
-                    elevation: 5,
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    paddingHorizontal: 10,
                   }}
                 >
                   <View
                     style={{
+                      padding: 5,
                       flexDirection: "row",
-                      justifyContent: "space-between",
-                      width: "100%",
+                      alignItems: "center",
+                      backgroundColor: "rgba(97, 105, 146, 0.8)",
+                      columnGap: 5,
+                      borderRadius: 10,
                     }}
                   >
-                    <View>
-                      <View
-                        style={{
-                          backgroundColor: "#5d00e6",
-                          borderRadius: 10,
-                          padding: 5,
-                        }}
-                      >
-                        <Ionicons
-                          name={"star-outline"}
-                          size={25}
-                          color={"#000"}
-                        />
-                      </View>
-                      <Text
-                        style={{
-                          flexWrap: "wrap",
-                          fontSize: 14,
-                          paddingTop: 10,
-                          color: "#000",
-                          fontWeight: 500,
-                        }}
-                      >
-                        {favorite?.Name}
-                      </Text>
-                    </View>
-
-                    <Entypo
-                      onPress={() => {
-                        // setSelectedTemplate(favorite);
-                        handleDeletePress(favorite.ID);
-                      }}
-                      name={"dots-three-vertical"}
-                      style={{
-                        fontSize: 15,
-                        color: "#000",
-                      }}
+                    <MaterialIcons
+                      name="star-outline"
+                      style={{ color: "#fff", fontSize: 25 }}
                     />
+                    <CustomText style={{ color: "#fff", fontWeight: 500 }}>
+                      {items?.Accommodation?.Rating}
+                    </CustomText>
                   </View>
-                  {/* {showDeleteModal &&
-                      selectedTemplateDelete === favorite.ID && (
-                        <Tooltip
-                          width={200}
-                          onClose={() => setShowDeleteModal(false)}
-                          placement="top"
-                          backgroundColor={"#000"}
-                        >
-                          <View
-                            style={{
-                              flexDirection: "row",
-                              justifyContent: "flex-end",
-                              marginTop: 5,
-                            }}
-                          >
-                            <TouchableOpacity
-                              onPress={() => {
-                                setShowDeleteModal(true);
-                                deleteTransferTemplate(selectedTemplateDelete);
-                              }}
-                            >
-                              <Text style={{ color: "#b8b8b8" }}>Delete</Text>
-                            </TouchableOpacity>
-                          </View>
-                        </Tooltip>
-                      )} */}
-                  {showDeleteModal &&
-                    selectedTemplateDelete === favorite.ID && (
-                      <Tooltip
-                        popover={
-                          <Text
-                            onPress={() => {
-                              setShowDeleteModal(false);
-                              deleteTransferTemplate(selectedTemplateDelete);
-                            }}
-                          >
-                            {i18n.t("delete")}
-                          </Text>
-                        }
-                        visible={
-                          showDeleteModal &&
-                          selectedTemplateDelete === favorite.ID
-                        }
-                        backgroundColor={"#000"}
-                        onClose={() => setShowDeleteModal(false)}
+
+                  {/* <View style={{ flexDirection: "row", columnGap: 10 }}>
+                    <View style={{ overflow: "hidden", borderRadius: 100 }}>
+                      <BlurView intensity={40} tint="dark" style={{ padding: 5 }}>
+                        <Ionicons
+                          name="share-social-outline"
+                          style={{ color: "#fff", fontSize: 25 }}
+                        />
+                      </BlurView>
+                    </View>
+                  </View> */}
+
+                  <TouchableOpacity
+                    style={{
+                      backgroundColor: "rgba(97, 105, 146, 0.8)",
+                      borderRadius: 10,
+                      padding: 5,
+                    }}
+                    onPress={() =>
+                      dispatch(
+                        removeFavorite({ id: items?.Accommodation?.ID, token })
+                      )
+                    }
+                  >
+                    <Ionicons
+                      name={"heart"}
+                      style={{ color: "#fff", fontSize: 25 }}
+                    />
+                  </TouchableOpacity>
+                </View>
+
+                <View
+                  style={{
+                    backgroundColor: "rgba(97, 105, 146, 0.8)",
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    alignItems: "flex-end",
+                    columnGap: 10,
+                    padding: 10,
+                  }}
+                >
+                  <View style={{ flex: 1 }}>
+                    <TouchableOpacity
+                      style={{ marginBottom: 5 }}
+                      onPress={() =>
+                        navigation.navigate("Детали объекта", {
+                          id: items?.Accommodation?.ID,
+                        })
+                      }
+                    >
+                      <CustomText
+                        style={{
+                          fontSize: 20,
+                          fontWeight: 500,
+                          color: "#fff",
+                        }}
+                      >
+                        {items?.Accommodation?.Title}
+                      </CustomText>
+                    </TouchableOpacity>
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        alignItems: "center",
+                        columnGap: 5,
+                      }}
+                    >
+                      <Fontisto
+                        name="map-marker-alt"
+                        style={{ color: "#f0f0f0", fontSize: 15 }}
                       />
-                    )}
-                </TouchableOpacity>
-              </>
+                      <CustomText style={{ color: "#f0f0f0" }}>
+                        {items?.Accommodation?.LocationLabel}
+                      </CustomText>
+                    </View>
+                  </View>
+
+                  <View>
+                    <CustomText
+                      style={{
+                        fontSize: 16,
+                        fontWeight: 500,
+                        color: "#fff",
+                      }}
+                    >
+                      {items?.Accommodation?.Price} c
+                    </CustomText>
+                    <CustomText
+                      style={{
+                        textAlign: "right",
+                        color: "#b8b8b8",
+                      }}
+                    >
+                      ночь
+                    </CustomText>
+                  </View>
+                </View>
+              </ImageBackground>
             ))}
-          </View>
-        )}
+        </View>
       </SafeAreaWrapper>
     </ScrollView>
   );

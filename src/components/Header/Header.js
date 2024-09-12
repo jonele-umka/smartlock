@@ -1,7 +1,19 @@
 import { View, Image, TouchableOpacity, Text } from "react-native";
 import React from "react";
-import Ionicons from "react-native-vector-icons/Ionicons";
+import AntDesign from "react-native-vector-icons/AntDesign";
+import { useNavigation } from "@react-navigation/core";
+import { Badge } from "@rneui/base";
+import { useSelector } from "react-redux";
+import CustomText from "../CustomText/CustomText";
 const Header = () => {
+  const navigation = useNavigation();
+  const notifications = useSelector(
+    (state) => state.notifications.notifications
+  );
+  const unreadNotifications = notifications.filter(
+    (notification) => !notification.IsRead
+  );
+
   return (
     <View
       style={{
@@ -9,30 +21,27 @@ const Header = () => {
         alignItems: "center",
         justifyContent: "space-between",
         paddingHorizontal: 10,
-        marginBottom: 20
       }}
     >
-      <Text style={{ fontSize: 35, fontWeight: 500 }}>Smart lock</Text>
-      <TouchableOpacity
-      style={{backgroundColor: '#f0f0f0', padding: 10, borderRadius: 50}}
-        onPress={() =>
-          navigation.navigate("Уведомления", {
-            transactions: transactions,
-          })
-        }
-      >
-        <Ionicons
-          name="notifications-outline"
+      <CustomText style={{ fontSize: 35 }}>Smartlock</CustomText>
+      <TouchableOpacity onPress={() => navigation.navigate("Уведомления")}>
+        <AntDesign
+          name="bells"
           style={[
-            { fontSize: 30, color: "#000", position: "relative" },
+            { fontSize: 25, color: "#4B5DFF", position: "relative" },
             // isDarkModeEnabled && { color: "#fff" },
           ]}
         />
-        {/* <Badge
-                status="primary"
-                value={transactions.length > 100 ? "99+" : transactions.length}
-                containerStyle={{ position: "absolute", top: 0, left: 15 }}
-              /> */}
+        <Badge
+          badgeStyle={{ backgroundColor: "#4B5DFF" }}
+          status="primary"
+          value={
+            unreadNotifications.length > 100
+              ? "99+"
+              : unreadNotifications.length
+          }
+          containerStyle={{ position: "absolute", top: -5, left: 10 }}
+        />
       </TouchableOpacity>
 
       {/* <Avatar bgColor="#241270" size="sm" borderRadius="$full">

@@ -8,37 +8,64 @@ import {
   ImageBackground,
 } from "react-native";
 import Fontisto from "react-native-vector-icons/Fontisto";
+import CustomText from "../../CustomText/CustomText";
+import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 
-const ListCard = ({ items, clickHandler }) => {
-  const onPress = (page) => {
-    clickHandler(page);
-  };
-
+const ListCard = ({ items, API_URL, navigation }) => {
   const renderItem = ({ item }) => {
     return (
       <TouchableOpacity
         style={styles.cardContainer}
-        onPress={() => onPress(item.page)}
+        onPress={() =>
+          navigation.navigate("Детали объекта", {
+            id: item.ID,
+          })
+        }
       >
         <ImageBackground
           style={styles.imageBackground}
-          source={{
-            uri: item.image
-          }}
+          resizeMode={
+            item.Images && item.Images.length > 0 && item.Images[0].ImageUrl
+              ? "cover"
+              : "contain"
+          }
+          source={
+            item.Images && item.Images.length > 0 && item.Images[0].ImageUrl
+              ? { uri: `${API_URL}/${item.Images[0].ImageUrl}` }
+              : require("../../../assets/noImg.png")
+          }
         >
-          <View style={styles.overlay} />
+          {/* <View style={styles.overlay} /> */}
           <View style={styles.contentContainer}>
-            <Text style={styles.title}>{item.title}</Text>
+            <View style={styles.priceContainer}>
+              <CustomText style={styles.price}>
+                {item.DiscountPrice} c /ночь
+              </CustomText>
+            </View>
+
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                columnGap: 5,
+                backgroundColor: "rgba(97, 105, 146, 0.8)",
+                padding: 5,
+                borderRadius: 10,
+              }}
+            >
+              <MaterialIcons
+                name="star-outline"
+                style={{ color: "#fff", fontSize: 20 }}
+              />
+              <CustomText
+                style={{ color: "#fff", fontWeight: 500, fontSize: 16 }}
+              >
+                {item.Rating}
+              </CustomText>
+            </View>
           </View>
           <View style={styles.bottomContent}>
-            <View style={styles.locationContainer}>
-              <Fontisto name="map-marker-alt" style={styles.locationIcon} />
-              <Text style={styles.locationText}>{item.location}</Text>
-            </View>
-            <View style={styles.priceContainer}>
-              <Text style={styles.price}>KGS {item.price}</Text>
-              <Text style={styles.priceDescription}>ночь</Text>
-            </View>
+            <CustomText style={styles.title}>{item.Title}</CustomText>
           </View>
         </ImageBackground>
       </TouchableOpacity>
@@ -51,17 +78,18 @@ const ListCard = ({ items, clickHandler }) => {
 
   return (
     <View>
-      <View>
-        <FlatList
-          contentContainerStyle={{ paddingHorizontal: 10, marginBottom: 30 }}
-          showsHorizontalScrollIndicator={false}
-          showsVerticalScrollIndicator={false}
-          data={items}
-          horizontal
-          renderItem={renderItem}
-          ItemSeparatorComponent={renderSeparator}
-        />
-      </View>
+      <FlatList
+        contentContainerStyle={{
+          paddingHorizontal: 10,
+          marginTop: 15,
+        }}
+        showsHorizontalScrollIndicator={false}
+        showsVerticalScrollIndicator={false}
+        data={items}
+        horizontal
+        renderItem={renderItem}
+        ItemSeparatorComponent={renderSeparator}
+      />
     </View>
   );
 };
@@ -77,52 +105,52 @@ const styles = StyleSheet.create({
     height: 180,
     justifyContent: "space-between",
   },
-  overlay: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: "rgba(0,0,0,0.5)", // Задаем цвет оверлея
-  },
+  // overlay: {
+  //   ...StyleSheet.absoluteFillObject,
+  //   backgroundColor: "rgba(0,0,0,0.5)",
+  // },
   contentContainer: {
     paddingHorizontal: 10,
-    paddingVertical: 10,
+    paddingTop: 10,
+    flexDirection: "row",
+    justifyContent: "space-between",
   },
   title: {
     fontSize: 18,
-    fontWeight: "600",
     color: "#fff",
   },
   bottomContent: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    paddingHorizontal: 10,
-    paddingBottom: 10,
+    backgroundColor: "rgba(97, 105, 146, 0.8)",
+    padding: 10,
   },
-  locationContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    columnGap: 5,
-  },
-  locationIcon: {
-    color: "#f0f0f0",
-    fontSize: 16,
-  },
-  locationText: {
-    color: "#f0f0f0",
-    fontSize: 16,
-  },
+  // locationContainer: {
+  //   flexDirection: "row",
+  //   alignItems: "center",
+  //   columnGap: 5,
+  // },
+  // locationIcon: {
+  //   color: "#f0f0f0",
+  //   fontSize: 16,
+  // },
+  // locationText: {
+  //   color: "#f0f0f0",
+  //   fontSize: 16,
+  // },
   priceContainer: {
-    alignItems: "flex-end",
-    justifyContent: "flex-end",
+    backgroundColor: "rgba(97, 105, 146, 0.8)",
+    padding: 5,
+    borderRadius: 10,
   },
   price: {
     fontSize: 16,
     fontWeight: "500",
     color: "#fff",
   },
-  priceDescription: {
-    textAlign: "right",
-    color: "#b8b8b8",
-    fontSize: 16,
-  },
+  // priceDescription: {
+  //   textAlign: "right",
+  //   color: "#b8b8b8",
+  //   fontSize: 16,
+  // },
 });
 
 export default ListCard;

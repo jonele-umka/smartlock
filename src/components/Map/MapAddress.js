@@ -9,9 +9,9 @@ import {
   View,
 } from "react-native";
 
-import { useNavigation } from "@react-navigation/native";
-import * as Location from "expo-location";
-export default function MapAddress() {
+// import { useNavigation } from "@react-navigation/native";
+// import * as Location from "expo-location";
+export default function MapAddress({ latitude, longitude }) {
   const markers = [
     {
       latitude: 42.84225422334126,
@@ -21,8 +21,8 @@ export default function MapAddress() {
       name: "Golden Gate Bridge",
     },
   ];
+
   const mapRef = useRef(null);
-  const navigation = useNavigation();
 
   const onMarkerSelected = (marker) => {
     Alert.alert(marker.name);
@@ -44,10 +44,10 @@ export default function MapAddress() {
         ref={mapRef}
         onRegionChangeComplete={onRegionChange}
         initialRegion={{
-          latitude: markers[0].latitude,
-          longitude: markers[0].longitude,
-          latitudeDelta: markers[0].latitudeDelta,
-          longitudeDelta: markers[0].longitudeDelta,
+          latitude: latitude,
+          longitude: longitude,
+          latitudeDelta: 42.84225422334126,
+          longitudeDelta: 74.58114389494061,
         }}
       >
         {markers.map((marker, index) => (

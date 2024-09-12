@@ -1,20 +1,20 @@
 import React, { useState } from "react";
 import { useForm, Controller } from "react-hook-form";
-import { useDispatch, useSelector } from "react-redux";
+
 import {
-  SafeAreaView,
   Text,
   TextInput,
   TouchableOpacity,
   ActivityIndicator,
   View,
 } from "react-native";
-import { SafeAreaView as SafeAreaViewContext } from "react-native-safe-area-context";
 
 import { useNavigation } from "@react-navigation/core";
 import i18n from "../../../components/i18n/i18n";
 import Feather from "react-native-vector-icons/Feather";
 import { LinearGradient } from "expo-linear-gradient";
+import SafeAreaWrapper from "../../../components/SafeAreaWrapper/SafeAreaWrapper";
+import CustomText from "../../../components/CustomText/CustomText";
 
 const ForgotPassword = () => {
   //   const isDarkModeEnabled = useSelector(
@@ -60,9 +60,6 @@ const ForgotPassword = () => {
     }
   };
 
-  const SafeAreaWrapper =
-    Platform.OS === "android" ? SafeAreaViewContext : SafeAreaView;
-
   return (
     <SafeAreaWrapper
       style={[
@@ -70,9 +67,6 @@ const ForgotPassword = () => {
 
         // isDarkModeEnabled && { backgroundColor: "#191a1d" },
       ]}
-      start={{ x: 2.4, y: 1.1 }}
-      end={{ x: 0, y: 0 }}
-      colors={["#241270", "#140A4F", "#000"]}
     >
       <View
         style={{
@@ -80,16 +74,16 @@ const ForgotPassword = () => {
           paddingVertical: 20,
         }}
       >
-        <Text
+        <CustomText
           style={{
-            fontSize: 40,
-            marginBottom: 30,
+            fontSize: 30,
+            marginBottom: 20,
             color: "#000",
             fontWeight: 600,
           }}
         >
           {i18n.t("enterEmail")}
-        </Text>
+        </CustomText>
         <View
           style={{
             marginBottom: 10,
@@ -101,17 +95,15 @@ const ForgotPassword = () => {
                 flexDirection: "row",
                 alignItems: "center",
                 columnGap: 5,
-                borderBottomWidth: 0.5,
-                borderBottomColor: "#000",
-                paddingRight: 10,
+                borderWidth: 0.5,
+                borderColor: "#dee2f1",
+                paddingHorizontal: 10,
+                borderRadius: 10,
                 paddingVertical: 10,
-                borderBottomColor:
-                  errors.email || error === "user already exists"
-                    ? "red"
-                    : "#000",
+                borderColor: errors.email ? "red" : "#dee2f1",
               }}
             >
-              <Feather name="mail" style={{ color: "#b8b8b8", fontSize: 20 }} />
+              <Feather name="mail" style={{ color: "#616992", fontSize: 20 }} />
               <Controller
                 control={control}
                 name="Email"
@@ -125,7 +117,7 @@ const ForgotPassword = () => {
                 render={({ field }) => (
                   <TextInput
                     placeholder={i18n.t("enterEmail")}
-                    placeholderTextColor="#b8b8b8"
+                    placeholderTextColor="#616992"
                     onChangeText={(value) => {
                       field.onChange(value);
                       setError("");
@@ -141,14 +133,14 @@ const ForgotPassword = () => {
               />
             </View>
             {errors.email && (
-              <Text style={{ color: "red", fontSize: 12, marginTop: 7 }}>
+              <CustomText style={{ color: "red", fontSize: 12, marginTop: 7 }}>
                 {errors.email.message}
-              </Text>
+              </CustomText>
             )}
             {error == 400 && (
-              <Text style={{ color: "red", fontSize: 12, marginTop: 7 }}>
+              <CustomText style={{ color: "red", fontSize: 12, marginTop: 7 }}>
                 Некорректные данные
-              </Text>
+              </CustomText>
             )}
           </View>
         </View>
@@ -157,7 +149,7 @@ const ForgotPassword = () => {
           <ActivityIndicator
             size="large"
             style={{ marginTop: 40 }}
-            color={"#02AAB0"}
+            color={"#4B5DFF"}
           />
         ) : (
           <TouchableOpacity
@@ -168,29 +160,22 @@ const ForgotPassword = () => {
               shadowOffset: { width: 0, height: 2 },
               shadowOpacity: 0.2,
               shadowRadius: 10,
-              marginTop: 30,
+              marginVertical: 30,
+              backgroundColor: "#252525",
+              paddingVertical: 15,
+              textAlign: "center",
+              borderRadius: 10,
             }}
           >
-            <LinearGradient
-              colors={["#02AAB0", "#00CDAC"]}
+            <CustomText
               style={{
-                paddingVertical: 15,
+                color: "#fff",
                 textAlign: "center",
-                borderRadius: 10,
+                fontSize: 20,
               }}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 0 }}
             >
-              <Text
-                style={{
-                  color: "#fff",
-                  textAlign: "center",
-                  fontSize: 20,
-                }}
-              >
-                Отправить
-              </Text>
-            </LinearGradient>
+              Войти
+            </CustomText>
           </TouchableOpacity>
         )}
       </View>

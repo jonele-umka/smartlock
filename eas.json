@@ -10,7 +10,7 @@
         "gradleCommand": ":app:assembleRelease"
       },
       "env": {
-        "API_URL": "http://server.microret.com:80"
+        "API_URL": "https://smartback.microret.com"
       }
     },
     "preview3": {

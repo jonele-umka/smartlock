@@ -1,61 +1,43 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import MapView, { Callout, Marker, PROVIDER_GOOGLE } from "react-native-maps";
 import {
-  Alert,
-  Dimensions,
+  Modal,
   StyleSheet,
   Text,
-  TouchableOpacity,
   View,
+  Button,
+  TouchableOpacity,
 } from "react-native";
+import Entypo from "react-native-vector-icons/Entypo";
 
-import { useNavigation } from "@react-navigation/native";
-
-export default function Map({ location }) {
-  const markers = [
-    {
-      latitude: 42.83225422334126,
-      longitude: 74.59614389494061,
-      latitudeDelta: 0.01,
-      longitudeDelta: 0.01,
-      name: "San Francisco City Center",
-    },
-    {
-      latitude: 42.84225422334126,
-      longitude: 74.58114389494061,
-      latitudeDelta: 0.01,
-      longitudeDelta: 0.01,
-      name: "Golden Gate Bridge",
-    },
-  ];
+export default function Map({ location, accommodations }) {
   const mapRef = useRef(null);
-  const navigation = useNavigation();
+  const [selectedAccommodation, setSelectedAccommodation] = useState(null);
+  const [modalVisible, setModalVisible] = useState(false);
 
   useEffect(() => {
     if (location) {
       mapRef.current?.animateCamera(
         {
           center: {
-            latitude: location.latitude + -0.005,
+            latitude: location.latitude,
             longitude: location.longitude,
           },
-          zoom: 15,
+          zoom: 13,
         },
         { duration: 1500 }
       );
     }
   }, [location]);
 
-  const onMarkerSelected = (marker) => {
-    Alert.alert(marker.name);
+  const onMarkerSelected = (accommodation) => {
+    setSelectedAccommodation(accommodation);
+    setModalVisible(true);
   };
 
-  const calloutPressed = (ev) => {
-    console.log(ev);
-  };
-
-  const onRegionChange = (region) => {
-    console.log("kkk: ", region);
+  const closeModal = () => {
+    setModalVisible(false);
+    setSelectedAccommodation(null);
   };
 
   return (
@@ -66,49 +48,86 @@ export default function Map({ location }) {
         showsUserLocation
         showsMyLocationButton
         ref={mapRef}
-        onRegionChangeComplete={onRegionChange}
       >
-        {markers.map((marker, index) => (
+        {accommodations.map((accommodation) => (
           <Marker
-            key={index}
-            title={marker.name}
-            coordinate={marker}
-            onPress={() => onMarkerSelected(marker)}
+            key={accommodation.ID}
+            title={accommodation.Title}
+            coordinate={{
+              latitude: parseFloat(accommodation.Latitude),
+              longitude: parseFloat(accommodation.Longitude),
+            }}
+            onPress={() => onMarkerSelected(accommodation)}
           >
-            <Callout onPress={calloutPressed}>
+            <Callout>
               <View style={{ padding: 10 }}>
-                <Text style={{ fontSize: 24 }}>Hello</Text>
+                <Text style={{ fontSize: 24 }}>{accommodation.Title}</Text>
               </View>
             </Callout>
           </Marker>
         ))}
       </MapView>
+
+      {selectedAccommodation && (
+        <Modal
+          animationType="fade"
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={closeModal}
+        >
+          <View style={styles.modalContainer}>
+            <View
+              style={{
+                width: "90%",
+                padding: 20,
+                backgroundColor: "#fff",
+                borderRadius: 10,
+              }}
+            >
+              <TouchableOpacity
+                style={{ alignItems: "flex-end" }}
+                onPress={closeModal}
+              >
+                <Entypo name="cross" style={{ fontSize: 30 }} />
+              </TouchableOpacity>
+              <Text style={{ fontSize: 25, fontWeight: 600, marginBottom: 10 }}>
+                {selectedAccommodation.Title}
+              </Text>
+              <View style={{ marginBottom: 10 }}>
+                <Text
+                  style={{ fontWeight: 500, fontSize: 18, marginBottom: 5 }}
+                >
+                  Описание:
+                </Text>
+                <Text>{selectedAccommodation.Description}</Text>
+              </View>
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  columnGap: 5,
+                }}
+              >
+                <Text style={{ fontWeight: 500, fontSize: 18 }}>Цена:</Text>
+                <Text>{selectedAccommodation.Price} сом</Text>
+              </View>
+            </View>
+          </View>
+        </Modal>
+      )}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   map: {
-    width: Dimensions.get("window").width,
-    height: Dimensions.get("window").height,
+    width: "100%",
+    height: "100%",
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0,0,0,0.5)",
   },
 });
-/*
-         
-         .btn-grad {
-            background-image: linear-gradient(to right, #1FA2FF 0%, #12D8FA  51%, #1FA2FF  100%);
-            margin: 10px;
-            padding: 15px 45px;
-            text-align: center;
-            text-transform: uppercase;
-            transition: 0.5s;
-            background-size: 200% auto;
-            color: white;            
-            box-shadow: 0 0 20px #eee;
-            border-radius: 10px;
-            display: block;
-          }
-
-          
-         
-*/

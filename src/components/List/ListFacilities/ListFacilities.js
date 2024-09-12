@@ -1,40 +1,33 @@
-import React, { useState } from "react";
-import {
-  FlatList,
-  Text,
-  View,
-  StyleSheet,
-  TouchableOpacity,
-  Image,
-} from "react-native";
-import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-import { useSelector } from "react-redux";
-import { useNavigation } from "@react-navigation/native";
-import Fontisto from "react-native-vector-icons/Fontisto";
-import Ionicons from "react-native-vector-icons/Ionicons";
-const ListFacilities = ({ facilitiesData }) => {
-  const navigation = useNavigation();
+import React from "react";
+import { FlatList, Text, View, TouchableOpacity, Image } from "react-native";
+import CustomText from "../../CustomText/CustomText";
 
-  // const isDarkModeEnabled = useSelector(
-  //   (state) => state.theme.isDarkModeEnabled
-  // );
+const ListFacilities = ({ facilitiesData }) => {
+  const formatText = (text) => {
+    const words = text.split(" ");
+    if (words.length > 1) {
+      return `${words[0]}\n${words.slice(1).join(" ")}`;
+    }
+    return text;
+  };
 
   const renderItem = ({ item }) => {
     return (
-      <View style={{flexDirection:'column', alignItems: 'center', rowGap: 10}}>
-        <View
-          style={{
-            backgroundColor: "#f0f0f0",
-            padding: 15,
-            borderRadius: 100,
-          }}
-        >
-          <Image
-            source={{ uri: item.imageUri }}
-            style={{ width: 30, height: 30 }}
-          />
-        </View>
-        <Text>{item.facilities}</Text>
+      <View
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          columnGap: 10,
+          paddingHorizontal: 15,
+          paddingVertical: 5,
+          borderColor: "#dee2f1",
+          borderWidth: 1,
+          borderRadius: 10,
+        }}
+      >
+        <Image source={{ uri: item.Icon }} style={{ width: 30, height: 30 }} />
+
+        <CustomText style={{ textAlign: "center" }}>{item.Value}</CustomText>
       </View>
     );
   };
@@ -46,7 +39,6 @@ const ListFacilities = ({ facilitiesData }) => {
   return (
     <View>
       <FlatList
-     
         showsHorizontalScrollIndicator={false}
         showsVerticalScrollIndicator={false}
         data={facilitiesData}

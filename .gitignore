@@ -39,3 +39,6 @@ yarn-error.*
 
 # Ignore Gradle build output directory
 build
+# Ignore iOS and Android folders
+ios/
+android/

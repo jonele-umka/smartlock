@@ -4,6 +4,7 @@ import {
   TextInput,
   SafeAreaView,
   ImageBackground,
+  Platform
 } from "react-native";
 import React from "react";
 import { SafeAreaView as SafeAreaViewContext } from "react-native-safe-area-context";

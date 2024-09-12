@@ -9,40 +9,44 @@ import SignIn from "../screens/Registration/SignIn";
 import SignUpEmail from "../screens/Registration/SignUp/SignUpEmail";
 import SignUpCode from "../screens/Registration/SignUp/SignUpCode";
 
-// import { AddFavorites } from "../screens/AddFavorites/AddFavorites";
-// import CreatePinCode from "../screens/PinCodePage/CreatePinCode";
-
-import i18n from "../components/i18n/i18n";
 import ChangePassword from "../screens/ChangePassword/ChangePassword";
-// import Help from "../screens/Help/Help";
 import SearchResults from "../screens/SearchResults/SearchResults";
-import HotelDetailsScreen from "../screens/HotelDetailsScreen/HotelDetailsScreen";
+import ObjectDetailsScreen from "../screens/Objects/ObjectDetailsScreen/ObjectDetails";
 import AllReviewsScreen from "../screens/Reviews/AllReviewsScreen";
-import AllConditions from "../screens/AllConditions/AllConditions";
-import AllQuestionsScreen from "../screens/QuestionsScreen/AllQuestionsScreen";
-import AllVariantHotels from "../screens/AllVariantHotels/AllVariantHotels";
-import Landlord from "../screens/Landlord/Landlord";
-import CalendarScreen from "../screens/CalendarScreen/CalendarScreen";
+
+import Landlord from "../screens/Owner/Landlord/Landlord";
+
 import ConfirmationScreen from "../screens/ConfirmationScreen/ConfirmationScreen";
 import Settings from "../screens/Settings/Settings";
-import Profile from "../screens/Profile/Profile";
-import ControlObject from "../screens/MyObjects/MyObjects";
+import EditProfile from "../screens/EditProfile/EditProfile";
+import MyObjectsScreen from "../screens/Objects/MyObjectList/MyObjectsList";
 import Payments from "../screens/Payments/Payments";
-import HotelsScreen from "../components/Objects/Objects";
-import EditObjects from "../screens/MyObjects/EditObjects";
+
 import AddCard from "../screens/AddCard/AddCard";
 import LockScreen from "../screens/LockScreen/LockScreen";
 import EditLock from "../screens/LockScreen/EditLock/EditLock";
 import ForgotPassword from "../screens/Registration/ForgotPassword/ForgotPassword";
 import { loginUser } from "../Store/authSlice/authSlice";
-import VerifyCode from "../screens/Registration/ForgotPassword/VerifyCode";
+import VerifyCodeForgotPassword from "../screens/Registration/ForgotPassword/VerifyCodeForgotPassword";
 import CreateNewPassword from "../screens/Registration/ForgotPassword/CreateNewPassword";
+import CameraScreen from "../screens/CameraScreen/CameraScreen";
+import NotificationScreen from "../screens/Notification/NotificationScreen";
+import DetailsNotification from "../screens/Notification/DetailsNotification/DetailsNotification";
+import Owner from "../screens/Owner/Owner";
+import EditOwner from "../screens/Owner/EditOwner/EditOwner";
+import Applications from "../screens/Owner/Applications/Applications";
+import ChangeEmail from "../screens/EditProfile/ChangeEmail/ChangeEmail";
+import ConfirmCode from "../screens/EditProfile/ChangeEmail/ConfirmCode";
+import BecomeOwner from "../screens/Owner/MyObjects/BecomeOwner/BecomeOwner";
+import MoreDetailsApplications from "../screens/Owner/MoreDetailsApplications/MoreDetailsApplications";
+import EditObject from "../screens/Objects/ObjectDetailsScreen/EditObject";
+import LockDetails from "../screens/LockScreen/LockDetails/LockDetails";
 
 const Stack = createStackNavigator();
 
 const Navigator = () => {
   const dispatch = useDispatch();
-  const [initialRoute, setInitialRoute] = useState("Войти");
+  const [initialRoute, setInitialRoute] = useState("Главная страница");
 
   useEffect(() => {
     const checkLoginAndNavigate = async () => {
@@ -52,24 +56,20 @@ const Navigator = () => {
         const userData = { Email, Password };
 
         if (userData.Email && userData.Password) {
-          // Если есть сохраненные логин и пароль, отправляем запрос на сервер для входа
           dispatch(loginUser(userData))
+            .unwrap()
             .then(() => {
-              // После успешного входа устанавливаем начальный маршрут на главную страницу
               setInitialRoute("Главная страница");
             })
             .catch((error) => {
               console.error("Ошибка при входе:", error);
-              // Если произошла ошибка при входе, устанавливаем начальный маршрут на страницу входа
               setInitialRoute("Войти");
             });
         } else {
-          // Если нет сохраненных логина и пароля, устанавливаем начальный маршрут на страницу Войтиа
-          setInitialRoute("Войти");
+          setInitialRoute("Главная страница");
         }
       } catch (error) {
         console.error("Ошибка при чтении из AsyncStorage", error);
-        // В случае ошибки также устанавливаем начальный маршрут на страницу Войтиа
         setInitialRoute("Войти");
       }
     };
@@ -90,96 +90,59 @@ const Navigator = () => {
           options={{ headerShown: false, gestureEnabled: false }}
         />
         <Stack.Screen
-          name="Результаты поиска"
-          component={SearchResults}
+          name="Войти"
+          component={SignIn}
           options={{ headerShown: false, gestureEnabled: false }}
         />
-        <Stack.Screen
-          name="Данные об отеле"
-          component={HotelDetailsScreen}
-          options={{
-            headerShown: true, // Показать заголовок
-            headerTransparent: true, // Прозрачный фон заголовка
-            headerTintColor: "#fff", // Цвет текста заголовка
-            title: "", // Заголовок
-          }}
-        />
-        <Stack.Screen name="Объекты" component={HotelsScreen} />
+        <Stack.Screen name="Регистрация" component={SignUpEmail} />
+        <Stack.Screen name="Код подтверждения" component={SignUpCode} />
+        <Stack.Screen name="Сменить пароль" component={ChangePassword} />
+        <Stack.Screen name="Результаты поиска" component={SearchResults} />
+        <Stack.Screen name="Детали объекта" component={ObjectDetailsScreen} />
         <Stack.Screen name="Все отзывы" component={AllReviewsScreen} />
-        <Stack.Screen name="Все условия" component={AllConditions} />
-        <Stack.Screen name="Все вопросы" component={AllQuestionsScreen} />
-        <Stack.Screen name="Все варианты" component={AllVariantHotels} />
+        {/* <Stack.Screen name="Все вопросы" component={AllQuestionsScreen} /> */}
         <Stack.Screen name="Сдать жильё" component={Landlord} />
-        <Stack.Screen name="Настройки" component={Settings} />
-        <Stack.Screen name="Редактировать профиль" component={Profile} />
-        <Stack.Screen name="Управление объектами" component={ControlObject} />
-        <Stack.Screen name="Платежи и выплаты" component={Payments} />
-        <Stack.Screen name="Просмотр объекта" component={EditObjects} />
-        <Stack.Screen name="Даты поездки" component={CalendarScreen} />
-        <Stack.Screen name="Добавить карту" component={AddCard} />
-        <Stack.Screen name="Замок номера" component={LockScreen} />
-        <Stack.Screen name="Редактировать пин" component={EditLock} />
-        <Stack.Screen name="Подтвердить код" component={VerifyCode} />
-        <Stack.Screen
-          name="Создать новый пароль"
-          component={CreateNewPassword}
-        />
-
         <Stack.Screen
           name="Подтверждение брони"
           component={ConfirmationScreen}
         />
+        <Stack.Screen name="Настройки" component={Settings} />
+        <Stack.Screen name="Редактировать профиль" component={EditProfile} />
+        <Stack.Screen name="Управление объектами" component={MyObjectsScreen} />
+        <Stack.Screen name="Платежи" component={Payments} />
+        <Stack.Screen name="Добавить карту" component={AddCard} />
+        <Stack.Screen name="Замок" component={LockScreen} />
+        <Stack.Screen name="Редактировать замок" component={EditLock} />
+        <Stack.Screen name="Забыли пароль" component={ForgotPassword} />
         <Stack.Screen
-          name="Редакировать профиль"
-          component={ConfirmationScreen}
-        />
-        {/* <Stack.Screen
-          name="Создать пин-код"
-          component={CreatePinCode}
-          options={{ headerShown: false, gestureEnabled: false }}
-        /> */}
-        <Stack.Screen
-          name="Войти"
-          component={SignIn}
-          options={{ headerShown: false, title: i18n.t("signInScreen") }}
-        />
-        <Stack.Screen name="Забыл пароль" component={ForgotPassword} />
-        <Stack.Screen
-          name="Email"
-          component={SignUpEmail}
-          options={{ title: i18n.t("signUpEmailScreen") }}
+          name="Проверка Кода Забыли Пароль?"
+          component={VerifyCodeForgotPassword}
         />
         <Stack.Screen
-          name="Код"
-          component={SignUpCode}
-          options={{ title: i18n.t("signUpCodeScreen") }}
+          name="Создать Новый Пароль"
+          component={CreateNewPassword}
         />
-
+        <Stack.Screen name="Камера" component={CameraScreen} />
+        <Stack.Screen name="Уведомления" component={NotificationScreen} />
         <Stack.Screen
-          name="Смена пароля"
-          component={ChangePassword}
-          options={"Смена пароля"}
+          name="Детали уведомления"
+          component={DetailsNotification}
         />
-        {/* <Stack.Screen
- 
-          name="Смена пароля"
-          component={ChangePassword}
-          options={{ title: i18n.t("changePassword") }}
-        />
-       
- 
+        <Stack.Screen name="Владелец" component={Owner} />
         <Stack.Screen
-          name="Помощь"
-          component={Help}
-          options={{ title: i18n.t("help") }}
+          name="Редактировать данные владельца"
+          component={EditOwner}
         />
-     
-
-        {/* <Stack.Screen
-          name="Уведомления"
-          component={Notification}
-          options={{ title: i18n.t("notificationScreen") }}
-        /> */}
+        <Stack.Screen name="Заявки" component={Applications} />
+        <Stack.Screen name="Изменить почту" component={ChangeEmail} />
+        <Stack.Screen name="Подтверждение кода" component={ConfirmCode} />
+        <Stack.Screen name="Стать владельцем" component={BecomeOwner} />
+        <Stack.Screen
+          name="Подробнее о Заявке"
+          component={MoreDetailsApplications}
+        />
+        <Stack.Screen name="Редактировать объект" component={EditObject} />
+        <Stack.Screen name="Детали замка" component={LockDetails} />
       </Stack.Navigator>
     </NavigationContainer>
   );

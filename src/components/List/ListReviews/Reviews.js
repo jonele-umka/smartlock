@@ -69,7 +69,7 @@
 
 // export default Reviews;
 
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import {
   FlatList,
   Text,
@@ -78,44 +78,34 @@ import {
   TouchableOpacity,
   Image,
 } from "react-native";
-import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-import { useSelector } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
 import Fontisto from "react-native-vector-icons/Fontisto";
-import ReviewsInput from "../../ReviewsInput/ReviewsInput";
+import { formatDate } from "../../FormatDate/FormatDate";
+import ActionDescription from "../../ActionSheet/ActionDescription/ActionDescription";
+import CustomText from "../../CustomText/CustomText";
 
-const Reviews = ({
-  reviewsData,
-  toggleDescriptionReviews,
-  expandedReviewIndex,
-}) => {
+const Reviews = ({ reviewsData }) => {
   const navigation = useNavigation();
-  const onPress = (page) => {
-    clickHandler(page);
-  };
-  // const isDarkModeEnabled = useSelector(
-  //   (state) => state.theme.isDarkModeEnabled
-  // );
+  const [expandedReviewText, setExpandedReviewText] = useState("");
+  const actionSheetReviewRef = useRef(null);
 
-  const renderItem = ({ item, index }) => {
-    const { text } = item;
-    const words = text.split(" ");
-    const maxWords = 20;
-    const showReadMoreButton = words.length > maxWords;
-    const shortenedText = words.slice(0, maxWords).join(" ");
-    const truncatedText = shortenedText + (showReadMoreButton ? "..." : "");
-    const handleReadMore = () => {
-      toggleDescriptionReviews(index, text); // Передаем полный текст отзыва в функцию
-    };
+  const handleShowMore = (text) => {
+    setExpandedReviewText(text);
+    actionSheetReviewRef.current?.show();
+  };
+
+  const renderItem = ({ item }) => {
+    const reviewsWords = item.Content?.split(" ") || [];
+    const isLongReviews = reviewsWords.length > 20;
 
     return (
       <View
         style={{
           padding: 20,
-          borderRadius: 10,
-          borderWidth: 0.2,
-          borderColor: "#b8b8b8",
+          borderColor: "#dee2f1",
           width: 330,
+          borderWidth: 1,
+          borderRadius: 10,
         }}
       >
         <View>
@@ -129,21 +119,33 @@ const Reviews = ({
           >
             <Image
               style={{ width: 40, height: 40, borderRadius: 20 }}
-              source={{ uri: item.imageUri }}
+              source={{
+                uri:
+                  item.imageUri ||
+                  "https://static.vecteezy.com/system/resources/previews/019/896/008/original/male-user-avatar-icon-in-flat-design-style-person-signs-illustration-png.png",
+              }}
             />
             <View>
-              <Text style={{ fontSize: 16, fontWeight: "600" }}>
-                {item.name}
-              </Text>
-              <Text style={{ color: "grey" }}>{item.date}</Text>
+              <CustomText
+                style={{ fontSize: 16, fontWeight: "600", marginBottom: 5 }}
+              >
+                {item.Username}
+              </CustomText>
+              <CustomText style={{ color: "grey" }}>
+                {formatDate(item.CreatedAt)}
+              </CustomText>
             </View>
           </View>
 
-          <Text style={{ lineHeight: 22 }}>{truncatedText}</Text>
+          <CustomText style={{ lineHeight: 22 }}>
+            {isLongReviews
+              ? reviewsWords.slice(0, 20).join(" ") + "..."
+              : item.Content}
+          </CustomText>
 
-          {showReadMoreButton && (
+          {isLongReviews && (
             <TouchableOpacity
-              onPress={handleReadMore}
+              onPress={() => handleShowMore(item.Content)}
               style={{
                 flexDirection: "row",
                 alignItems: "center",
@@ -151,9 +153,9 @@ const Reviews = ({
                 marginTop: 10,
               }}
             >
-              <Text style={{  fontWeight: 500 }}>
+              <CustomText style={{ fontWeight: 500 }}>
                 Читать полностью
-              </Text>
+              </CustomText>
               <Fontisto
                 name="angle-right"
                 style={{ color: "#000", fontSize: 14 }}
@@ -171,55 +173,41 @@ const Reviews = ({
 
   return (
     <View>
-      <TouchableOpacity
-        style={{ alignSelf: "flex-end" }}
-        onPress={() => navigation.navigate("Все отзывы")}
+      <View
+        style={{
+          flexDirection: "row",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
       >
-        <Text style={{ color: "#000", paddingHorizontal: 10 }}>Все отзывы</Text>
-      </TouchableOpacity>
-
+        <CustomText style={{ fontSize: 18, fontWeight: 500 }}>
+          Отзывы
+        </CustomText>
+        <TouchableOpacity
+          onPress={() =>
+            navigation.navigate("Все отзывы", { id: reviewsData.ID })
+          }
+        >
+          <CustomText style={{ paddingHorizontal: 10 }}>Все отзывы</CustomText>
+        </TouchableOpacity>
+      </View>
       <View>
         <FlatList
           contentContainerStyle={{ paddingHorizontal: 10, paddingVertical: 15 }}
           showsHorizontalScrollIndicator={false}
           showsVerticalScrollIndicator={false}
-          data={reviewsData}
+          data={reviewsData?.Reviews}
           horizontal
           renderItem={renderItem}
           ItemSeparatorComponent={renderSeparator}
         />
       </View>
-      {/* <View>
-        <ReviewsInput />
-      </View> */}
+      <ActionDescription
+        actionSheetRef={actionSheetReviewRef}
+        expandedReviewText={expandedReviewText}
+      />
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  paymentsContainerTitle: {
-    fontSize: 22,
-    color: "#000",
-    fontWeight: 600,
-    paddingHorizontal: 10,
-  },
-  cardContainer: {
-    width: 180,
-    height: "100%",
-  },
-  cardTitle: {
-    flexWrap: "wrap",
-    fontSize: 16,
-    paddingTop: 10,
-    color: "#000",
-    fontWeight: 500,
-  },
-  cardDescription: {
-    flexWrap: "wrap",
-    fontSize: 14,
-    paddingTop: 5,
-    color: "grey",
-  },
-});
 
 export default Reviews;

@@ -1,221 +1,111 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  Text,
-  View,
-  StyleSheet,
-  Dimensions,
-  TouchableOpacity,
-  Image,
-  SafeAreaView,
-  Platform,
-  Switch,
-  Button,
-} from "react-native";
-import { useNavigation } from "@react-navigation/native";
-import { SafeAreaView as SafeAreaViewContext } from "react-native-safe-area-context";
+import { View, TouchableOpacity, Image, ScrollView } from "react-native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import Ionicons from "react-native-vector-icons/Ionicons";
-import AntDesign from "react-native-vector-icons/AntDesign";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import * as LocalAuthentication from "expo-local-authentication";
-import * as Localization from "expo-localization";
 import i18n from "../components/i18n/i18n";
 import { Dialog } from "@rneui/themed";
-
-import * as ImagePicker from "expo-image-picker";
 import { logoutUser } from "../Store/authSlice/authSlice";
-// link
-const Link = ({ title, onClick, icon, disabled = false }) => {
-  // const isDarkModeEnabled = useSelector(
-  //   (state) => state.theme.isDarkModeEnabled
-  // );
+import CustomText from "../components/CustomText/CustomText";
+import SafeAreaWrapper from "../components/SafeAreaWrapper/SafeAreaWrapper";
 
+// link
+const Link = ({ title, onPress, icon, disabled = false, isLast = false }) => {
   return (
-    <TouchableOpacity onPress={onClick} disabled={disabled}>
+    <TouchableOpacity onPress={onPress} disabled={disabled}>
       <View
-        style={[
-          styles.linkContainer,
-          // isDarkModeEnabled && {
-          //   backgroundColor: "#191a1d",
-          // },
-        ]}
+        style={{
+          flexDirection: "row",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
       >
         <View
-          style={{ flexDirection: "row", alignItems: "center", columnGap: 15 }}
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            columnGap: 15,
+          }}
         >
-          <View
-            style={[
-              {
-                backgroundColor: "#00CDAC",
-                borderRadius: 50,
-                padding: 10,
-              },
-              // isDarkModeEnabled && { backgroundColor: "#fff" },
-            ]}
-          >
+          <View>
             {icon === "logout" ? (
               <MaterialCommunityIcons
                 name={"logout"}
                 size={20}
-                color={"#fff"}
+                color={"#FE3C5F"}
               />
             ) : (
-              <Ionicons name={icon} size={20} color={"#fff"} />
+              <Ionicons name={icon} size={20} color={"#4B5DFF"} />
             )}
           </View>
           <View>
-            <Text
-              style={
-                {
-                  color: "#000",
-                }
-                //   [
-                //   isDarkModeEnabled ? { color: "#fff" } : { color: "#191a1d" },
-                // ]
-              }
+            <CustomText
+              style={{
+                fontWeight: 500,
+              }}
             >
               {title}
-            </Text>
+            </CustomText>
           </View>
         </View>
         <View>
           <MaterialCommunityIcons
             name={"chevron-right"}
             size={20}
-            color={"#00CDAC"}
+            color={"#1C2863"}
           />
         </View>
       </View>
+      {!isLast && (
+        <View
+          style={{
+            height: 1,
+            backgroundColor: "#e0e0e0",
+            marginTop: 15,
+          }}
+        />
+      )}
     </TouchableOpacity>
   );
 };
 
 const ProfileScreen = () => {
   const navigation = useNavigation();
-  // const API_URL = process.env.API_URL;
+  const API_URL = process.env.API_URL;
+  const [avatarImage, setAvatarImage] = useState(null);
+  const userProfile = useSelector((state) => state.auth.userProfile);
+  const owner = useSelector((state) => state.auth.owner);
+  const avatar = userProfile?.Avatar;
+  const token = useSelector((state) => state.auth.token);
 
-  // language
-  // const actionSheetRef = useRef();
-  // const token = useSelector((state) => state.signIn.token);
-  // const userName = useSelector((state) => state.signIn.userName);
-  // const refresh_token = useSelector((state) => state.signIn.refreshToken);
-  // const [language, setLanguage] = useState(Localization.locale);
-  // const [hasFingerprint, setHasFingerprint] = useState(false);
-  const dispatch = useDispatch();
-  const [modal, setModal] = useState(false);
-  const [image, setImage] = useState(null);
-  const toggleModal = () => {
-    setModal(!modal);
-  };
-  // const createImageFromBlob = async (blob) => {
-  //   return new Promise((resolve, reject) => {
-  //     const reader = new FileReader();
-  //     reader.onloadend = () => {
-  //       resolve(reader.result);
-  //     };
-  //     reader.onerror = reject;
-  //     reader.readAsDataURL(blob);
-  //   });
-  // };
-  // useEffect(() => {
-  //   const fetchAvatar = async () => {
-  //     try {
-  //       const response = await fetch(`${API_URL}/individuals/avatar`, {
-  //         method: "GET",
-  //         headers: {
-  //           Authorization: `Bearer ${token}`,
-  //         },
-  //       });
-
-  //       if (response.ok) {
-  //         const blob = await response.blob();
-  //         const imageUrl = await createImageFromBlob(blob);
-  //         setImage(imageUrl);
-  //       } else {
-  //         console.error(
-  //           "Failed to fetch avatar. Server returned:",
-  //           response.status,
-  //           response.statusText
-  //         );
-  //       }
-  //     } catch (error) {
-  //       console.error("Error fetching avatar", error);
-  //     }
-  //   };
-
-  //   fetchAvatar();
-  // }, []);
-
-  const pickImage = async () => {
-    try {
-      let result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.All,
-        allowsEditing: true,
-        aspect: [4, 3],
-        quality: 1,
-      });
-
-      if (!result.canceled) {
-        setImage(result.assets[0].uri);
-        // uploadImage(result.assets[0].uri);
-      }
-    } catch (error) {
-      console.error("Ошибка при выборе изображения", error);
+  const loadProfileData = () => {
+    const timestamp = new Date().getTime();
+    if (avatar) {
+      setAvatarImage(`${API_URL}/${avatar}?timestamp=${timestamp}`);
     }
   };
 
-  // const uploadImage = async (uri) => {
-  //   try {
-  //     const formData = new FormData();
-  //     formData.append("avatar", {
-  //       uri,
-  //       name: "image.jpg",
-  //       type: "image/jpg",
-  //     });
+  useFocusEffect(
+    useCallback(() => {
+      loadProfileData();
+    }, [avatar])
+  );
 
-  //     const response = await fetch(`${API_URL}/individuals/upload`, {
-  //       method: "POST",
-  //       body: formData,
-  //       headers: {
-  //         Authorization: `Bearer ${token}`,
-  //       },
-  //     });
+  const dispatch = useDispatch();
 
-  //     if (response.ok) {
-  //       console.log("Image uploaded successfully");
-  //     } else {
-  //       console.error(
-  //         "Failed to upload image. Server returned:",
-  //         response.status,
-  //         response.statusText
-  //       );
+  const [modal, setModal] = useState(false);
 
-  //       // Добавьте вывод тела ответа, если нужно
-  //       const responseBody = await response.text();
-  //       console.error("Response body:", responseBody);
-  //     }
-  //   } catch (error) {
-  //     console.error("Error uploading image", error);
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   const checkBiometricAvailability = async () => {
-  //     const supported = await LocalAuthentication.hasHardwareAsync();
-  //     if (supported) {
-  //       setHasFingerprint(true);
-  //     }
-  //   };
-  //   checkBiometricAvailability();
-  // }, []);
+  const toggleModal = () => {
+    setModal(!modal);
+  };
 
   const handleLogout = async () => {
     try {
       const response = await dispatch(logoutUser());
 
       if (response.type === "auth/logout/fulfilled") {
-        navigation.navigate("Войти");
+        navigation.navigate("Главная страница");
       } else {
         console.log("Не удалось выйти");
       }
@@ -223,304 +113,208 @@ const ProfileScreen = () => {
       console.error("Ошибка при выходе:", error);
     }
   };
-  // const changeLanguage = async (newLanguage) => {
-  //   Localization.locale = newLanguage;
 
-  //   try {
-  //     await AsyncStorage.setItem("language", newLanguage);
-  //     setLanguage(newLanguage);
-  //     actionSheetRef.current?.hide();
-  //   } catch (error) {
-  //     console.error("Ошибка при сохранении языка в AsyncStorage:", error);
-  //   }
-  // };
+  const links = [
+    {
+      title: "Настройки",
+      onPress: () => navigation.navigate("Настройки"),
+      icon: "settings-outline",
+    },
+    // {
+    //   title: "Платежи и выплаты",
+    //   onPress: () => navigation.navigate("Платежи и выплаты"),
+    //   icon: "cash",
+    // },
+    // {
+    //   title: i18n.t("help"),
+    //   onPress: () => navigation.navigate("Помощь"),
+    //   icon: "help",
+    // },
 
-  // switch biometric
-  // const [isEnabled, setIsEnabled] = useState(false);
-
-  // const toggleSwitch = async () => {
-  //   // Если включаем, то запрашиваем отпечаток
-  //   if (!isEnabled) {
-  //     try {
-  //       const result = await LocalAuthentication.authenticateAsync({
-  //         promptMessage:
-  //           "Подтвердите отпечатком пальца для включения входа по биометрии",
-  //       });
-
-  //       if (result.success) {
-  //         // Если отпечаток подтвержден, меняем состояние и сохраняем в AsyncStorage
-  //         const newIsEnabled = !isEnabled;
-  //         setIsEnabled(newIsEnabled);
-
-  //         AsyncStorage.setItem(
-  //           "biometricEnabled",
-  //           newIsEnabled ? "true" : "false"
-  //         )
-  //           .then(() => {
-  //             console.log("Информация о входе по биометрии сохранена");
-  //           })
-  //           .catch((error) => {
-  //             console.error(
-  //               "Ошибка при сохранении предпочтений по биометрии:",
-  //               error
-  //             );
-  //           });
-  //       } else {
-  //         console.log("Пользователь отказался от входа по биометрии");
-  //       }
-  //     } catch (error) {
-  //       console.error("Ошибка при запросе отпечатка пальца:", error);
-  //     }
-  //   } else {
-  //     // Если выключаем, меняем состояние и сохраняем в AsyncStorage
-  //     const newIsEnabled = !isEnabled;
-  //     setIsEnabled(newIsEnabled);
-
-  //     AsyncStorage.setItem("biometricEnabled", newIsEnabled ? "true" : "false")
-  //       .then(() => {
-  //         console.log("Информация о входе по биометрии сохранена");
-  //       })
-  //       .catch((error) => {
-  //         console.error(
-  //           "Ошибка при сохранении предпочтений по биометрии:",
-  //           error
-  //         );
-  //       });
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   const checkBiometricPreference = async () => {
-  //     try {
-  //       const biometricEnabled = await AsyncStorage.getItem("biometricEnabled");
-
-  //       if (biometricEnabled === "true") {
-  //         setIsEnabled(true);
-  //       } else {
-  //         setIsEnabled(false);
-  //       }
-  //     } catch (error) {
-  //       console.error("Ошибка при чтении предпочтений по биометрии:", error);
-  //     }
-  //   };
-
-  //   checkBiometricPreference();
-  // }, []);
-
-  // redux
-  // const isDarkModeEnabled = useSelector(
-  //   (state) => state.theme.isDarkModeEnabled
-  // );
-
-  const SafeAreaWrapper =
-    Platform.OS === "android" ? SafeAreaViewContext : SafeAreaView;
-
+    token
+      ? { title: i18n.t("logOut"), onPress: toggleModal, icon: "logout" }
+      : {
+          title: "Войти",
+          onPress: () => navigation.navigate("Войти"),
+          icon: "logout",
+        },
+  ];
+  if (owner === "owner") {
+    links.unshift({
+      title: "Владелец",
+      onPress: () => navigation.navigate("Владелец"),
+      icon: "person-outline",
+    });
+  }
+  const handlePress = () => {
+    if (token) {
+      navigation.navigate("Редактировать профиль");
+    } else {
+      // Здесь можно показать сообщение или ничего не делать
+      console.log("Пользователь не авторизован");
+    }
+  };
   return (
-    <SafeAreaWrapper
-      style={{ flex: 1, backgroundColor: "#fff" }}
-      // style={
-      //   [isDarkModeEnabled && { backgroundColor: "#383838" }]
-      // }
-    >
-      <View style={{ paddingVertical: 20, flex: 1 }}>
-        <Dialog isVisible={modal}>
-          <Dialog.Title title={i18n.t("areYouSureYouWantToLogOut")} />
+    <SafeAreaWrapper style={{ flex: 1, backgroundColor: "#4B5DFF" }}>
+      <View
+        style={{
+          paddingVertical: 20,
+          paddingHorizontal: 10,
+        }}
+      >
+        <TouchableOpacity
+          style={{
+            paddingVertical: 10,
+            borderRadius: 20,
+          }}
+          onPress={handlePress}
+        >
           <View
             style={{
               flexDirection: "row",
               justifyContent: "space-between",
-              marginTop: 20,
+              alignItems: "center",
             }}
           >
-            <TouchableOpacity
-              onPress={() => {
-                toggleModal();
-              }}
-            >
-              <Text style={{ fontSize: 18 }}>{i18n.t("no")}</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => {
-                toggleModal();
-                handleLogout();
-              }}
-            >
-              <Text style={{ fontSize: 18 }}>{i18n.t("yes")}</Text>
-            </TouchableOpacity>
-          </View>
-        </Dialog>
-        <View style={{ flex: 1 }}>
-          <View
-            style={[
-              styles.profile,
-              // isDarkModeEnabled && { backgroundColor: "#383838" },
-            ]}
-          >
-            <TouchableOpacity
-              onPress={pickImage}
+            <View
               style={{
-                position: "relative",
+                flexDirection: "row",
+                alignItems: "center",
+                columnGap: 20,
               }}
             >
-              <Image
-                source={
-                  image
-                    ? { uri: image }
-                    : {
-                        uri: "https://static.vecteezy.com/system/resources/previews/019/896/008/original/male-user-avatar-icon-in-flat-design-style-person-signs-illustration-png.png",
+              {userProfile?.Avatar ? (
+                <Image
+                  source={{
+                    uri:
+                      avatarImage ||
+                      "https://static.vecteezy.com/system/resources/previews/019/896/008/original/male-user-avatar-icon-in-flat-design-style-person-signs-illustration-png.png",
+                  }}
+                  style={{
+                    borderRadius: 50,
+                    width: 70,
+                    height: 70,
+                  }}
+                />
+              ) : (
+                <Image
+                  source={{
+                    uri: "https://static.vecteezy.com/system/resources/previews/019/896/008/original/male-user-avatar-icon-in-flat-design-style-person-signs-illustration-png.png",
+                  }}
+                  style={{
+                    borderRadius: 50,
+                    width: 70,
+                    height: 70,
+                  }}
+                />
+              )}
+              <View>
+                {userProfile?.Nickname ? (
+                  <CustomText
+                    style={
+                      {
+                        color: "#fff",
+                        fontWeight: 500,
+                        fontSize: 18,
                       }
-                }
-                style={styles.avatar}
+                      //   [
+                      //   isDarkModeEnabled ? { color: "#fff" } : { color: "#191a1d" },
+                      // ]
+                    }
+                  >
+                    {userProfile?.Nickname}
+                  </CustomText>
+                ) : (
+                  <CustomText
+                    style={
+                      {
+                        color: "#fff",
+                        fontWeight: 500,
+                      }
+                      //   [
+                      //   isDarkModeEnabled ? { color: "#fff" } : { color: "#191a1d" },
+                      // ]
+                    }
+                  >
+                    User
+                  </CustomText>
+                )}
+                {userProfile?.Biography ? (
+                  <CustomText style={{ color: "#fff", marginBottom: 10 }}>
+                    {userProfile?.Biography}
+                  </CustomText>
+                ) : (
+                  <CustomText style={{ color: "#fff" }}>Description</CustomText>
+                )}
+              </View>
+            </View>
+            <View>
+              <MaterialCommunityIcons
+                name={"chevron-right"}
+                size={20}
+                color={"#fff"}
               />
-              <AntDesign
-                name="pluscircle"
-                style={{
-                  color: "#00CDAC",
-                  fontSize: 40,
-                  position: "absolute",
-                  bottom: 0,
-                  right: 0,
-                }}
-              />
-            </TouchableOpacity>
-
-            <Text
-              style={[
-                styles.name,
-                // isDarkModeEnabled && { color: "#fff" }
-              ]}
-            >
-              User
-            </Text>
+            </View>
           </View>
+        </TouchableOpacity>
+      </View>
+      <View
+        style={{
+          flex: 1,
+          paddingVertical: 40,
+          paddingHorizontal: 10,
+          borderTopLeftRadius: 30,
+          borderTopRightRadius: 30,
 
-          <View
-            style={[
-              styles.linksContainer,
-              // isDarkModeEnabled
-              //   ? { backgroundColor: "#191a1d" }
-              //   : { backgroundColor: "#fff" },
-            ]}
-          >
-            {/* <Link
-            title={i18n.t("changePINCode")}
-            onClick={() => {
-              navigation.navigate("Сменить пин-код");
-            }}
-            icon={"pin"}
-          /> */}
-            {/* <Link
-              title={"Редактировать профиль"}
-              onClick={() => {
-                navigation.navigate("Редактировать профиль");
-              }}
-              icon={"person"}
-            /> */}
-
+          backgroundColor: "#fff",
+        }}
+      >
+        <View
+          style={{
+            flexDirection: "column",
+            rowGap: 15,
+            paddingHorizontal: 10,
+          }}
+        >
+          {links.map((link, index) => (
             <Link
-              title={"Управление объектами"}
-              onClick={() => navigation.navigate("Управление объектами")}
-              icon={"home"}
+              key={index}
+              title={link.title}
+              onPress={link.onPress}
+              icon={link.icon}
+              isLast={index === links.length - 1}
             />
-            <Link
-              title={"Сдать жильё"}
-              onClick={() => navigation.navigate("Сдать жильё")}
-              icon={"key"}
-            />
-            <Link
-              title={"Настройки"}
-              onClick={() => navigation.navigate("Настройки")}
-              icon={"settings"}
-            />
-            <Link
-              title={"Платежи и выплаты"}
-              // onClick={() => navigation.navigate("Платежи и выплаты")}
-              icon={"cash"}
-            />
-            <Link
-              title={i18n.t("help")}
-              // onClick={() => navigation.navigate("Помощь")}
-              icon={"help"}
-            />
-            <Link
-              title={i18n.t("logOut")}
-              textColor={"#cc4949"}
-              onClick={toggleModal}
-              icon={"logout"}
-            />
-          </View>
+          ))}
         </View>
       </View>
+      <Dialog isVisible={modal}>
+        <Dialog.Title title={i18n.t("areYouSureYouWantToLogOut")} />
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            marginTop: 20,
+          }}
+        >
+          <TouchableOpacity
+            onPress={() => {
+              toggleModal();
+            }}
+          >
+            <CustomText style={{ fontSize: 18 }}>{i18n.t("no")}</CustomText>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              toggleModal();
+              handleLogout();
+            }}
+          >
+            <CustomText style={{ fontSize: 18 }}>{i18n.t("yes")}</CustomText>
+          </TouchableOpacity>
+        </View>
+      </Dialog>
     </SafeAreaWrapper>
   );
 };
-const styles = StyleSheet.create({
-  profile: {
-    alignItems: "center",
-    justifyContent: "center",
-    rowGap: 10,
-    marginBottom: 30,
-  },
-  avatar: {
-    borderRadius: 80,
-    width: 150,
-    height: 150,
-  },
-  name: {
-    textAlign: "center",
-    fontSize: 25,
-    fontWeight: "bold",
-    color: "#000",
-  },
-  linksContainer: {
-    flex: 1,
-  },
-  // toggleButtonContainer: {
-  //   flexDirection: "row",
-  //   alignItems: "center",
-  //   justifyContent: "space-between",
-  //   paddingVertical: 10,
-  // },
-  // toggleButtonContent: {
-  //   flexDirection: "row",
-  //   alignItems: "center",
-  //   columnGap: 15,
-  // },
-  // toggleIconContainer: {
-  //   backgroundColor: "#191a1d",
-  //   borderRadius: 50,
-  //   padding: 10,
-  // },
-  // toggleButtonText: {
-  //   fontSize: 16,
-  // },
-  // toggle: {
-  //   width: 50,
-  //   height: 30,
-  //   backgroundColor: "#e1e1e1",
-  //   borderRadius: 50,
-  //   position: "relative",
-  // },
-  // toggleOn: {
-  //   backgroundColor: "#5d00e6",
-  // },
-  // toggleHandle: {
-  //   width: 24,
-  //   height: 24,
-  //   backgroundColor: "#fff",
-  //   borderRadius: 46,
-  //   position: "absolute",
-  //   top: 3,
-  //   left: 3,
-  //   elevation: 2,
-  // },
-  linkContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    paddingVertical: 10,
-    paddingHorizontal: 10,
-  },
-});
 
 export default ProfileScreen;

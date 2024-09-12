@@ -278,7 +278,7 @@ const CreateNewPassword = () => {
           <ActivityIndicator
             size="large"
             style={{ marginTop: 40, marginBottom: 30 }}
-            color={"#02AAB0"}
+            color={"#4B5DFF"}
           />
         ) : (
           <TouchableOpacity

@@ -3,20 +3,19 @@ import { useForm, Controller } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { sendEmail } from "../../../Store/authSlice/authSlice";
 import {
-  SafeAreaView,
-  Text,
   TextInput,
   TouchableOpacity,
   ActivityIndicator,
   View,
 } from "react-native";
-import { SafeAreaView as SafeAreaViewContext } from "react-native-safe-area-context";
 
 import { useNavigation } from "@react-navigation/core";
 import i18n from "../../../components/i18n/i18n";
-import Ionicons from "react-native-vector-icons/Ionicons";
+
 import Feather from "react-native-vector-icons/Feather";
 import { LinearGradient } from "expo-linear-gradient";
+import CustomText from "../../../components/CustomText/CustomText";
+import SafeAreaWrapper from "../../../components/SafeAreaWrapper/SafeAreaWrapper";
 
 const SignUpEmail = () => {
   //   const isDarkModeEnabled = useSelector(
@@ -37,7 +36,7 @@ const SignUpEmail = () => {
       const response = await dispatch(sendEmail(email));
 
       if (response.type === "auth/sendEmail/fulfilled") {
-        navigation.navigate("Код", { email: email.Email });
+        navigation.navigate("Код подтверждения", { email: email.Email });
       } else {
         setError(response.payload);
       }
@@ -47,9 +46,6 @@ const SignUpEmail = () => {
     }
   };
 
-  const SafeAreaWrapper =
-    Platform.OS === "android" ? SafeAreaViewContext : SafeAreaView;
-
   return (
     <SafeAreaWrapper
       style={[
@@ -57,9 +53,6 @@ const SignUpEmail = () => {
 
         // isDarkModeEnabled && { backgroundColor: "#191a1d" },
       ]}
-      start={{ x: 2.4, y: 1.1 }}
-      end={{ x: 0, y: 0 }}
-      colors={["#241270", "#140A4F", "#000"]}
     >
       <View
         style={{
@@ -67,16 +60,16 @@ const SignUpEmail = () => {
           paddingVertical: 20,
         }}
       >
-        <Text
+        <CustomText
           style={{
-            fontSize: 40,
-            marginBottom: 30,
-            color: "#000",
+            fontSize: 30,
+            marginBottom: 20,
+            color: "#1C2863",
             fontWeight: 600,
           }}
         >
           {i18n.t("enterEmail")}
-        </Text>
+        </CustomText>
         <View
           style={{
             marginBottom: 10,
@@ -88,14 +81,15 @@ const SignUpEmail = () => {
                 flexDirection: "row",
                 alignItems: "center",
                 columnGap: 5,
-                borderBottomWidth: 0.5,
-                borderBottomColor: "#000",
-                paddingRight: 10,
+                borderWidth: 0.5,
+                borderColor: "#dee2f1",
+                paddingHorizontal: 10,
+                borderRadius: 10,
                 paddingVertical: 10,
-                borderBottomColor: errors.Email ? "red" : "#000",
+                borderColor: errors.Email ? "red" : "#dee2f1",
               }}
             >
-              <Feather name="mail" style={{ color: "#b8b8b8", fontSize: 20 }} />
+              <Feather name="mail" style={{ color: "#616992", fontSize: 20 }} />
               <Controller
                 control={control}
                 name="Email"
@@ -109,7 +103,7 @@ const SignUpEmail = () => {
                 render={({ field }) => (
                   <TextInput
                     placeholder={i18n.t("enterEmail")}
-                    placeholderTextColor="#b8b8b8"
+                    placeholderTextColor="#616992"
                     onChangeText={(value) => {
                       field.onChange(value);
                       setError("");
@@ -117,7 +111,7 @@ const SignUpEmail = () => {
                     value={field.value}
                     style={{
                       flex: 1,
-                      color: "#000",
+                      color: "#1C2863",
                       fontSize: 14,
                     }}
                   />
@@ -125,9 +119,9 @@ const SignUpEmail = () => {
               />
             </View>
             {errors.Email && (
-              <Text style={{ color: "red", fontSize: 12, marginTop: 7 }}>
+              <CustomText style={{ color: "red", fontSize: 12, marginTop: 7 }}>
                 {errors.Email.message}
-              </Text>
+              </CustomText>
             )}
           </View>
           <View style={{ marginBottom: 30 }}>
@@ -136,14 +130,15 @@ const SignUpEmail = () => {
                 flexDirection: "row",
                 alignItems: "center",
                 columnGap: 5,
-                borderBottomWidth: 0.5,
-                borderBottomColor: "#000",
-                paddingRight: 10,
+                borderWidth: 0.5,
+                borderColor: "#dee2f1",
+                paddingHorizontal: 10,
+                borderRadius: 10,
                 paddingVertical: 10,
-                borderBottomColor: errors.Password ? "red" : "#000",
+                borderColor: errors.Password ? "red" : "#dee2f1",
               }}
             >
-              <Feather name="lock" style={{ color: "#b8b8b8", fontSize: 20 }} />
+              <Feather name="lock" style={{ color: "#616992", fontSize: 20 }} />
               <Controller
                 control={control}
                 name="Password"
@@ -162,14 +157,14 @@ const SignUpEmail = () => {
                   <TextInput
                     type="Пароль"
                     placeholder={i18n.t("enterPassword")}
-                    placeholderTextColor="#b8b8b8"
+                    placeholderTextColor="#616992"
                     onChangeText={(value) => {
                       field.onChange(value);
                       setError("");
                     }}
                     value={field.value}
                     style={{
-                      color: "#000",
+                      color: "#1C2863",
                       fontSize: 14,
                       flex: 1,
                     }}
@@ -178,9 +173,9 @@ const SignUpEmail = () => {
               />
             </View>
             {errors.Password && (
-              <Text style={{ color: "red", fontSize: 12, marginTop: 7 }}>
+              <CustomText style={{ color: "red", fontSize: 12, marginTop: 7 }}>
                 {errors.Password.message}
-              </Text>
+              </CustomText>
             )}
           </View>
           <View>
@@ -189,14 +184,15 @@ const SignUpEmail = () => {
                 flexDirection: "row",
                 alignItems: "center",
                 columnGap: 5,
-                borderBottomWidth: 0.5,
-                borderBottomColor: "#000",
-                paddingRight: 10,
+                borderWidth: 0.5,
+                borderColor: "#dee2f1",
+                paddingHorizontal: 10,
+                borderRadius: 10,
                 paddingVertical: 10,
-                borderBottomColor: errors.PasswordConfirm ? "red" : "#000",
+                borderColor: errors.PasswordConfirm ? "red" : "#dee2f1",
               }}
             >
-              <Feather name="lock" style={{ color: "#b8b8b8", fontSize: 20 }} />
+              <Feather name="lock" style={{ color: "#616992", fontSize: 20 }} />
               <Controller
                 control={control}
                 name="PasswordConfirm"
@@ -215,14 +211,14 @@ const SignUpEmail = () => {
                   <TextInput
                     type="Пароль"
                     placeholder={i18n.t("confirmPassword")}
-                    placeholderTextColor="#b8b8b8"
+                    placeholderTextColor="#616992"
                     onChangeText={(value) => {
                       field.onChange(value);
                       setError("");
                     }}
                     value={field.value}
                     style={{
-                      color: "#000",
+                      color: "#1C2863",
                       fontSize: 14,
                       flex: 1,
                     }}
@@ -231,9 +227,9 @@ const SignUpEmail = () => {
               />
             </View>
             {errors.PasswordConfirm && (
-              <Text style={{ color: "red", fontSize: 12, marginTop: 7 }}>
+              <CustomText style={{ color: "red", fontSize: 12, marginTop: 7 }}>
                 {errors.PasswordConfirm.message}
-              </Text>
+              </CustomText>
             )}
           </View>
         </View>
@@ -242,7 +238,7 @@ const SignUpEmail = () => {
           <ActivityIndicator
             size="large"
             style={{ marginTop: 40 }}
-            color={"#02AAB0"}
+            color={"#4B5DFF"}
           />
         ) : (
           <TouchableOpacity
@@ -253,35 +249,28 @@ const SignUpEmail = () => {
               shadowOffset: { width: 0, height: 2 },
               shadowOpacity: 0.2,
               shadowRadius: 10,
-              marginTop: 30,
+              marginVertical: 30,
+              backgroundColor: "#4B5DFF",
+              paddingVertical: 15,
+              textAlign: "center",
+              borderRadius: 10,
             }}
           >
-            <LinearGradient
-              colors={["#02AAB0", "#00CDAC"]}
+            <CustomText
               style={{
-                paddingVertical: 15,
+                color: "#fff",
                 textAlign: "center",
-                borderRadius: 10,
+                fontSize: 20,
               }}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 0 }}
             >
-              <Text
-                style={{
-                  color: "#fff",
-                  textAlign: "center",
-                  fontSize: 20,
-                }}
-              >
-                Отправить
-              </Text>
-            </LinearGradient>
+              Войти
+            </CustomText>
           </TouchableOpacity>
         )}
         {error == 400 && (
-          <Text style={{ color: "red", fontSize: 12, marginTop: 7 }}>
+          <CustomText style={{ color: "red", fontSize: 12, marginTop: 7 }}>
             {i18n.t("invalidEmail")}
-          </Text>
+          </CustomText>
         )}
       </View>
     </SafeAreaWrapper>

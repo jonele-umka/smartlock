@@ -25,16 +25,20 @@ export const loginUser = createAsyncThunk(
       }
 
       const data = await response.json();
+
       const token = data?.token;
+      const userProfile = data?.user?.Profile;
+      const owner = data?.user?.Role;
       const login = userData?.Email;
       const password = userData?.Password;
       await AsyncStorage.setItem("token", token);
       await AsyncStorage.setItem("login", login);
       await AsyncStorage.setItem("password", password);
 
-      return token;
+      return { token, userProfile, owner };
     } catch (error) {
-      return rejectWithValue(error);
+      console.log(error);
+      return rejectWithValue(error.toString());
     }
   }
 );
@@ -188,11 +192,20 @@ export const logoutUser = createAsyncThunk(
           Authorization: `Bearer ${token}`,
         },
       });
-
+console.log(response)
       if (!response.ok) {
         const responseDataError = await response.json();
         const errorMessage =
           responseDataError.error.Message || "Произошла ошибка";
+        Toast.show({
+          type: "error",
+          position: "top",
+          text1: "Ошибка",
+          text2: "Не удалось выйти",
+          visibilityTime: 3000,
+          autoHide: true,
+          topOffset: 30,
+        });
         return rejectWithValue(errorMessage);
       }
 
@@ -202,10 +215,20 @@ export const logoutUser = createAsyncThunk(
 
       return true;
     } catch (error) {
+      Toast.show({
+        type: "error",
+        position: "top",
+        text1: "Ошибка",
+        text2: error.message,
+        visibilityTime: 3000,
+        autoHide: true,
+        topOffset: 30,
+      });
       return rejectWithValue(error.message);
     }
   }
 );
+
 // Слайс
 const authSlice = createSlice({
   name: "auth",
@@ -213,11 +236,12 @@ const authSlice = createSlice({
     loading: false,
     error: null,
     token: null,
+    avatar: null,
     userName: "",
+    userProfile: null,
+    owner: null,
   },
-  reducers: {
-    // Вы можете добавлять дополнительные синхронные действия здесь
-  },
+  reducers: {},
   extraReducers: (builder) => {
     builder
       .addCase(loginUser.pending, (state) => {
@@ -225,7 +249,9 @@ const authSlice = createSlice({
         state.error = null;
       })
       .addCase(loginUser.fulfilled, (state, action) => {
-        state.token = action.payload;
+        state.token = action.payload.token;
+        state.userProfile = action.payload.userProfile;
+        state.owner = action.payload.owner;
         state.loading = false;
       })
       .addCase(loginUser.rejected, (state, action) => {
@@ -268,6 +294,7 @@ const authSlice = createSlice({
         state.loading = false;
         state.token = null;
         state.userName = "";
+        state.owner = null;
       })
       .addCase(logoutUser.rejected, (state, action) => {
         state.loading = false;
