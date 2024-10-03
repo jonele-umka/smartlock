@@ -17,7 +17,7 @@ import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigation, useRoute } from "@react-navigation/core";
-
+import * as Location from "expo-location";
 import PickImage from "../../../components/PickImage/PickImage";
 import SafeAreaWrapper from "../../../components/SafeAreaWrapper/SafeAreaWrapper";
 import ActionLandlord from "../../../components/ActionSheet/ActionLandlord/ActionLandlord";
@@ -25,6 +25,7 @@ import CustomText from "../../../components/CustomText/CustomText";
 import { fetchMyAccommodations } from "../../../Store/accommodationSlice/accommodationSlice";
 import Toast from "react-native-toast-message";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import MapLandlord from "../../../components/Map/MapLandlord";
 
 const categoryIcon = {
   1: require("../../../assets/home.png"),
@@ -35,36 +36,13 @@ const categoryIcon = {
 const Landlord = () => {
   const [objectDetails, setObjectDetails] = useState(null);
 
-  const defaultFormValues = {
-    Title: "",
-    CategoryID: null,
-    LocationLabel: "",
-    Latitude: "",
-    Longitude: "",
-    PeopleQuantity: null,
-    RoomsQuantity: null,
-    Description: "",
-    Price: null,
-    DiscountPrice: "",
-    PriceDescription: "",
-    CheckInID: null,
-    CheckOutID: null,
-    Bedrooms: null,
-    Beds: null,
-    Bathrooms: null,
-    City: "",
-    Country: "",
-    Facilities: [1, 2, 3],
-    Rules: [1, 2, 3],
-  };
   const {
     control,
     handleSubmit,
     reset,
+    setValue,
     formState: { errors },
-  } = useForm({
-    defaultValues: defaultFormValues,
-  });
+  } = useForm();
 
   const dispatch = useDispatch();
   const token = useSelector((state) => state.auth.token);
@@ -93,7 +71,7 @@ const Landlord = () => {
   const [currentType, setCurrentType] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [loading, setLoading] = useState(false);
-
+  const [coordinate, setCoordinate] = useState(null);
   // action
   const openActionSheet = (type) => {
     setCurrentType(type);
@@ -124,7 +102,7 @@ const Landlord = () => {
   // fetchObject
   const fetchObjectDetails = async () => {
     if (!route?.params?.id) return;
-    setLoading(true); // Устанавливаем состояние загрузки
+    setLoading(true);
     try {
       const response = await fetch(
         `${API_URL}/accommodation/get-one/${route?.params?.id}`,
@@ -157,6 +135,41 @@ const Landlord = () => {
       fetchObjectDetails();
     }
   }, [route.params?.id]);
+
+  useEffect(() => {
+    if (objectDetails) {
+      console.log(objectDetails.Price);
+      setValue("Title", objectDetails?.Title);
+      setValue("CategoryID", objectDetails?.CategoryID);
+      setValue("LocationLabel", objectDetails?.LocationLabel);
+      if (objectDetails.Latitude && objectDetails.Longitude) {
+        const newCoordinate = {
+          latitude: parseFloat(objectDetails.Latitude),
+          longitude: parseFloat(objectDetails.Longitude),
+        };
+        setCoordinate(newCoordinate);
+        setValue("Latitude", objectDetails.Latitude);
+        setValue("Longitude", objectDetails.Longitude);
+      }
+      setValue("Description", objectDetails?.Description);
+      setValue("PeopleQuantity", objectDetails?.PeopleQuantity);
+      setValue("RoomsQuantity", objectDetails?.RoomsQuantity);
+      setValue("City", objectDetails?.City);
+      setValue("Country", objectDetails?.Country);
+      setValue("Price", objectDetails?.Price);
+      setValue("DiscountPrice", objectDetails?.DiscountPrice);
+      setValue("Bedrooms", objectDetails?.Bedrooms);
+      setValue("Beds", objectDetails?.Beds);
+      setValue("Bathrooms", objectDetails?.Bathrooms);
+      setSelectedAmenities(
+        objectDetails?.Facilities.map((item) => item.ID) || []
+      );
+      setSelectedRules(objectDetails?.Rules.map((item) => item.ID) || []);
+      setSelectedCategory(objectDetails?.CategoryID);
+      setSelectedCheckIn(objectDetails?.CheckIn.ID);
+      setSelectedCheckOut(objectDetails?.CheckOut.ID);
+    }
+  }, [objectDetails]);
 
   // fetchAction
   useEffect(() => {
@@ -365,7 +378,36 @@ const Landlord = () => {
       );
     }
   };
+  // map
 
+  const getCurrentLocation = async () => {
+    try {
+      const { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== "granted") {
+        Alert.alert("Ошибка", "Разрешите доступ к геолокации");
+        return;
+      }
+
+      const location = await Location.getCurrentPositionAsync({});
+      const { latitude, longitude } = location.coords;
+      setCoordinate({ latitude, longitude });
+      setValue("Latitude", latitude.toString());
+      setValue("Longitude", longitude.toString());
+    } catch (error) {
+      console.error("Ошибка получения местоположения:", error);
+    }
+  };
+
+  useEffect(() => {
+    getCurrentLocation();
+  }, []);
+
+  const handleMapRegionChange = (newCoordinate) => {
+    setCoordinate(newCoordinate);
+    setValue("Latitude", newCoordinate.latitude.toString());
+    setValue("Longitude", newCoordinate.longitude.toString());
+  };
+  const [selectCoordinate, setSelectCoordinate] = useState(null);
   // Функция для отправки данных
   const onSubmit = async (data) => {
     const requestBody = {
@@ -375,8 +417,8 @@ const Landlord = () => {
       Longitude: data.Longitude,
       Latitude: data.Latitude,
       Description: data.Description,
-      PeopleQuantity: parseInt(quantityPerson),
-      RoomsQuantity: parseInt(quantityRooms),
+      PeopleQuantity: parseInt(data?.PeopleQuantity),
+      RoomsQuantity: parseInt(data?.RoomsQuantity),
       Price: parseInt(data.Price),
       DiscountPrice: parseInt(data.DiscountPrice),
       PriceDescription: data.PriceDescription,
@@ -455,7 +497,9 @@ const Landlord = () => {
       }}
     >
       <SafeAreaWrapper>
-        <View style={{ marginBottom: 40 }}>
+        <View
+          style={route.params?.id ? { marginBottom: 20 } : { marginBottom: 40 }}
+        >
           <View style={{ marginBottom: 20 }}>
             <CustomText style={{ marginBottom: 10, fontSize: 18 }}>
               Загрузите фото
@@ -755,6 +799,22 @@ const Landlord = () => {
               )}
             </View>
           </View>
+          {coordinate ? (
+            <MapLandlord
+              coordinate={coordinate}
+              handleMapRegionChange={handleMapRegionChange}
+            />
+          ) : (
+            <View
+              style={{
+                flex: 1,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <CustomText>Загрузка местоположения...</CustomText>
+            </View>
+          )}
           <View style={{ marginBottom: 20 }}>
             <CustomText style={{ marginBottom: 10, fontSize: 18 }}>
               Страна
@@ -850,7 +910,7 @@ const Landlord = () => {
                     }}
                     onBlur={onBlur}
                     onChangeText={onChange}
-                    value={value}
+                    value={value ? value.toString() : ""}
                     underlineColorAndroid="transparent"
                     placeholder="10 000 сом"
                     placeholderTextColor="#616992"
@@ -908,6 +968,7 @@ const Landlord = () => {
             <View>
               <Controller
                 control={control}
+                rules={{ required: "Это поле обязательно для заполнения" }}
                 name="PriceDescription"
                 render={({ field: { onChange, onBlur, value } }) => (
                   <TextInput
@@ -967,7 +1028,7 @@ const Landlord = () => {
                       }}
                       onBlur={onBlur}
                       onChangeText={onChange}
-                      value={value}
+                      value={value ? value.toString() : ""}
                       underlineColorAndroid="transparent"
                       placeholder="Гости"
                       placeholderTextColor="#616992"
@@ -1004,7 +1065,7 @@ const Landlord = () => {
                       }}
                       onBlur={onBlur}
                       onChangeText={onChange}
-                      value={value}
+                      value={value ? value.toString() : ""}
                       underlineColorAndroid="transparent"
                       placeholder="Комнаты"
                       placeholderTextColor="#616992"
@@ -1031,7 +1092,7 @@ const Landlord = () => {
             <View style={{ flex: 1 }}>
               <View>
                 <CustomText style={{ marginBottom: 10, fontSize: 18 }}>
-                  Количество спальн
+                  Спальные места
                 </CustomText>
                 <Controller
                   control={control}
@@ -1050,7 +1111,7 @@ const Landlord = () => {
                       }}
                       onBlur={onBlur}
                       onChangeText={onChange}
-                      value={value}
+                      value={value ? value.toString() : ""}
                       underlineColorAndroid="transparent"
                       placeholder="Спальня"
                       placeholderTextColor="#616992"
@@ -1087,7 +1148,7 @@ const Landlord = () => {
                       }}
                       onBlur={onBlur}
                       onChangeText={onChange}
-                      value={value}
+                      value={value ? value.toString() : ""}
                       underlineColorAndroid="transparent"
                       placeholder="Комнаты"
                       placeholderTextColor="#616992"
@@ -1125,7 +1186,7 @@ const Landlord = () => {
                     }}
                     onBlur={onBlur}
                     onChangeText={onChange}
-                    value={value}
+                    value={value ? value.toString() : ""}
                     underlineColorAndroid="transparent"
                     placeholder="Кровати"
                     placeholderTextColor="#616992"
@@ -1299,6 +1360,26 @@ const Landlord = () => {
             </View>
           </View>
         </View>
+        {route.params?.id && (
+          <TouchableOpacity
+            onPress={() => {
+              navigation.navigate("Замок", { id: route.params?.id });
+            }}
+            style={{ marginBottom: 20 }}
+          >
+            <CustomText
+              style={{
+                color: "#005fb8",
+                fontSize: 16,
+                marginTop: 10,
+                fontWeight: 500,
+                textAlign: "center",
+              }}
+            >
+              Замки
+            </CustomText>
+          </TouchableOpacity>
+        )}
         <View>
           {isLoading ? (
             <ActivityIndicator size="large" color={"#4B5DFF"} />

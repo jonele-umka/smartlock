@@ -37,7 +37,7 @@ import EditOwner from "../screens/Owner/EditOwner/EditOwner";
 import Applications from "../screens/Owner/Applications/Applications";
 import ChangeEmail from "../screens/EditProfile/ChangeEmail/ChangeEmail";
 import ConfirmCode from "../screens/EditProfile/ChangeEmail/ConfirmCode";
-import BecomeOwner from "../screens/Owner/MyObjects/BecomeOwner/BecomeOwner";
+import BecomeOwner from "../screens/Owner/BecomeOwner/BecomeOwner";
 import MoreDetailsApplications from "../screens/Owner/MoreDetailsApplications/MoreDetailsApplications";
 import EditObject from "../screens/Objects/ObjectDetailsScreen/EditObject";
 import LockDetails from "../screens/LockScreen/LockDetails/LockDetails";
@@ -101,7 +101,7 @@ const Navigator = () => {
         <Stack.Screen name="Детали объекта" component={ObjectDetailsScreen} />
         <Stack.Screen name="Все отзывы" component={AllReviewsScreen} />
         {/* <Stack.Screen name="Все вопросы" component={AllQuestionsScreen} /> */}
-        <Stack.Screen name="Сдать жильё" component={Landlord} />
+        <Stack.Screen name="Мой объект" component={Landlord} />
         <Stack.Screen
           name="Подтверждение брони"
           component={ConfirmationScreen}

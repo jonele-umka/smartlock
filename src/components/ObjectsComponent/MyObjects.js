@@ -1,7 +1,7 @@
-import { View, Text, TouchableOpacity, ImageBackground } from "react-native";
+import { View, TouchableOpacity, ImageBackground } from "react-native";
 import React from "react";
 import { useNavigation } from "@react-navigation/native";
-import { BlurView } from "expo-blur";
+
 import Fontisto from "react-native-vector-icons/Fontisto";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import CustomText from "../CustomText/CustomText";
@@ -239,7 +239,7 @@ const MyObjects = ({ myAccommodation }) => {
             <TouchableOpacity
               style={{ marginBottom: 5 }}
               onPress={() =>
-                navigation.navigate("Сдать жильё", {
+                navigation.navigate("Мой объект", {
                   id: myAccommodation.ID,
                 })
               }

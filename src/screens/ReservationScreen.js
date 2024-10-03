@@ -1,4 +1,10 @@
-import { Text, ScrollView, View, ActivityIndicator, RefreshControl } from "react-native";
+import {
+  Text,
+  ScrollView,
+  View,
+  ActivityIndicator,
+  RefreshControl,
+} from "react-native";
 import React, { useEffect, useState } from "react";
 import { fetchReservation } from "../Store/reservationSlice/reservationSlice";
 import { useDispatch, useSelector } from "react-redux";
@@ -7,7 +13,7 @@ import CustomText from "../components/CustomText/CustomText";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 
 import SimpleLineIcons from "react-native-vector-icons/SimpleLineIcons";
- 
+
 const ReservationScreen = () => {
   const token = useSelector((state) => state.auth.token);
   const reservation = useSelector((state) => state.reservation.reservation);
@@ -76,9 +82,10 @@ const ReservationScreen = () => {
                     paddingVertical: 20,
                     borderRadius: 10,
                     borderWidth: 1,
-                    borderColor: "rgba(97, 105, 146, 0.2)",
+                    borderColor: "rgba(75, 93, 255, 0.2)",
                   }}
                 >
+                  {console.log(reservation)}
                   <CustomText
                     style={{
                       textAlign: "center",
@@ -206,7 +213,13 @@ const ReservationScreen = () => {
                     </View>
                   </View>
                   {reservation.KeyboardPwd && (
-                    <View style={{ flexDirection: "column", marginBottom: 20 }}>
+                    <View
+                      style={{
+                        flexDirection: "column",
+                        marginBottom: 20,
+                        alignItems: "center",
+                      }}
+                    >
                       <CustomText
                         style={{
                           color: "#616992",

@@ -1,15 +1,13 @@
 import { ScrollView } from "react-native";
 import React, { useEffect, useState } from "react";
-
-import { useNavigation, useRoute } from "@react-navigation/native";
+import { useRoute } from "@react-navigation/native";
 import SafeAreaWrapper from "../../components/SafeAreaWrapper/SafeAreaWrapper";
 
 import LockList from "../../Locks/LockList/LockList";
 import { useSelector } from "react-redux";
-import { Text } from "react-native";
+import CustomText from "../../components/CustomText/CustomText";
 
 const LockScreen = () => {
-  const navigation = useNavigation();
   const route = useRoute();
   const [loading, setLoading] = useState(false);
   const API_URL = process.env.API_URL;
@@ -20,7 +18,7 @@ const LockScreen = () => {
     setLoading(true);
     try {
       const response = await fetch(
-        `${API_URL}/lock/get-by-accommodation/117`,
+        `${API_URL}/lock/get-by-accommodation/${route.params?.id}`,
         {
           method: "GET",
           headers: {
@@ -41,13 +39,13 @@ const LockScreen = () => {
       }
 
       const result = await response.json();
-console.log(result[0].Passcodes[1].Booking.Name)
+
       setData(result);
       setLoading(false);
     } catch (error) {
       setLoading(false);
 
-      console.error("Error updating user profile", error);
+      console.error("Error", error);
     }
   };
 
@@ -65,9 +63,9 @@ console.log(result[0].Passcodes[1].Booking.Name)
           flex: 1,
         }}
       >
-        <Text style={{ color: "#000", fontSize: 30, marginBottom: 25 }}>
+        <CustomText style={{ fontSize: 30, marginBottom: 25 }}>
           Замки
-        </Text>
+        </CustomText>
         <LockList data={data} loading={loading} />
       </SafeAreaWrapper>
     </ScrollView>

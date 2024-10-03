@@ -12,7 +12,7 @@ import { useNavigation } from "@react-navigation/core";
 import { useSelector } from "react-redux";
 import { Controller, useForm } from "react-hook-form";
 
-import SafeAreaWrapper from "../../../../components/SafeAreaWrapper/SafeAreaWrapper";
+import SafeAreaWrapper from "../../../components/SafeAreaWrapper/SafeAreaWrapper";
 
 const BecomeOwner = () => {
   const API_URL = process.env.API_URL;

@@ -356,7 +356,7 @@ const EditObject = () => {
       <SafeAreaWrapper>
         <View style={{ marginBottom: 40 }}>
           <View style={{ marginBottom: 20 }}>
-            <CustomText style={{ marginBottom: 10, fontSize: 18 }}>
+            <CustomText style={{ marginBottom: 10, fontSize: 16 }}>
               Загрузите фото
             </CustomText>
             <PickImage
@@ -434,7 +434,7 @@ const EditObject = () => {
           )}
 
           <View style={{ marginBottom: 20 }}>
-            <CustomText style={{ marginBottom: 10, fontSize: 18 }}>
+            <CustomText style={{ marginBottom: 10, fontSize: 16 }}>
               Название
             </CustomText>
             <View>
@@ -470,7 +470,7 @@ const EditObject = () => {
             )}
           </View>
           <View style={{ marginBottom: 20 }}>
-            <CustomText style={{ marginBottom: 10, fontSize: 18 }}>
+            <CustomText style={{ marginBottom: 10, fontSize: 16 }}>
               Описание
             </CustomText>
             <View>
@@ -509,7 +509,7 @@ const EditObject = () => {
             )}
           </View>
           <View style={{ marginBottom: 20 }}>
-            <CustomText style={{ marginBottom: 10, fontSize: 18 }}>
+            <CustomText style={{ marginBottom: 10, fontSize: 16 }}>
               Адрес
             </CustomText>
             <View>
@@ -552,7 +552,7 @@ const EditObject = () => {
             }}
           >
             <View style={{ marginBottom: 20, flex: 1 }}>
-              <CustomText style={{ marginBottom: 10, fontSize: 18 }}>
+              <CustomText style={{ marginBottom: 10, fontSize: 16 }}>
                 Местоположение (широта)
               </CustomText>
               <View>
@@ -590,7 +590,7 @@ const EditObject = () => {
             </View>
 
             <View style={{ marginBottom: 20, flex: 1 }}>
-              <CustomText style={{ marginBottom: 10, fontSize: 18 }}>
+              <CustomText style={{ marginBottom: 10, fontSize: 16 }}>
                 Местоположение (долгота)
               </CustomText>
               <View>
@@ -628,7 +628,7 @@ const EditObject = () => {
             </View>
           </View>
           <View style={{ marginBottom: 20 }}>
-            <CustomText style={{ marginBottom: 10, fontSize: 18 }}>
+            <CustomText style={{ marginBottom: 10, fontSize: 16 }}>
               Страна
             </CustomText>
             <View>
@@ -665,7 +665,7 @@ const EditObject = () => {
           </View>
 
           <View style={{ marginBottom: 20 }}>
-            <CustomText style={{ marginBottom: 10, fontSize: 18 }}>
+            <CustomText style={{ marginBottom: 10, fontSize: 16 }}>
               Бишкек
             </CustomText>
             <View>
@@ -701,7 +701,7 @@ const EditObject = () => {
             )}
           </View>
           <View style={{ marginBottom: 20 }}>
-            <CustomText style={{ marginBottom: 10, fontSize: 18 }}>
+            <CustomText style={{ marginBottom: 10, fontSize: 16 }}>
               Цена
             </CustomText>
             <View>
@@ -738,7 +738,7 @@ const EditObject = () => {
             )}
           </View>
           <View style={{ marginBottom: 20 }}>
-            <CustomText style={{ marginBottom: 10, fontSize: 18 }}>
+            <CustomText style={{ marginBottom: 10, fontSize: 16 }}>
               Цена со скидкой
             </CustomText>
             <View>
@@ -774,7 +774,7 @@ const EditObject = () => {
             )}
           </View>
           <View style={{ marginBottom: 20 }}>
-            <CustomText style={{ marginBottom: 10, fontSize: 18 }}>
+            <CustomText style={{ marginBottom: 10, fontSize: 16 }}>
               Описание цены
             </CustomText>
             <View>
@@ -819,7 +819,7 @@ const EditObject = () => {
           >
             <View style={{ flex: 1 }}>
               <View>
-                <CustomText style={{ marginBottom: 10, fontSize: 18 }}>
+                <CustomText style={{ marginBottom: 10, fontSize: 16 }}>
                   Количество гостей
                 </CustomText>
                 <Controller
@@ -856,7 +856,7 @@ const EditObject = () => {
             </View>
             <View style={{ flex: 1 }}>
               <View>
-                <CustomText style={{ marginBottom: 10, fontSize: 18 }}>
+                <CustomText style={{ marginBottom: 10, fontSize: 16 }}>
                   Количество комнат
                 </CustomText>
                 <Controller
@@ -902,8 +902,8 @@ const EditObject = () => {
           >
             <View style={{ flex: 1 }}>
               <View>
-                <CustomText style={{ marginBottom: 10, fontSize: 18 }}>
-                  Количество спальн
+                <CustomText style={{ marginBottom: 10, fontSize: 16 }}>
+                  Количество спальных мест
                 </CustomText>
                 <Controller
                   control={control}
@@ -939,7 +939,7 @@ const EditObject = () => {
             </View>
             <View style={{ flex: 1 }}>
               <View>
-                <CustomText style={{ marginBottom: 10, fontSize: 18 }}>
+                <CustomText style={{ marginBottom: 10, fontSize: 16 }}>
                   Количество ванных
                 </CustomText>
                 <Controller
@@ -977,7 +977,7 @@ const EditObject = () => {
           </View>
           <View style={{ flex: 1, marginBottom: 20 }}>
             <View>
-              <CustomText style={{ marginBottom: 10, fontSize: 18 }}>
+              <CustomText style={{ marginBottom: 10, fontSize: 16 }}>
                 Количество кроватей
               </CustomText>
               <Controller
@@ -1013,7 +1013,7 @@ const EditObject = () => {
             )}
           </View>
           <View style={{ marginBottom: 20 }}>
-            <CustomText style={{ marginBottom: 10, fontSize: 18 }}>
+            <CustomText style={{ marginBottom: 10, fontSize: 16 }}>
               Категории
             </CustomText>
             <TouchableOpacity
@@ -1042,7 +1042,7 @@ const EditObject = () => {
             </TouchableOpacity>
           </View>
           <View style={{ marginBottom: 20 }}>
-            <CustomText style={{ marginBottom: 10, fontSize: 18 }}>
+            <CustomText style={{ marginBottom: 10, fontSize: 16 }}>
               Удобства
             </CustomText>
             <TouchableOpacity
@@ -1071,7 +1071,7 @@ const EditObject = () => {
             </TouchableOpacity>
           </View>
           <View style={{ marginBottom: 20 }}>
-            <CustomText style={{ marginBottom: 10, fontSize: 18 }}>
+            <CustomText style={{ marginBottom: 10, fontSize: 16 }}>
               Порядок проживания
             </CustomText>
             <TouchableOpacity
@@ -1100,7 +1100,7 @@ const EditObject = () => {
             </TouchableOpacity>
           </View>
           <View style={{ marginBottom: 20 }}>
-            <CustomText style={{ marginBottom: 10, fontSize: 18 }}>
+            <CustomText style={{ marginBottom: 10, fontSize: 16 }}>
               Гости
             </CustomText>
             <TouchableOpacity
@@ -1136,7 +1136,7 @@ const EditObject = () => {
             }}
           >
             <View style={{ flex: 1 }}>
-              <CustomText style={{ marginBottom: 10, fontSize: 18 }}>
+              <CustomText style={{ marginBottom: 10, fontSize: 16 }}>
                 Время въезда
               </CustomText>
               <TouchableOpacity
@@ -1165,7 +1165,7 @@ const EditObject = () => {
               </TouchableOpacity>
             </View>
             <View style={{ flex: 1 }}>
-              <CustomText style={{ marginBottom: 10, fontSize: 18 }}>
+              <CustomText style={{ marginBottom: 10, fontSize: 16 }}>
                 Время выезда
               </CustomText>
               <TouchableOpacity
@@ -1364,7 +1364,7 @@ const EditObject = () => {
         >
           <View style={{ flex: 1 }}>
             <View>
-              <CustomText style={{ marginBottom: 10, fontSize: 18 }}>
+              <CustomText style={{ marginBottom: 10, fontSize: 16 }}>
                 Количество гостей
               </CustomText>
               <Controller
@@ -1401,7 +1401,7 @@ const EditObject = () => {
           </View>
           <View style={{ flex: 1 }}>
             <View>
-              <CustomText style={{ marginBottom: 10, fontSize: 18 }}>
+              <CustomText style={{ marginBottom: 10, fontSize: 16 }}>
                 Количество комнат
               </CustomText>
               <Controller
@@ -1447,7 +1447,7 @@ const EditObject = () => {
         >
           <View style={{ flex: 1 }}>
             <View>
-              <CustomText style={{ marginBottom: 10, fontSize: 18 }}>
+              <CustomText style={{ marginBottom: 10, fontSize: 16 }}>
                 Количество спальн
               </CustomText>
               <Controller
@@ -1484,7 +1484,7 @@ const EditObject = () => {
           </View>
           <View style={{ flex: 1 }}>
             <View>
-              <CustomText style={{ marginBottom: 10, fontSize: 18 }}>
+              <CustomText style={{ marginBottom: 10, fontSize: 16 }}>
                 Количество ванных
               </CustomText>
               <Controller
@@ -1522,7 +1522,7 @@ const EditObject = () => {
         </View>
         <View style={{ flex: 1, marginBottom: 20 }}>
           <View>
-            <CustomText style={{ marginBottom: 10, fontSize: 18 }}>
+            <CustomText style={{ marginBottom: 10, fontSize: 16 }}>
               Количество кроватей
             </CustomText>
             <Controller
@@ -1749,7 +1749,7 @@ const EditObject = () => {
         </View>
 
         <View style={{ marginBottom: 20 }}>
-          <CustomText style={{ marginBottom: 10, fontSize: 18 }}>
+          <CustomText style={{ marginBottom: 10, fontSize: 16 }}>
             Категории
           </CustomText>
           <TouchableOpacity
@@ -1778,7 +1778,7 @@ const EditObject = () => {
           </TouchableOpacity>
         </View>
         <View style={{ marginBottom: 20 }}>
-          <CustomText style={{ marginBottom: 10, fontSize: 18 }}>
+          <CustomText style={{ marginBottom: 10, fontSize: 16 }}>
             Удобства
           </CustomText>
           <TouchableOpacity
@@ -1805,7 +1805,7 @@ const EditObject = () => {
           </TouchableOpacity>
         </View>
         <View style={{ marginBottom: 20 }}>
-          <CustomText style={{ marginBottom: 10, fontSize: 18 }}>
+          <CustomText style={{ marginBottom: 10, fontSize: 16 }}>
             Порядок проживания
           </CustomText>
           <TouchableOpacity
@@ -1832,7 +1832,7 @@ const EditObject = () => {
           </TouchableOpacity>
         </View>
         <View style={{ marginBottom: 20 }}>
-          <CustomText style={{ marginBottom: 10, fontSize: 18 }}>
+          <CustomText style={{ marginBottom: 10, fontSize: 16 }}>
             Гости
           </CustomText>
           <TouchableOpacity
@@ -1869,7 +1869,7 @@ const EditObject = () => {
           }}
         >
           <View style={{ flex: 1 }}>
-            <CustomText style={{ marginBottom: 10, fontSize: 18 }}>
+            <CustomText style={{ marginBottom: 10, fontSize: 16 }}>
               Время въезда
             </CustomText>
             <TouchableOpacity
@@ -1898,7 +1898,7 @@ const EditObject = () => {
             </TouchableOpacity>
           </View>
           <View style={{ flex: 1 }}>
-            <CustomText style={{ marginBottom: 10, fontSize: 18 }}>
+            <CustomText style={{ marginBottom: 10, fontSize: 16 }}>
               Время выезда
             </CustomText>
             <TouchableOpacity

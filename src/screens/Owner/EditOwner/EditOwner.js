@@ -1,40 +1,81 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
   TextInput,
-  Platform,
   ScrollView,
   TouchableOpacity,
   ActivityIndicator,
 } from "react-native";
 import { useForm, Controller } from "react-hook-form";
-import Ionicons from "react-native-vector-icons/Ionicons";
-import CalendarDatePassport from "../../../components/Calendars/CalendarDatePassport/CalendarDatePassport";
+import RNPickerSelect from "react-native-picker-select";
 import { useSelector } from "react-redux";
-
 import { useNavigation } from "@react-navigation/native";
 import CustomText from "../../../components/CustomText/CustomText";
+import Toast from "react-native-toast-message";
 
 const EditOwner = () => {
-  const { control, handleSubmit, setValue, watch } = useForm();
-  const [showCalendar, setShowCalendar] = useState(false);
-  const [birthDate, setBirthDate] = useState(null);
-  const [currentField, setCurrentField] = useState(null);
-  const [DateOfIssue, setDateOfIssue] = useState(null);
-  const [DateOfExpiry, setDateOfExpiry] = useState(null);
+  const { control, handleSubmit, setValue } = useForm();
   const [isLoading, setIsLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [data, setData] = useState(null);
   const API_URL = process.env.API_URL;
   const token = useSelector((state) => state.auth.token);
   const navigation = useNavigation();
 
-  const onSubmit = async (data) => {
-    const requestData = {
-      ...data,
-      DateOfIssue: watch("DateOfIssue"),
-      DateOfExpiry: watch("DateOfExpiry"),
-    };
+  const fetchData = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch(`${API_URL}/api/auth/profile`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
+      if (!response.ok) {
+        setLoading(false);
+
+        const responseDataError = await response.json();
+        const errorMessage =
+          responseDataError.error.Message || "Произошла ошибка";
+        console.error("Error updating user profile:", errorMessage);
+        return;
+      }
+
+      const result = await response.json();
+      setData(result?.Profile?.Passport);
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+      console.error("Error", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    if (data) {
+      setValue("Name", data?.Name);
+      setValue("Surname", data?.Surname);
+      setValue("Patronymic", data?.Patronymic);
+      setValue("Nationality", data?.Nationality);
+      setValue("DateOfBirth", data?.DateOfBirth);
+      setValue("DocumentNumber", data?.DocumentNumber);
+      setValue("DateOfExpiry", data?.DateOfExpiry);
+      setValue("PlaceOfBirth", data?.PlaceOfBirth);
+      setValue("Authority", data?.Authority);
+      setValue("DateOfIssue", data?.DateOfIssue);
+      setValue("PIN", data?.PIN);
+      setValue("IDPassportType", data?.IDPassportType);
+    }
+  }, [data]);
+
+  const onSubmit = async (data) => {
+    console.log(data);
     setIsLoading(true);
     try {
       const response = await fetch(`${API_URL}/api/auth/be_owner`, {
@@ -43,7 +84,7 @@ const EditOwner = () => {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify(requestData),
+        body: JSON.stringify(data),
       });
 
       const result = await response.json();
@@ -51,10 +92,18 @@ const EditOwner = () => {
       if (response.ok) {
         setIsLoading(false);
         navigation.navigate("Главная страница");
-        console.log("Успешно отправлено:", result);
       } else {
         setIsLoading(false);
         console.error("Ошибка сервера:", result);
+        Toast.show({
+          type: "error",
+          position: "top",
+          text1: "Ошибка",
+          text2: result.error.Error,
+          visibilityTime: 3000,
+          autoHide: true,
+          topOffset: 30,
+        });
       }
     } catch (error) {
       setIsLoading(false);
@@ -62,26 +111,39 @@ const EditOwner = () => {
     }
   };
 
-  const handleCalendarDateChange = (date) => {
-    if (date) {
-      const formattedDate = date.toISOString().split("T")[0];
-      setValue(currentField, formattedDate);
-      if (currentField === "DateOfBirth") {
-        setBirthDate(date);
-      } else if (currentField === "DateOfIssue") {
-        setDateOfIssue(date);
-      } else if (currentField === "DateOfExpiry") {
-        setDateOfExpiry(date);
-      }
-      setShowCalendar(false);
+  const formatDate = (text) => {
+    const cleaned = text.replace(/[^0-9]/g, ""); // Убираем все символы, кроме цифр
+
+    let formattedText = cleaned;
+
+    if (cleaned.length > 4 && cleaned.length <= 6) {
+      // Если длина больше 4, но меньше 6 — добавляем дефис между годом и месяцем
+      formattedText = `${cleaned.slice(0, 4)}-${cleaned.slice(4)}`;
+    } else if (cleaned.length > 6) {
+      // Если длина больше 6 — добавляем дефисы между годом, месяцем и днём
+      formattedText = `${cleaned.slice(0, 4)}-${cleaned.slice(
+        4,
+        6
+      )}-${cleaned.slice(6, 8)}`;
     }
+
+    return formattedText;
   };
 
-  const handleShowCalendar = (field) => {
-    setCurrentField(field);
-    setShowCalendar(true);
-  };
-
+  if (loading) {
+    return (
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: "#fff",
+        }}
+      >
+        <ActivityIndicator size="large" color="#4B5DFF" />
+      </View>
+    );
+  }
   return (
     <ScrollView
       style={{ flex: 1, backgroundColor: "#fff" }}
@@ -89,7 +151,7 @@ const EditOwner = () => {
     >
       <View style={{ flexDirection: "column", rowGap: 20, marginBottom: 40 }}>
         <View style={{ flex: 1 }}>
-          <CustomText style={{ marginBottom: 10, fontSize: 16 }}>
+          <CustomText style={{ marginBottom: 10, fontSize: 18 }}>
             Фамилия
           </CustomText>
           <Controller
@@ -114,12 +176,11 @@ const EditOwner = () => {
               />
             )}
             name="Surname"
-            rules={{ required: true }}
-            defaultValue=""
+            rules={{ required: "Заполните это поле" }}
           />
         </View>
         <View style={{ flex: 1 }}>
-          <CustomText style={{ marginBottom: 10, fontSize: 16 }}>
+          <CustomText style={{ marginBottom: 10, fontSize: 18 }}>
             Имя
           </CustomText>
           <Controller
@@ -144,13 +205,12 @@ const EditOwner = () => {
               />
             )}
             name="Name"
-            rules={{ required: true }}
-            defaultValue=""
+            rules={{ required: "Заполните это поле" }}
           />
         </View>
 
         <View style={{ flex: 1 }}>
-          <CustomText style={{ marginBottom: 10, fontSize: 16 }}>
+          <CustomText style={{ marginBottom: 10, fontSize: 18 }}>
             Отчество
           </CustomText>
           <Controller
@@ -175,12 +235,11 @@ const EditOwner = () => {
               />
             )}
             name="Patronymic"
-            rules={{ required: true }}
-            defaultValue=""
+            rules={{ required: "Заполните это поле" }}
           />
         </View>
         <View style={{ flex: 1 }}>
-          <CustomText style={{ marginBottom: 10, fontSize: 16 }}>
+          <CustomText style={{ marginBottom: 10, fontSize: 18 }}>
             Национальность
           </CustomText>
           <Controller
@@ -205,48 +264,43 @@ const EditOwner = () => {
               />
             )}
             name="Nationality"
-            rules={{ required: true }}
-            defaultValue=""
+            rules={{ required: "Заполните это поле" }}
           />
         </View>
 
         <View style={{ flex: 1 }}>
-          <CustomText style={{ marginBottom: 10, fontSize: 16 }}>
+          <CustomText style={{ marginBottom: 10, fontSize: 18 }}>
             Дата рождения
           </CustomText>
-          <TouchableOpacity onPress={() => handleShowCalendar("DateOfBirth")}>
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                columnGap: 10,
-                borderColor: "#dee2f1",
-                fontSize: 14,
-                paddingVertical: 10,
-                borderWidth: 1,
-                paddingHorizontal: 10,
-                borderRadius: 10,
-              }}
-            >
-              <Ionicons
-                name="calendar-outline"
-                style={{ color: "#616992", fontSize: 25 }}
+          <Controller
+            control={control}
+            render={({ field: { onChange, onBlur, value } }) => (
+              <TextInput
+                placeholderTextColor={"#616992"}
+                placeholder="1996-10-02"
+                keyboardType="numeric"
+                onBlur={onBlur}
+                onChangeText={(text) => onChange(formatDate(text))}
+                value={value}
+                maxLength={10}
+                style={{
+                  borderColor: "#dee2f1",
+                  fontSize: 14,
+                  paddingVertical: 10,
+                  borderWidth: 1,
+                  paddingHorizontal: 10,
+                  borderRadius: 10,
+                  color: "#1C2863",
+                  fontSize: 14,
+                }}
               />
-              <CustomText>
-                {birthDate
-                  ? new Date(birthDate).toLocaleDateString("ru-RU", {
-                      day: "2-digit",
-                      month: "2-digit",
-                      year: "2-digit",
-                    })
-                  : "Выберите дату"}
-              </CustomText>
-            </View>
-          </TouchableOpacity>
+            )}
+            name="DateOfBirth"
+            rules={{ required: "Заполните это поле" }}
+          />
         </View>
-
         <View style={{ flex: 1 }}>
-          <CustomText style={{ marginBottom: 10, fontSize: 16 }}>
+          <CustomText style={{ marginBottom: 10, fontSize: 18 }}>
             Место рождения
           </CustomText>
           <Controller
@@ -271,44 +325,55 @@ const EditOwner = () => {
               />
             )}
             name="PlaceOfBirth"
-            rules={{ required: true }}
-            defaultValue=""
+            rules={{ required: "Заполните это поле" }}
           />
         </View>
 
         <View style={{ flex: 1 }}>
-          <CustomText style={{ marginBottom: 10, fontSize: 16 }}>
-            ID номер паспорта
+          <CustomText style={{ marginBottom: 10, fontSize: 18 }}>
+            Тип паспорта
           </CustomText>
           <Controller
             control={control}
-            render={({ field: { onChange, onBlur, value } }) => (
-              <TextInput
-                placeholderTextColor={"#616992"}
-                keyboardType="numeric"
-                placeholder="ID номер паспорта"
-                onBlur={onBlur}
-                onChangeText={onChange}
+            render={({ field: { onChange, value } }) => (
+              <RNPickerSelect
+                placeholder={{
+                  label: "Выберите тип паспорта",
+                  value: null,
+                  color: "#616992",
+                }}
+                onValueChange={(value) => onChange(value)}
+                items={[
+                  { label: "AN", value: "AN" },
+                  { label: "ID", value: "ID" },
+                ]}
                 value={value}
                 style={{
-                  borderColor: "#dee2f1",
-                  fontSize: 14,
-                  paddingVertical: 10,
-                  borderWidth: 1,
-                  paddingHorizontal: 10,
-                  borderRadius: 10,
-                  color: "#1C2863",
-                  fontSize: 14,
+                  inputAndroid: {
+                    paddingVertical: 15,
+                    paddingHorizontal: 10,
+                    borderRadius: 10,
+                    color: "#1C2863",
+                    fontSize: 14,
+                    backgroundColor: "#dee2f1",
+                  },
+                  inputIOS: {
+                    paddingVertical: 15,
+                    paddingHorizontal: 10,
+                    borderRadius: 10,
+                    color: "#1C2863",
+                    fontSize: 14,
+                    backgroundColor: "#dee2f1",
+                  },
                 }}
               />
             )}
             name="IDPassportType"
-            rules={{ required: true }}
-            defaultValue=""
+            rules={{ required: "Заполните это поле" }}
           />
         </View>
         <View style={{ flex: 1 }}>
-          <CustomText style={{ marginBottom: 10, fontSize: 16 }}>
+          <CustomText style={{ marginBottom: 10, fontSize: 18 }}>
             Номер документа
           </CustomText>
           <Controller
@@ -334,8 +399,7 @@ const EditOwner = () => {
               />
             )}
             name="DocumentNumber"
-            rules={{ required: true }}
-            defaultValue=""
+            rules={{ required: "Заполните это поле" }}
           />
         </View>
 
@@ -366,8 +430,7 @@ const EditOwner = () => {
               />
             )}
             name="Pin"
-            rules={{ required: true }}
-            defaultValue=""
+            rules={{ required: "Заполните это поле" }}
           />
         </View>
 
@@ -397,84 +460,78 @@ const EditOwner = () => {
               />
             )}
             name="Authority"
-            rules={{ required: true }}
-            defaultValue=""
+            rules={{ required: "Заполните это поле" }}
           />
         </View>
 
-        <View>
-          <CustomText style={{ marginBottom: 10, fontSize: 18 }}>
-            Дата выдачи
-          </CustomText>
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              columnGap: 10,
-            }}
-          >
-            <TouchableOpacity
-              style={{
-                flex: 1,
-                flexDirection: "row",
-                alignItems: "center",
-                columnGap: 10,
-                borderColor: "#dee2f1",
-                fontSize: 14,
-                paddingVertical: 10,
-                borderWidth: 1,
-                paddingHorizontal: 10,
-                borderRadius: 10,
-                color: "#1C2863",
-                fontSize: 14,
-              }}
-              onPress={() => handleShowCalendar("DateOfIssue")}
-            >
-              <Ionicons
-                name="calendar-outline"
-                style={{ color: "#616992", fontSize: 25 }}
-              />
-              <CustomText>
-                {DateOfIssue
-                  ? new Date(DateOfIssue).toLocaleDateString("ru-RU", {
-                      day: "2-digit",
-                      month: "2-digit",
-                      year: "2-digit",
-                    })
-                  : "Выберите дату"}
-              </CustomText>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={{
-                flex: 1,
-                flexDirection: "row",
-                alignItems: "center",
-                columnGap: 10,
-                borderColor: "#dee2f1",
-                fontSize: 14,
-                paddingVertical: 10,
-                borderWidth: 1,
-                paddingHorizontal: 10,
-                borderRadius: 10,
-                color: "#1C2863",
-                fontSize: 14,
-              }}
-              onPress={() => handleShowCalendar("DateOfExpiry")}
-            >
-              <Ionicons
-                name="calendar-outline"
-                style={{ color: "#616992", fontSize: 25 }}
-              />
-              <CustomText>
-                {DateOfExpiry
-                  ? new Date(DateOfExpiry).toLocaleDateString("ru-RU", {
-                      day: "2-digit",
-                      month: "2-digit",
-                      year: "2-digit",
-                    })
-                  : "Выберите дату"}
-              </CustomText>
-            </TouchableOpacity>
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            columnGap: 10,
+          }}
+        >
+          <View style={{ flex: 1 }}>
+            <CustomText style={{ marginBottom: 10, fontSize: 18 }}>
+              Дата выдачи
+            </CustomText>
+            <Controller
+              control={control}
+              render={({ field: { onChange, onBlur, value } }) => (
+                <TextInput
+                  placeholderTextColor={"#616992"}
+                  placeholder="2013-02-23"
+                  keyboardType="numeric"
+                  onBlur={onBlur}
+                  onChangeText={(text) => onChange(formatDate(text))}
+                  value={value}
+                  maxLength={10}
+                  style={{
+                    borderColor: "#dee2f1",
+                    fontSize: 14,
+                    paddingVertical: 10,
+                    borderWidth: 1,
+                    paddingHorizontal: 10,
+                    borderRadius: 10,
+                    color: "#1C2863",
+                    fontSize: 14,
+                  }}
+                />
+              )}
+              name="DateOfIssue"
+              rules={{ required: "Заполните это поле" }}
+            />
+          </View>
+          <View style={{ flex: 1 }}>
+            <CustomText style={{ marginBottom: 10, fontSize: 18 }}>
+              Дата окончания
+            </CustomText>
+            <Controller
+              control={control}
+              render={({ field: { onChange, onBlur, value } }) => (
+                <TextInput
+                  placeholderTextColor={"#616992"}
+                  placeholder="2023-02-23"
+                  keyboardType="numeric"
+                  onBlur={onBlur}
+                  onChangeText={(text) => onChange(formatDate(text))}
+                  value={value}
+                  maxLength={10}
+                  style={{
+                    borderColor: "#dee2f1",
+                    fontSize: 14,
+                    paddingVertical: 10,
+                    borderWidth: 1,
+                    paddingHorizontal: 10,
+                    borderRadius: 10,
+                    color: "#1C2863",
+                    fontSize: 14,
+                  }}
+                />
+              )}
+              name="DateOfExpiry"
+              rules={{ required: "Заполните это поле" }}
+            />
           </View>
         </View>
       </View>
@@ -508,15 +565,6 @@ const EditOwner = () => {
           </TouchableOpacity>
         )}
       </View>
-
-      {showCalendar && (
-        <CalendarDatePassport
-          handleCalendarDateChange={handleCalendarDateChange}
-          showCalendar={showCalendar}
-          dateOfIssue={DateOfIssue}
-          dateOfExpiry={DateOfExpiry}
-        />
-      )}
     </ScrollView>
   );
 };

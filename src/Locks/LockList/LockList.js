@@ -2,10 +2,11 @@ import { useNavigation } from "@react-navigation/core";
 import React from "react";
 import { ActivityIndicator, Text, TouchableOpacity, View } from "react-native";
 import { formatDate } from "../../components/FormatDate/FormatDate";
+import CustomText from "../../components/CustomText/CustomText";
 
 const LockList = ({ data, loading }) => {
   const navigation = useNavigation();
- 
+
   return (
     <View style={{ flexDirection: "column", rowGap: 25 }}>
       {loading ? (
@@ -20,9 +21,7 @@ const LockList = ({ data, loading }) => {
             key={item.ID}
             onPress={() => navigation.navigate("Детали замка", { id: item.ID })}
             style={{
-              backgroundColor: "#fff",
-              borderWidth: 1,
-              borderColor: "#f0f0f0",
+              backgroundColor: "rgba(75, 93, 255, 0.2)",
               borderRadius: 10,
               padding: 10,
             }}
@@ -32,19 +31,26 @@ const LockList = ({ data, loading }) => {
                 flexDirection: "row",
                 alignItems: "center",
                 marginBottom: 10,
+                borderLeftWidth: 3,
+                borderLeftColor: "red",
+                paddingLeft: 5,
               }}
             >
-              <Text>Название замка: </Text>
-              <Text style={{ fontWeight: 500 }}>{item.LockAlias}</Text>
+              <CustomText style={{ fontWeight: 500, fontSize: 18 }}>
+                Название замка:{" "}
+              </CustomText>
+              <CustomText style={{ fontWeight: 500, fontSize: 18 }}>
+                {item.LockAlias}
+              </CustomText>
             </View>
 
-            <Text style={{ textAlign: "right" }}>
+            <CustomText style={{ textAlign: "right" }}>
               {formatDate(item.CreatedAt)}
-            </Text>
+            </CustomText>
           </TouchableOpacity>
         ))
       ) : (
-        <Text style={{ fontSize: 16 }}>Нет замков</Text>
+        <CustomText style={{ fontSize: 16 }}>Нет замков</CustomText>
       )}
     </View>
   );

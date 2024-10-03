@@ -5,7 +5,7 @@ import {
   ScrollView,
   TouchableOpacity,
 } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { Children, useEffect, useState } from "react";
 import SafeAreaWrapper from "../../../components/SafeAreaWrapper/SafeAreaWrapper";
 import { useSelector } from "react-redux";
 import { useNavigation, useRoute } from "@react-navigation/core";
@@ -207,6 +207,7 @@ const LockDetails = () => {
                         columnGap: 15,
                       }}
                     >
+                      {console.log(passcode)}
                       <View
                         style={{
                           padding: 20,
@@ -222,24 +223,26 @@ const LockDetails = () => {
                             marginBottom: 20,
                           }}
                         >
-                          <View
-                            style={{
-                              flexDirection: "row",
-                              alignItems: "center",
-                              justifyContent: "space-between",
-                              columnGap: 10,
-                            }}
-                          >
-                            <CustomText style={{ fontSize: 16 }}>
-                              ФИО:
-                            </CustomText>
-                            <CustomText
-                              style={{ fontWeight: "500", fontSize: 16 }}
+                          {/* {passcode?.PasscodeType?.Name && (
+                            <View
+                              style={{
+                                flexDirection: "row",
+                                alignItems: "center",
+                                justifyContent: "space-between",
+                                columnGap: 10,
+                              }}
                             >
-                              {passcode?.Booking?.Name}{" "}
-                              {passcode?.Booking?.Name}
-                            </CustomText>
-                          </View>
+                              <CustomText style={{ fontSize: 16 }}>
+                                ФИО:
+                              </CustomText>
+                              <CustomText
+                                style={{ fontWeight: "500", fontSize: 16 }}
+                              >
+                                {passcode?.PasscodeType?.Name}{" "}
+                                {passcode?.PasscodeType?.Name}
+                              </CustomText>
+                            </View>
+                          )} */}
                           <View
                             style={{
                               flexDirection: "row",
@@ -274,40 +277,61 @@ const LockDetails = () => {
                               {passcode?.KeyboardPwd}
                             </CustomText>
                           </View>
-                          <View
-                            style={{
-                              flexDirection: "row",
-                              alignItems: "center",
-                              justifyContent: "space-between",
-                              columnGap: 10,
-                            }}
-                          >
-                            <CustomText style={{ fontSize: 16 }}>
-                              Начало:
-                            </CustomText>
-                            <CustomText
-                              style={{ fontWeight: "500", fontSize: 16 }}
+                          {passcode.StartDate && (
+                            <View
+                              style={{
+                                flexDirection: "row",
+                                alignItems: "center",
+                                justifyContent: "space-between",
+                                columnGap: 10,
+                              }}
                             >
-                              {passcode?.StartDate}
-                            </CustomText>
-                          </View>
-                          <View
-                            style={{
-                              flexDirection: "row",
-                              alignItems: "center",
-                              justifyContent: "space-between",
-                              columnGap: 10,
-                            }}
-                          >
-                            <CustomText style={{ fontSize: 16 }}>
-                              Конец:
-                            </CustomText>
-                            <CustomText
-                              style={{ fontWeight: "500", fontSize: 16 }}
+                              <CustomText style={{ fontSize: 16 }}>
+                                Начало:
+                              </CustomText>
+                              <CustomText
+                                style={{ fontWeight: "500", fontSize: 16 }}
+                              >
+                                {new Date(
+                                  Number(passcode.StartDate)
+                                ).toLocaleDateString("ru-RU", {
+                                  day: "2-digit",
+                                  month: "2-digit",
+                                  year: "numeric",
+                                  hour: "2-digit",
+                                  minute: "2-digit",
+                                })}
+                              </CustomText>
+                            </View>
+                          )}
+
+                          {passcode.EndDate && (
+                            <View
+                              style={{
+                                flexDirection: "row",
+                                alignItems: "center",
+                                justifyContent: "space-between",
+                                columnGap: 10,
+                              }}
                             >
-                              {passcode?.EndDate}
-                            </CustomText>
-                          </View>
+                              <CustomText style={{ fontSize: 16 }}>
+                                Конец:
+                              </CustomText>
+                              <CustomText
+                                style={{ fontWeight: "500", fontSize: 16 }}
+                              >
+                                {new Date(
+                                  Number(passcode.EndDate)
+                                ).toLocaleDateString("ru-RU", {
+                                  day: "2-digit",
+                                  month: "2-digit",
+                                  year: "numeric",
+                                  hour: "2-digit",
+                                  minute: "2-digit",
+                                })}
+                              </CustomText>
+                            </View>
+                          )}
                         </View>
                         <View style={{ alignSelf: "flex-end" }}>
                           {isDeleteLoading(passcode.ID) ? (
@@ -316,7 +340,8 @@ const LockDetails = () => {
                             <TouchableOpacity
                               onPress={() => handleDelete(passcode.ID)}
                               style={{
-                                backgroundColor: "red",
+                                borderColor: "red",
+                                borderWidth: 1,
                                 padding: 5,
                                 borderRadius: 5,
                                 flexDirection: "row",
@@ -326,7 +351,7 @@ const LockDetails = () => {
                             >
                               <CustomText
                                 style={{
-                                  color: "#fff",
+                                  color: "#F36A7B",
                                   fontSize: 16,
                                   fontWeight: "500",
                                 }}
@@ -335,7 +360,7 @@ const LockDetails = () => {
                               </CustomText>
                               <MaterialCommunityIcons
                                 name={"delete"}
-                                style={{ color: "#fff", fontSize: 20 }}
+                                style={{ color: "#F36A7B", fontSize: 20 }}
                               />
                             </TouchableOpacity>
                           )}

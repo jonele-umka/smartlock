@@ -84,7 +84,7 @@ const MyObjectsList = () => {
       <SafeAreaWrapper style={{ flex: 1 }}>
         <TouchableOpacity
           onPress={() => {
-            navigation.navigate("Сдать жильё");
+            navigation.navigate("Мой объект");
           }}
           style={{
             flexDirection: "column",
