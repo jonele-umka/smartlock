@@ -716,105 +716,108 @@ const Landlord = () => {
               </CustomText>
             )}
           </View>
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              columnGap: 10,
-            }}
-          >
-            <View style={{ marginBottom: 20, flex: 1 }}>
-              <CustomText style={{ marginBottom: 10, fontSize: 18 }}>
-                Местоположение (широта)
-              </CustomText>
-              <View>
-                <Controller
-                  control={control}
-                  name="Latitude"
-                  rules={{ required: "Это поле обязательно для заполнения" }}
-                  render={({ field: { onChange, onBlur, value } }) => (
-                    <TextInput
-                      style={{
-                        borderWidth: 1,
-                        paddingVertical: 10,
-                        paddingHorizontal: 10,
-                        borderRadius: 10,
-                        borderColor: errors.LocationLabel ? "red" : "#dee2f1",
-                        color: "#1C2863",
-                        fontSize: 14,
-                      }}
-                      onBlur={onBlur}
-                      onChangeText={onChange}
-                      value={value}
-                      underlineColorAndroid="transparent"
-                      placeholder="32.32423243"
-                      placeholderTextColor="#616992"
-                      keyboardType="numeric"
-                    />
-                  )}
-                />
-              </View>
-              {errors.Latitude && (
-                <CustomText style={{ color: "red", marginTop: 7 }}>
-                  {errors.Latitude.message}
-                </CustomText>
-              )}
-            </View>
-
-            <View style={{ marginBottom: 20, flex: 1 }}>
-              <CustomText style={{ marginBottom: 10, fontSize: 18 }}>
-                Местоположение (долгота)
-              </CustomText>
-              <View>
-                <Controller
-                  control={control}
-                  name="Longitude"
-                  rules={{ required: "Это поле обязательно для заполнения" }}
-                  render={({ field: { onChange, onBlur, value } }) => (
-                    <TextInput
-                      style={{
-                        borderWidth: 1,
-                        paddingVertical: 10,
-                        paddingHorizontal: 10,
-                        borderRadius: 10,
-                        borderColor: errors.Longitude ? "red" : "#dee2f1",
-                        color: "#1C2863",
-                        fontSize: 14,
-                      }}
-                      onBlur={onBlur}
-                      onChangeText={onChange}
-                      value={value}
-                      underlineColorAndroid="transparent"
-                      placeholder="32.32423243"
-                      placeholderTextColor="#616992"
-                      keyboardType="numeric"
-                    />
-                  )}
-                />
-              </View>
-              {errors.Longitude && (
-                <CustomText style={{ color: "red", marginTop: 7 }}>
-                  {errors.Longitude.message}
-                </CustomText>
-              )}
-            </View>
-          </View>
-          {coordinate ? (
-            <MapLandlord
-              coordinate={coordinate}
-              handleMapRegionChange={handleMapRegionChange}
-            />
-          ) : (
+          <View style={{ marginBottom: 20 }}>
             <View
               style={{
-                flex: 1,
-                justifyContent: "center",
+                flexDirection: "row",
                 alignItems: "center",
+                columnGap: 10,
+                marginBottom: 20,
               }}
             >
-              <CustomText>Загрузка местоположения...</CustomText>
+              <View style={{ flex: 1 }}>
+                <CustomText style={{ marginBottom: 10, fontSize: 18 }}>
+                  Местоположение (широта)
+                </CustomText>
+                <View>
+                  <Controller
+                    control={control}
+                    name="Latitude"
+                    rules={{ required: "Это поле обязательно для заполнения" }}
+                    render={({ field: { onChange, onBlur, value } }) => (
+                      <TextInput
+                        style={{
+                          borderWidth: 1,
+                          paddingVertical: 10,
+                          paddingHorizontal: 10,
+                          borderRadius: 10,
+                          borderColor: errors.LocationLabel ? "red" : "#dee2f1",
+                          color: "#1C2863",
+                          fontSize: 14,
+                        }}
+                        onBlur={onBlur}
+                        onChangeText={onChange}
+                        value={value}
+                        underlineColorAndroid="transparent"
+                        placeholder="32.32423243"
+                        placeholderTextColor="#616992"
+                        keyboardType="numeric"
+                      />
+                    )}
+                  />
+                </View>
+                {errors.Latitude && (
+                  <CustomText style={{ color: "red", marginTop: 7 }}>
+                    {errors.Latitude.message}
+                  </CustomText>
+                )}
+              </View>
+
+              <View style={{ flex: 1 }}>
+                <CustomText style={{ marginBottom: 10, fontSize: 18 }}>
+                  Местоположение (долгота)
+                </CustomText>
+                <View>
+                  <Controller
+                    control={control}
+                    name="Longitude"
+                    rules={{ required: "Это поле обязательно для заполнения" }}
+                    render={({ field: { onChange, onBlur, value } }) => (
+                      <TextInput
+                        style={{
+                          borderWidth: 1,
+                          paddingVertical: 10,
+                          paddingHorizontal: 10,
+                          borderRadius: 10,
+                          borderColor: errors.Longitude ? "red" : "#dee2f1",
+                          color: "#1C2863",
+                          fontSize: 14,
+                        }}
+                        onBlur={onBlur}
+                        onChangeText={onChange}
+                        value={value}
+                        underlineColorAndroid="transparent"
+                        placeholder="32.32423243"
+                        placeholderTextColor="#616992"
+                        keyboardType="numeric"
+                      />
+                    )}
+                  />
+                </View>
+                {errors.Longitude && (
+                  <CustomText style={{ color: "red", marginTop: 7 }}>
+                    {errors.Longitude.message}
+                  </CustomText>
+                )}
+              </View>
             </View>
-          )}
+            {coordinate ? (
+              <MapLandlord
+                coordinate={coordinate}
+                handleMapRegionChange={handleMapRegionChange}
+              />
+            ) : (
+              <View
+                style={{
+                  flex: 1,
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <CustomText>Загрузка местоположения...</CustomText>
+              </View>
+            )}
+          </View>
           <View style={{ marginBottom: 20 }}>
             <CustomText style={{ marginBottom: 10, fontSize: 18 }}>
               Страна
