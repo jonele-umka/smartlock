@@ -32,7 +32,7 @@ const Lock = ({ id }) => {
       }
 
       const result = await response.json();
-      console.log(result);
+
       setUnlockLoading(false);
     } catch (error) {
       setUnlockLoading(false);
@@ -63,7 +63,7 @@ const Lock = ({ id }) => {
       }
 
       const result = await response.json();
-      console.log(result);
+
       setLockLoading(false);
     } catch (error) {
       setLockLoading(false);
@@ -99,10 +99,7 @@ const Lock = ({ id }) => {
             borderRadius: 20,
           }}
         >
-          <Fontisto
-            style={{ fontSize: 50, color: "#FDE1E5" }}
-            name="locked"
-          />
+          <Fontisto style={{ fontSize: 50, color: "#FDE1E5" }} name="locked" />
           <CustomText
             style={{
               fontSize: 16,

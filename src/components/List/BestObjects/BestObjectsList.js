@@ -11,7 +11,7 @@ import Fontisto from "react-native-vector-icons/Fontisto";
 import CustomText from "../../CustomText/CustomText";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 
-const ListCard = ({ items, API_URL, navigation }) => {
+const BestObjectsList = ({ items, API_URL, navigation }) => {
   const renderItem = ({ item }) => {
     return (
       <TouchableOpacity
@@ -153,4 +153,4 @@ const styles = StyleSheet.create({
   // },
 });
 
-export default ListCard;
+export default BestObjectsList;

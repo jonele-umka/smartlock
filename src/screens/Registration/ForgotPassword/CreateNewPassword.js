@@ -1,22 +1,21 @@
 import React, { useState } from "react";
 import { useForm, Controller } from "react-hook-form";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 
 import {
-  SafeAreaView,
   Text,
   TextInput,
   TouchableOpacity,
   ActivityIndicator,
   View,
 } from "react-native";
-import { SafeAreaView as SafeAreaViewContext } from "react-native-safe-area-context";
-import Feather from "react-native-vector-icons/Feather";
+
 import { useNavigation, useRoute } from "@react-navigation/core";
 import i18n from "../../../components/i18n/i18n";
 import Toast from "react-native-toast-message";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { LinearGradient } from "expo-linear-gradient";
+import SafeAreaWrapper from "../../../components/SafeAreaWrapper/SafeAreaWrapper";
 
 const CreateNewPassword = () => {
   const route = useRoute();
@@ -32,8 +31,7 @@ const CreateNewPassword = () => {
     },
   });
   const API_URL = process.env.API_URL;
-  const SafeAreaWrapper =
-    Platform.OS === "android" ? SafeAreaViewContext : SafeAreaView;
+
   const navigation = useNavigation();
   const [loading, setLoading] = useState(false);
   const token = useSelector((state) => state.auth.token);
@@ -42,7 +40,7 @@ const CreateNewPassword = () => {
   const handleChangePassword = async () => {
     try {
       const Email = getValues("Email");
-      console.log(Email);
+
       const NewPassword = getValues("NewPassword");
       const NewPasswordConfirm = getValues("NewPasswordConfirm");
       setLoading(true);
@@ -71,7 +69,7 @@ const CreateNewPassword = () => {
 
         Toast.show({
           type: "success",
-          position: "top",
+          position: "bottom",
           text2: i18n.t("youHaveSuccessfullyChangedYourPassword"),
           visibilityTime: 3000,
           autoHide: true,
@@ -81,7 +79,6 @@ const CreateNewPassword = () => {
         navigation.navigate("Войти");
       } else {
         setLoading(false);
-        console.log("Ошибка", "Не удалось изменить пароль.");
       }
     } catch (error) {
       setLoading(false);

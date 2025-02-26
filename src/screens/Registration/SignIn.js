@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigation, useRoute } from "@react-navigation/core";
 import { useForm, Controller } from "react-hook-form";
@@ -8,12 +8,12 @@ import {
   TouchableOpacity,
   View,
   ActivityIndicator,
+  ScrollView,
 } from "react-native";
-import { SafeAreaView as SafeAreaViewContext } from "react-native-safe-area-context";
 import * as WebBrowser from "expo-web-browser";
 
 import Ionicons from "react-native-vector-icons/Ionicons";
-import * as Google from "expo-auth-session/providers/google";
+// import * as Google from "expo-auth-session/providers/google";
 import Feather from "react-native-vector-icons/Feather";
 import i18n from "../../components/i18n/i18n";
 import { loginUser } from "../../Store/authSlice/authSlice";
@@ -29,7 +29,7 @@ const SignIn = () => {
     formState: { errors },
   } = useForm();
   const dispatch = useDispatch();
-  const loading = useSelector((state) => state.auth.loading);
+  const [isLoading, setIsLoading] = useState("");
   const navigation = useNavigation();
   const route = useRoute();
   const [error, setError] = useState("");
@@ -37,8 +37,6 @@ const SignIn = () => {
   const togglePasswordVisibility = () => {
     setIsPasswordHidden((prev) => !prev);
   };
-  const [token, setToken] = useState("");
-  const [userInfo, setUserInfo] = useState(null);
 
   const e = () => {
     Linking.openURL("exp://");
@@ -59,20 +57,19 @@ const SignIn = () => {
   //     if (response?.type === "success") {
   //       setToken(response.authentication.accessToken);
   //       getUserInfo(response.authentication.accessToken);
-  //       console.log("Access Token: ", response.authentication.accessToken);
+  //
   //     }
   //   } else {
   //     setUserInfo(user);
 
   //     // Linking.openURL("exp://");
-  //     console.log("loaded locally");
+  //
   //   }
   // }
-  // console.log(response?.type);
 
   // const getLocalUser = async () => {
   //   const data = await AsyncStorage.getItem("@user");
-  //   console.log(data);
+
   //   if (!data) return null;
   //   return JSON.parse(data);
   // };
@@ -101,45 +98,44 @@ const SignIn = () => {
   // };
 
   const onSubmit = async (userData) => {
-    console.log(userData);
+    setIsLoading(true);
     try {
       const response = await dispatch(loginUser(userData));
 
       if (response.type === "auth/loginUser/fulfilled") {
         const returnScreen = route.params?.returnScreen || "Главная страница";
+        setIsLoading(false);
         navigation.navigate(returnScreen);
       } else {
+        setIsLoading(false);
         setError(response.payload);
       }
     } catch (error) {
+      setIsLoading(false);
       console.error("Ошибка при входе:", error);
       setError(error.message);
     }
   };
 
   return (
-    <SafeAreaWrapper
-      style={[
-        { flex: 1, justifyContent: "center", backgroundColor: "#fff" },
-        // isDarkModeEnabled && { backgroundColor: "#191a1d" },
-      ]}
+    <ScrollView
+      style={{ flex: 1, backgroundColor: "#fff" }}
+      contentContainerStyle={{
+        flexGrow: 1,
+        justifyContent: "center",
+        paddingHorizontal: 10,
+      }}
+      keyboardShouldPersistTaps="handled"
     >
-      <View
-        style={{
-          paddingHorizontal: 10,
-          paddingVertical: 20,
-        }}
-      >
-        <CustomText
+      <SafeAreaWrapper>
+        <Image
+          source={require("../../assets/apkIcons/logo.png")}
           style={{
-            fontSize: 40,
-            marginBottom: 30,
-
-            fontWeight: 600,
+            marginBottom: 80,
+            alignSelf: "center",
+            objectFit: "contain",
           }}
-        >
-          {i18n.t("signInScreen")}
-        </CustomText>
+        />
 
         <View
           style={{
@@ -147,6 +143,7 @@ const SignIn = () => {
           }}
         >
           <View style={{ marginBottom: 30 }}>
+            <CustomText>Email</CustomText>
             <View
               style={{
                 flexDirection: "row",
@@ -155,8 +152,9 @@ const SignIn = () => {
                 borderWidth: 1,
                 borderColor: "#dee2f1",
                 paddingHorizontal: 10,
-                borderRadius: 10,
+                borderRadius: 50,
                 paddingVertical: 10,
+                marginTop: 12,
                 borderColor:
                   errors.email || error === "record not found"
                     ? "red"
@@ -198,6 +196,7 @@ const SignIn = () => {
             )}
           </View>
           <View>
+            <CustomText>Пароль</CustomText>
             <View
               style={{
                 flexDirection: "row",
@@ -207,8 +206,9 @@ const SignIn = () => {
                 borderWidth: 1,
                 borderColor: "#dee2f1",
                 paddingHorizontal: 10,
-                borderRadius: 10,
+                borderRadius: 50,
                 paddingVertical: 10,
+                marginTop: 12,
                 borderColor:
                   errors.password ||
                   error ===
@@ -296,7 +296,7 @@ const SignIn = () => {
             </CustomText>
           </TouchableOpacity>
         </View>
-        {loading ? (
+        {isLoading ? (
           <ActivityIndicator
             size="large"
             style={{ marginTop: 40, marginBottom: 30 }}
@@ -348,64 +348,64 @@ const SignIn = () => {
             {i18n.t("createAccount")}
           </CustomText>
         </TouchableOpacity>
+        {/* <View
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+        }}
+      >
+        <View style={{ flex: 1, height: 1, backgroundColor: "#000" }} />
+        <CustomText
+          style={{
+            color: "#1C2863",
+            textAlign: "center",
+            fontSize: 14,
+            marginHorizontal: 10,
+          }}
+        >
+          Или
+        </CustomText>
+        <View style={{ flex: 1, height: 1, backgroundColor: "#000" }} />
+      </View>
+      <TouchableOpacity
+        style={{
+          paddingVertical: 13,
+          paddingHorizontal: 10,
+          backgroundColor: "#fff",
+          borderRadius: 10,
+          marginHorizontal: 10,
+          shadowColor: "#000",
+          alignSelf: "center",
+          marginTop: 30,
+          shadowOffset: {
+            width: 0,
+            height: 10,
+          },
+          shadowOpacity: 0.3,
+          shadowRadius: 10,
+          elevation: 5,
+        }}
+      >
         <View
           style={{
             flexDirection: "row",
             alignItems: "center",
+            columnGap: 10,
+            justifyContent: "center",
           }}
         >
-          <View style={{ flex: 1, height: 1, backgroundColor: "#000" }} />
-          <CustomText
-            style={{
-              color: "#1C2863",
-              textAlign: "center",
-              fontSize: 14,
-              marginHorizontal: 10,
-            }}
-          >
-            Или
-          </CustomText>
-          <View style={{ flex: 1, height: 1, backgroundColor: "#000" }} />
-        </View>
-        <TouchableOpacity
-          style={{
-            paddingVertical: 13,
-            paddingHorizontal: 10,
-            backgroundColor: "#fff",
-            borderRadius: 10,
-            marginHorizontal: 10,
-            shadowColor: "#000",
-            alignSelf: "center",
-            marginTop: 30,
-            shadowOffset: {
-              width: 0,
-              height: 10,
-            },
-            shadowOpacity: 0.3,
-            shadowRadius: 10,
-            elevation: 5,
-          }}
-        >
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              columnGap: 10,
-              justifyContent: "center",
-            }}
-          >
-            <Image
-              source={require("../../assets/google.png")}
-              style={{ width: 20, height: 20 }}
-            />
+          <Image
+            source={require("../../assets/google.png")}
+            style={{ width: 20, height: 20 }}
+          />
 
-            <CustomText style={{ fontSize: 18 }}>
-              Продолжить с Google{" "}
-            </CustomText>
-          </View>
-        </TouchableOpacity>
-      </View>
-    </SafeAreaWrapper>
+          <CustomText style={{ fontSize: 18 }}>
+            Продолжить с Google{" "}
+          </CustomText>
+        </View>
+      </TouchableOpacity> */}
+      </SafeAreaWrapper>
+    </ScrollView>
   );
 };
 

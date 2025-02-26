@@ -1,74 +1,86 @@
-// ApplicationsTabs.js
-import React from "react";
-import { SafeAreaView, ScrollView, useWindowDimensions } from "react-native";
-import { TabView, SceneMap, TabBar } from "react-native-tab-view";
+import React, { useState } from "react";
+import {
+  SafeAreaView,
+  ScrollView,
+  Text,
+  View,
+  TouchableOpacity,
+} from "react-native";
 import ApplicationList from "../Application/ApplicationList";
-import CustomText from "../../CustomText/CustomText";
-
-const FirstRoute = () => (
-  <ScrollView
-    style={{ flex: 1, backgroundColor: "#fff" }}
-    contentContainerStyle={{ paddingVertical: 20, paddingHorizontal: 10 }}
-  >
-    <SafeAreaView style={{ flex: 1 }}>
-      <ApplicationList status="pending" />
-    </SafeAreaView>
-  </ScrollView>
-);
-
-const SecondRoute = () => (
-  <ScrollView
-    style={{ flex: 1, backgroundColor: "#fff" }}
-    contentContainerStyle={{ paddingVertical: 20, paddingHorizontal: 10 }}
-  >
-    <SafeAreaView style={{ flex: 1 }}>
-      <ApplicationList status="active" />
-    </SafeAreaView>
-  </ScrollView>
-);
-
-const ThirdRoute = () => (
-  <ScrollView
-    style={{ flex: 1, backgroundColor: "#fff" }}
-    contentContainerStyle={{ paddingVertical: 20, paddingHorizontal: 10 }}
-  >
-    <SafeAreaView style={{ flex: 1 }}>
-      <ApplicationList status="rejected" />
-    </SafeAreaView>
-  </ScrollView>
-);
-
-const renderScene = SceneMap({
-  first: FirstRoute,
-  second: SecondRoute,
-  third: ThirdRoute,
-});
 
 export default function ApplicationsTabs() {
-  const layout = useWindowDimensions();
-  const [index, setIndex] = React.useState(0);
-  const [routes] = React.useState([
-    { key: "first", title: "Входящие" },
-    { key: "second", title: "В процессе" },
-    { key: "third", title: "Отклонён" },
-  ]);
-  // Кастомный рендер TabBar
-  const renderTabBar = (props) => (
-    <TabBar
-      {...props}
-      style={{ backgroundColor: "#fff" }}
-      indicatorStyle={{ backgroundColor: "#4B5DFF" }}
-      activeColor="#1C2863"
-      inactiveColor="#1C2863"
-    />
-  );
+  const [activeTab, setActiveTab] = useState("first");
+
+  const renderTabContent = () => {
+    switch (activeTab) {
+      case "first":
+        return <ApplicationList status="pending" />;
+      case "second":
+        return <ApplicationList status="active" />;
+      case "third":
+        return <ApplicationList status="rejected" />;
+      default:
+        return <ApplicationList status="pending" />;
+    }
+  };
+
   return (
-    <TabView
-      navigationState={{ index, routes }}
-      renderScene={renderScene}
-      onIndexChange={setIndex}
-      initialLayout={{ width: layout.width }}
-      renderTabBar={renderTabBar}
-    />
+    <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
+      <View
+        style={{
+          flexDirection: "row",
+          borderBottomWidth: 1,
+          borderBottomColor: "#ddd",
+        }}
+      >
+        <TouchableOpacity
+          style={{
+            padding: 15,
+            flex: 1,
+            backgroundColor: activeTab === "first" ? "#4B5DFF" : "transparent",
+            alignItems: "center",
+          }}
+          onPress={() => setActiveTab("first")}
+        >
+          <Text style={{ color: activeTab === "first" ? "#fff" : "#000" }}>
+            Входящие
+          </Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={{
+            padding: 15,
+            flex: 1,
+            backgroundColor: activeTab === "second" ? "#4B5DFF" : "transparent",
+            alignItems: "center",
+          }}
+          onPress={() => setActiveTab("second")}
+        >
+          <Text style={{ color: activeTab === "second" ? "#fff" : "#000" }}>
+            В процессе
+          </Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={{
+            padding: 15,
+            flex: 1,
+            backgroundColor: activeTab === "third" ? "#4B5DFF" : "transparent",
+            alignItems: "center",
+          }}
+          onPress={() => setActiveTab("third")}
+        >
+          <Text style={{ color: activeTab === "third" ? "#fff" : "#000" }}>
+            Отклонён
+          </Text>
+        </TouchableOpacity>
+      </View>
+
+      <ScrollView
+        contentContainerStyle={{ paddingVertical: 20, paddingHorizontal: 10 }}
+      >
+        {renderTabContent()}
+      </ScrollView>
+    </SafeAreaView>
   );
 }

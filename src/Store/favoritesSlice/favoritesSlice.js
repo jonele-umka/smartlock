@@ -1,4 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import Toast from "react-native-toast-message";
 
 const API_URL = process.env.API_URL;
 
@@ -15,7 +16,7 @@ export const fetchFavorites = createAsyncThunk(
 
       if (!response.ok) {
         const responseDataError = await response.json();
-        console.log(responseDataError);
+
         const errorMessage =
           responseDataError.error.Message || "Произошла ошибка";
         return rejectWithValue(errorMessage);
@@ -40,14 +41,18 @@ export const addFavorite = createAsyncThunk(
       });
 
       if (!response.ok) {
+        if (response.status === 401) {
+          // Показать уведомление об ошибке авторизации
+          Toast.error("Авторизуйтесь, чтобы добавить в избранное");
+        }
+
         const responseDataError = await response.json();
-        console.log(responseDataError);
         const errorMessage =
-          responseDataError.error.Message || "Произошла ошибка";
+          responseDataError.error?.Message || "Произошла ошибка";
         return rejectWithValue(errorMessage);
       }
+
       const data = await response.json();
-      console.log("add", id);
       return data.AccommodationID;
     } catch (error) {
       return rejectWithValue(error.message);
@@ -58,8 +63,6 @@ export const addFavorite = createAsyncThunk(
 export const removeFavorite = createAsyncThunk(
   "favorites/removeFavorite",
   async ({ id, token }, { rejectWithValue }) => {
-    console.log("id", id);
-
     try {
       const response = await fetch(`${API_URL}/favorites/delete/${id}`, {
         method: "DELETE",
@@ -70,13 +73,21 @@ export const removeFavorite = createAsyncThunk(
 
       if (!response.ok) {
         const responseDataError = await response.json();
-
         const errorMessage =
           responseDataError.error.Message || "Произошла ошибка";
 
+        Toast.show({
+          type: "error",
+          position: "bottom",
+          text1: "Ошибка",
+          text2: errorMessage,
+          visibilityTime: 3000,
+          autoHide: true,
+          topOffset: 30,
+        });
         return rejectWithValue(errorMessage);
       }
-    
+
       return id;
     } catch (error) {
       return rejectWithValue(error.message);
@@ -87,7 +98,7 @@ export const removeFavorite = createAsyncThunk(
 const favoritesSlice = createSlice({
   name: "favorites",
   initialState: {
-    favorites: [], // Убедитесь, что это массив
+    favorites: [],
     status: "idle",
     error: null,
   },

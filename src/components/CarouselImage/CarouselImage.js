@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Dimensions, Image, Text, TouchableOpacity, View } from "react-native";
+import { Dimensions, Image, TouchableOpacity, View } from "react-native";
 import Carousel from "react-native-reanimated-carousel";
 import ImageView from "react-native-image-viewing";
 
@@ -7,7 +7,6 @@ function CarouselImage({ images }) {
   const [visible, setIsVisible] = useState(false);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const API_URL = process.env.API_URL;
-  // Преобразование массива изображений
   const formattedImages = images.map((image) => ({
     uri: `${API_URL}/${image.ImageUrl}`,
   }));

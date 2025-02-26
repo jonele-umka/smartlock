@@ -217,19 +217,18 @@ const VerifyCodeForgotPassword = () => {
         const responseDataError = await response.json();
         const errorMessage =
           responseDataError.error.Message || "Произошла ошибка";
-        console.log("g", errorMessage);
+
         setError(errorMessage);
         setLoading(false);
 
         Toast.show({
           type: "error",
-          position: "top",
+          position: "bottom",
           text2: errorMessage,
           visibilityTime: 3000,
           autoHide: true,
           topOffset: 30,
         });
-        console.log("errorMessage", responseDataError);
       }
       const responseData = await response.json();
       navigation.navigate("Создать новый пароль", { email: email });
@@ -237,7 +236,6 @@ const VerifyCodeForgotPassword = () => {
 
       return responseData;
     } catch (error) {
-      console.log(error);
       setLoading(false);
     }
   };

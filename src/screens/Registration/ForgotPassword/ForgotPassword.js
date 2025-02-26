@@ -32,7 +32,6 @@ const ForgotPassword = () => {
   const API_URL = process.env.API_URL;
 
   const onSubmit = async (email) => {
-    console.log(email.Email);
     try {
       setLoading(true);
       const response = await fetch(`${API_URL}/api/auth/forgot_password`, {
@@ -55,7 +54,6 @@ const ForgotPassword = () => {
 
       return responseData;
     } catch (error) {
-      console.log(error);
       setLoading(false);
     }
   };
@@ -78,7 +76,7 @@ const ForgotPassword = () => {
           style={{
             fontSize: 30,
             marginBottom: 20,
-            color: "#000",
+
             fontWeight: 600,
           }}
         >
@@ -100,7 +98,7 @@ const ForgotPassword = () => {
                 paddingHorizontal: 10,
                 borderRadius: 10,
                 paddingVertical: 10,
-                borderColor: errors.email ? "red" : "#dee2f1",
+                borderColor: errors.Email ? "red" : "#dee2f1",
               }}
             >
               <Feather name="mail" style={{ color: "#616992", fontSize: 20 }} />
@@ -132,9 +130,9 @@ const ForgotPassword = () => {
                 )}
               />
             </View>
-            {errors.email && (
+            {errors.Email && (
               <CustomText style={{ color: "red", fontSize: 12, marginTop: 7 }}>
-                {errors.email.message}
+                {errors.Email.message}
               </CustomText>
             )}
             {error == 400 && (
@@ -160,11 +158,11 @@ const ForgotPassword = () => {
               shadowOffset: { width: 0, height: 2 },
               shadowOpacity: 0.2,
               shadowRadius: 10,
-              marginVertical: 30,
-              backgroundColor: "#252525",
+              marginTop: 30,
               paddingVertical: 15,
               textAlign: "center",
               borderRadius: 10,
+              backgroundColor: "#4B5DFF",
             }}
           >
             <CustomText
@@ -174,7 +172,7 @@ const ForgotPassword = () => {
                 fontSize: 20,
               }}
             >
-              Войти
+              Отправить
             </CustomText>
           </TouchableOpacity>
         )}

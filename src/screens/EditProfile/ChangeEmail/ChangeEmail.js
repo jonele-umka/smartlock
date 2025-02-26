@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   View,
+  ScrollView,
 } from "react-native";
 
 import { useNavigation } from "@react-navigation/core";
@@ -61,13 +62,16 @@ const ChangeEmail = () => {
   };
 
   return (
-    <SafeAreaWrapper style={[{ flex: 1, backgroundColor: "#fff" }]}>
-      <View
-        style={{
-          paddingHorizontal: 10,
-          paddingVertical: 20,
-        }}
-      >
+    <ScrollView
+      style={{ flex: 1, backgroundColor: "#fff" }}
+      contentContainerStyle={{
+        flexGrow: 1,
+        paddingHorizontal: 10,
+        paddingVertical: 20,
+      }}
+      keyboardShouldPersistTaps="handled"
+    >
+      <SafeAreaWrapper>
         <CustomText
           style={{
             fontSize: 40,
@@ -167,8 +171,8 @@ const ChangeEmail = () => {
             {i18n.t("invalidEmail")}
           </Text>
         )}
-      </View>
-    </SafeAreaWrapper>
+      </SafeAreaWrapper>
+    </ScrollView>
   );
 };
 

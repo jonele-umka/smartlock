@@ -32,7 +32,7 @@ const MyObjects = ({ myAccommodation }) => {
         dispatch(fetchMyAccommodations(token));
         Toast.show({
           type: "success",
-          position: "top",
+          position: "bottom",
           text1: "Успех",
           text2: "Объект был деактивирован",
           visibilityTime: 3000,
@@ -42,7 +42,7 @@ const MyObjects = ({ myAccommodation }) => {
       } else {
         Toast.show({
           type: "error",
-          position: "top",
+          position: "bottom",
           text1: "Ошибка",
           text2: "Произошла ошибка при попытке деактивировать объект.",
           visibilityTime: 3000,
@@ -53,7 +53,7 @@ const MyObjects = ({ myAccommodation }) => {
     } catch (error) {
       Toast.show({
         type: "error",
-        position: "top",
+        position: "bottom",
         text1: "Ошибка",
         text2: `Произошла ошибка при попытке деактивировать объект: ${error}`,
 
@@ -81,7 +81,7 @@ const MyObjects = ({ myAccommodation }) => {
         dispatch(fetchMyAccommodations(token));
         Toast.show({
           type: "success",
-          position: "top",
+          position: "bottom",
           text1: "Успех",
           text2: "Объект был активирован",
           visibilityTime: 3000,
@@ -91,7 +91,7 @@ const MyObjects = ({ myAccommodation }) => {
       } else {
         Toast.show({
           type: "error",
-          position: "top",
+          position: "bottom",
           text1: "Ошибка",
           text2: "Произошла ошибка при попытке активировать объект.",
           visibilityTime: 3000,
@@ -103,7 +103,7 @@ const MyObjects = ({ myAccommodation }) => {
       console.error(error);
       Toast.show({
         type: "error",
-        position: "top",
+        position: "bottom",
         text1: "Ошибка",
         text2: "Произошла ошибка при попытке активировать объект.",
         visibilityTime: 3000,
@@ -129,7 +129,7 @@ const MyObjects = ({ myAccommodation }) => {
         dispatch(fetchMyAccommodations(token));
         Toast.show({
           type: "success",
-          position: "top",
+          position: "bottom",
           text1: "Успех",
           text2: "Объект был удален",
           visibilityTime: 3000,
@@ -139,7 +139,7 @@ const MyObjects = ({ myAccommodation }) => {
       } else {
         Toast.show({
           type: "error",
-          position: "top",
+          position: "bottom",
           text1: "Ошибка",
           text2: "Произошла ошибка при попытке удаления объекта.",
           visibilityTime: 3000,
@@ -151,7 +151,7 @@ const MyObjects = ({ myAccommodation }) => {
       console.error(error);
       Toast.show({
         type: "error",
-        position: "top",
+        position: "bottom",
         text1: "Ошибка",
         text2: "Произошла ошибка при попытке удаления объекта",
         visibilityTime: 3000,
@@ -163,87 +163,87 @@ const MyObjects = ({ myAccommodation }) => {
   const isActive = myAccommodation?.IsAvailable;
 
   return (
-    <ImageBackground
-      borderRadius={20}
-      style={{
-        width: "100%",
-        height: 220,
-        justifyContent: "space-between",
-        paddingTop: 10,
-        borderRadius: 20,
-        overflow: "hidden",
-        borderWidth: 1,
-        borderColor: "#f0f0f0",
-      }}
-      resizeMode={
-        myAccommodation.Images &&
-        myAccommodation.Images.length > 0 &&
-        myAccommodation.Images[0].ImageUrl
-          ? "cover"
-          : "contain"
-      }
-      source={
-        myAccommodation.Images &&
-        myAccommodation.Images.length > 0 &&
-        myAccommodation.Images[0].ImageUrl
-          ? { uri: `${API_URL}/${myAccommodation.Images[0].ImageUrl}` }
-          : require("../../assets/noImg.png")
+    <TouchableOpacity
+      style={{ width: "100%" }}
+      onPress={() =>
+        navigation.navigate("Мой объект", {
+          id: myAccommodation.ID,
+        })
       }
     >
-      <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-        <TouchableOpacity
-          onPress={handleDelete}
-          style={{
-            borderRadius: 10,
-            marginLeft: 10,
-            backgroundColor: "red",
-            padding: 5,
-          }}
-        >
-          <MaterialCommunityIcons
-            name="delete"
-            style={{ fontSize: 25, color: "#fff" }}
-          />
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={isActive ? handleDeactivate : handleActivate}
-          style={{
-            borderRadius: 5,
-            alignSelf: "flex-end",
-            marginRight: 10,
-            backgroundColor: isActive ? "#fe3c53" : "#57d673",
-            padding: 5,
-          }}
-        >
-          <CustomText style={{ color: "#fff", fontWeight: 500 }}>
-            {isActive ? "Деактивировать" : "Активировать"}
-          </CustomText>
-        </TouchableOpacity>
-      </View>
-      <View
+      <ImageBackground
+        borderRadius={20}
         style={{
-          paddingHorizontal: 10,
-          paddingVertical: 10,
-          backgroundColor: "rgba(97, 105, 146, 0.8)",
+          width: "100%",
+          height: 220,
+          justifyContent: "space-between",
+          paddingTop: 10,
+          borderRadius: 20,
+          overflow: "hidden",
+          borderWidth: 1,
+          borderColor: "#f0f0f0",
         }}
+        resizeMode={
+          myAccommodation.Images &&
+          myAccommodation.Images.length > 0 &&
+          myAccommodation.Images[0].ImageUrl
+            ? "cover"
+            : "contain"
+        }
+        source={
+          myAccommodation.Images &&
+          myAccommodation.Images.length > 0 &&
+          myAccommodation.Images[0].ImageUrl
+            ? { uri: `${API_URL}/${myAccommodation.Images[0].ImageUrl}` }
+            : require("../../assets/noImg.png")
+        }
       >
+        <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+          <TouchableOpacity
+            onPress={handleDelete}
+            style={{
+              borderRadius: 10,
+              marginLeft: 10,
+              backgroundColor: "red",
+              padding: 5,
+            }}
+          >
+            <MaterialCommunityIcons
+              name="delete"
+              style={{ fontSize: 25, color: "#fff" }}
+            />
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={isActive ? handleDeactivate : handleActivate}
+            style={{
+              borderRadius: 5,
+              alignSelf: "flex-end",
+              marginRight: 10,
+              backgroundColor: isActive ? "#fe3c53" : "#57d673",
+              padding: 5,
+            }}
+          >
+            <CustomText style={{ color: "#fff", fontWeight: 500 }}>
+              {isActive ? "Деактивировать" : "Активировать"}
+            </CustomText>
+          </TouchableOpacity>
+        </View>
         <View
           style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignItems: "flex-end",
-            columnGap: 10,
+            paddingHorizontal: 10,
+            paddingVertical: 10,
+            backgroundColor: "rgba(97, 105, 146, 0.8)",
           }}
         >
-          <View style={{ flex: 1 }}>
-            <TouchableOpacity
-              style={{ marginBottom: 5 }}
-              onPress={() =>
-                navigation.navigate("Мой объект", {
-                  id: myAccommodation.ID,
-                })
-              }
-            >
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "flex-end",
+              columnGap: 10,
+            }}
+          >
+            <View style={{ flex: 1 }}>
               <CustomText
                 style={{
                   fontSize: 20,
@@ -253,46 +253,46 @@ const MyObjects = ({ myAccommodation }) => {
               >
                 {myAccommodation.Title}
               </CustomText>
-            </TouchableOpacity>
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                columnGap: 5,
-              }}
-            >
-              <Fontisto
-                name="map-marker-alt"
-                style={{ color: "#f0f0f0", fontSize: 15 }}
-              />
-              <CustomText style={{ color: "#f0f0f0" }}>
-                {myAccommodation.LocationLabel}
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  columnGap: 5,
+                }}
+              >
+                <Fontisto
+                  name="map-marker-alt"
+                  style={{ color: "#f0f0f0", fontSize: 15 }}
+                />
+                <CustomText style={{ color: "#f0f0f0" }}>
+                  {myAccommodation.LocationLabel}
+                </CustomText>
+              </View>
+            </View>
+
+            <View>
+              <CustomText
+                style={{
+                  fontSize: 16,
+                  fontWeight: 500,
+                  color: "#fff",
+                }}
+              >
+                {myAccommodation.Price} c
+              </CustomText>
+              <CustomText
+                style={{
+                  textAlign: "right",
+                  color: "#b8b8b8",
+                }}
+              >
+                ночь
               </CustomText>
             </View>
           </View>
-
-          <View>
-            <CustomText
-              style={{
-                fontSize: 16,
-                fontWeight: 500,
-                color: "#fff",
-              }}
-            >
-              {myAccommodation.Price} c
-            </CustomText>
-            <CustomText
-              style={{
-                textAlign: "right",
-                color: "#b8b8b8",
-              }}
-            >
-              ночь
-            </CustomText>
-          </View>
         </View>
-      </View>
-    </ImageBackground>
+      </ImageBackground>
+    </TouchableOpacity>
   );
 };
 

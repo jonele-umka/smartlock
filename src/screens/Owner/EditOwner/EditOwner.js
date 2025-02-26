@@ -2,20 +2,28 @@ import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
-  TextInput,
   ScrollView,
   TouchableOpacity,
   ActivityIndicator,
 } from "react-native";
 import { useForm, Controller } from "react-hook-form";
-import RNPickerSelect from "react-native-picker-select";
 import { useSelector } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
 import CustomText from "../../../components/CustomText/CustomText";
 import Toast from "react-native-toast-message";
+import { ownerFields } from "../../../assets/data/Fields";
+import CustomInput from "../../../components/CustomInput/CustomInput";
+import { FormatDatePassport } from "../../../components/FormatDate/FormatDatePassport";
+import SafeAreaWrapper from "../../../components/SafeAreaWrapper/SafeAreaWrapper";
+import CustomPicker from "../../../components/CustomPicker/CustomPicker"; // Import CustomPicker
 
 const EditOwner = () => {
-  const { control, handleSubmit, setValue } = useForm();
+  const {
+    control,
+    handleSubmit,
+    setValue,
+    formState: { errors },
+  } = useForm();
   const [isLoading, setIsLoading] = useState(false);
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState(null);
@@ -46,6 +54,7 @@ const EditOwner = () => {
 
       const result = await response.json();
       setData(result?.Profile?.Passport);
+
       setLoading(false);
     } catch (error) {
       setLoading(false);
@@ -75,7 +84,6 @@ const EditOwner = () => {
   }, [data]);
 
   const onSubmit = async (data) => {
-    console.log(data);
     setIsLoading(true);
     try {
       const response = await fetch(`${API_URL}/api/auth/be_owner`, {
@@ -97,7 +105,7 @@ const EditOwner = () => {
         console.error("Ошибка сервера:", result);
         Toast.show({
           type: "error",
-          position: "top",
+          position: "bottom",
           text1: "Ошибка",
           text2: result.error.Error,
           visibilityTime: 3000,
@@ -109,25 +117,6 @@ const EditOwner = () => {
       setIsLoading(false);
       console.error("Ошибка:", error);
     }
-  };
-
-  const formatDate = (text) => {
-    const cleaned = text.replace(/[^0-9]/g, ""); // Убираем все символы, кроме цифр
-
-    let formattedText = cleaned;
-
-    if (cleaned.length > 4 && cleaned.length <= 6) {
-      // Если длина больше 4, но меньше 6 — добавляем дефис между годом и месяцем
-      formattedText = `${cleaned.slice(0, 4)}-${cleaned.slice(4)}`;
-    } else if (cleaned.length > 6) {
-      // Если длина больше 6 — добавляем дефисы между годом, месяцем и днём
-      formattedText = `${cleaned.slice(0, 4)}-${cleaned.slice(
-        4,
-        6
-      )}-${cleaned.slice(6, 8)}`;
-    }
-
-    return formattedText;
   };
 
   if (loading) {
@@ -144,427 +133,103 @@ const EditOwner = () => {
       </View>
     );
   }
+
   return (
     <ScrollView
       style={{ flex: 1, backgroundColor: "#fff" }}
       contentContainerStyle={{ paddingHorizontal: 10, paddingVertical: 20 }}
     >
-      <View style={{ flexDirection: "column", rowGap: 20, marginBottom: 40 }}>
-        <View style={{ flex: 1 }}>
-          <CustomText style={{ marginBottom: 10, fontSize: 18 }}>
-            Фамилия
-          </CustomText>
-          <Controller
-            control={control}
-            render={({ field: { onChange, onBlur, value } }) => (
-              <TextInput
-                placeholderTextColor={"#616992"}
-                placeholder="Фамилия"
-                onBlur={onBlur}
-                onChangeText={onChange}
-                value={value}
-                style={{
-                  borderColor: "#dee2f1",
-                  fontSize: 14,
-                  paddingVertical: 10,
-                  borderWidth: 1,
-                  paddingHorizontal: 10,
-                  borderRadius: 10,
-                  color: "#1C2863",
-                  fontSize: 14,
+      <SafeAreaWrapper>
+        <View style={{ flexDirection: "column", rowGap: 20, marginBottom: 40 }}>
+          {ownerFields.map((field) => (
+            <View key={field.name}>
+              <CustomText style={{ marginBottom: 10, fontSize: 18 }}>
+                {field.label}
+              </CustomText>
+              <Controller
+                control={control}
+                name={field.name}
+                rules={{ required: `Заполните поле ${field.label}` }}
+                render={({ field: { onChange, onBlur, value } }) => {
+                  if (field.name === "IDPassportType") {
+                    return (
+                      <>
+                        <CustomPicker
+                          items={[
+                            { label: "AN", value: "AN" },
+                            { label: "ID", value: "ID" },
+                          ]}
+                          selectedValue={value}
+                          onValueChange={onChange}
+                          placeholder="Выберите тип паспорта"
+                        />
+                        {errors[field.name] && (
+                          <Text style={{ color: "red", marginTop: 5 }}>
+                            {errors[field.name].message}
+                          </Text>
+                        )}
+                      </>
+                    );
+                  } else {
+                    return (
+                      <>
+                        <CustomInput
+                          value={value}
+                          onChange={(text) =>
+                            field.name.includes("Date")
+                              ? onChange(FormatDatePassport(text))
+                              : onChange(text)
+                          }
+                          placeholder={field.placeholder}
+                          onBlur={onBlur}
+                          keyboardType={
+                            field.name.includes("Date") ? "numeric" : "default"
+                          }
+                        />
+                        {errors[field.name] && (
+                          <Text style={{ color: "red", marginTop: 5 }}>
+                            {errors[field.name].message}
+                          </Text>
+                        )}
+                      </>
+                    );
+                  }
                 }}
               />
-            )}
-            name="Surname"
-            rules={{ required: "Заполните это поле" }}
-          />
+            </View>
+          ))}
         </View>
-        <View style={{ flex: 1 }}>
-          <CustomText style={{ marginBottom: 10, fontSize: 18 }}>
-            Имя
-          </CustomText>
-          <Controller
-            control={control}
-            render={({ field: { onChange, onBlur, value } }) => (
-              <TextInput
-                placeholderTextColor={"#616992"}
-                placeholder="Имя"
-                onBlur={onBlur}
-                onChangeText={onChange}
-                value={value}
-                style={{
-                  borderColor: "#dee2f1",
-                  fontSize: 14,
-                  paddingVertical: 10,
-                  borderWidth: 1,
-                  paddingHorizontal: 10,
-                  borderRadius: 10,
-                  color: "#1C2863",
-                  fontSize: 14,
-                }}
-              />
-            )}
-            name="Name"
-            rules={{ required: "Заполните это поле" }}
-          />
-        </View>
-
-        <View style={{ flex: 1 }}>
-          <CustomText style={{ marginBottom: 10, fontSize: 18 }}>
-            Отчество
-          </CustomText>
-          <Controller
-            control={control}
-            render={({ field: { onChange, onBlur, value } }) => (
-              <TextInput
-                placeholderTextColor={"#616992"}
-                placeholder="Отчество"
-                onBlur={onBlur}
-                onChangeText={onChange}
-                value={value}
-                style={{
-                  borderColor: "#dee2f1",
-                  fontSize: 14,
-                  paddingVertical: 10,
-                  borderWidth: 1,
-                  paddingHorizontal: 10,
-                  borderRadius: 10,
-                  color: "#1C2863",
-                  fontSize: 14,
-                }}
-              />
-            )}
-            name="Patronymic"
-            rules={{ required: "Заполните это поле" }}
-          />
-        </View>
-        <View style={{ flex: 1 }}>
-          <CustomText style={{ marginBottom: 10, fontSize: 18 }}>
-            Национальность
-          </CustomText>
-          <Controller
-            control={control}
-            render={({ field: { onChange, onBlur, value } }) => (
-              <TextInput
-                placeholderTextColor={"#616992"}
-                placeholder="Национальность"
-                onBlur={onBlur}
-                onChangeText={onChange}
-                value={value}
-                style={{
-                  borderColor: "#dee2f1",
-                  fontSize: 14,
-                  paddingVertical: 10,
-                  borderWidth: 1,
-                  paddingHorizontal: 10,
-                  borderRadius: 10,
-                  color: "#1C2863",
-                  fontSize: 14,
-                }}
-              />
-            )}
-            name="Nationality"
-            rules={{ required: "Заполните это поле" }}
-          />
-        </View>
-
-        <View style={{ flex: 1 }}>
-          <CustomText style={{ marginBottom: 10, fontSize: 18 }}>
-            Дата рождения
-          </CustomText>
-          <Controller
-            control={control}
-            render={({ field: { onChange, onBlur, value } }) => (
-              <TextInput
-                placeholderTextColor={"#616992"}
-                placeholder="1996-10-02"
-                keyboardType="numeric"
-                onBlur={onBlur}
-                onChangeText={(text) => onChange(formatDate(text))}
-                value={value}
-                maxLength={10}
-                style={{
-                  borderColor: "#dee2f1",
-                  fontSize: 14,
-                  paddingVertical: 10,
-                  borderWidth: 1,
-                  paddingHorizontal: 10,
-                  borderRadius: 10,
-                  color: "#1C2863",
-                  fontSize: 14,
-                }}
-              />
-            )}
-            name="DateOfBirth"
-            rules={{ required: "Заполните это поле" }}
-          />
-        </View>
-        <View style={{ flex: 1 }}>
-          <CustomText style={{ marginBottom: 10, fontSize: 18 }}>
-            Место рождения
-          </CustomText>
-          <Controller
-            control={control}
-            render={({ field: { onChange, onBlur, value } }) => (
-              <TextInput
-                placeholderTextColor={"#616992"}
-                placeholder="Место рождения"
-                onBlur={onBlur}
-                onChangeText={onChange}
-                value={value}
-                style={{
-                  borderColor: "#dee2f1",
-                  fontSize: 14,
-                  paddingVertical: 10,
-                  borderWidth: 1,
-                  paddingHorizontal: 10,
-                  borderRadius: 10,
-                  color: "#1C2863",
-                  fontSize: 14,
-                }}
-              />
-            )}
-            name="PlaceOfBirth"
-            rules={{ required: "Заполните это поле" }}
-          />
-        </View>
-
-        <View style={{ flex: 1 }}>
-          <CustomText style={{ marginBottom: 10, fontSize: 18 }}>
-            Тип паспорта
-          </CustomText>
-          <Controller
-            control={control}
-            render={({ field: { onChange, value } }) => (
-              <RNPickerSelect
-                placeholder={{
-                  label: "Выберите тип паспорта",
-                  value: null,
-                  color: "#616992",
-                }}
-                onValueChange={(value) => onChange(value)}
-                items={[
-                  { label: "AN", value: "AN" },
-                  { label: "ID", value: "ID" },
-                ]}
-                value={value}
-                style={{
-                  inputAndroid: {
-                    paddingVertical: 15,
-                    paddingHorizontal: 10,
-                    borderRadius: 10,
-                    color: "#1C2863",
-                    fontSize: 14,
-                    backgroundColor: "#dee2f1",
-                  },
-                  inputIOS: {
-                    paddingVertical: 15,
-                    paddingHorizontal: 10,
-                    borderRadius: 10,
-                    color: "#1C2863",
-                    fontSize: 14,
-                    backgroundColor: "#dee2f1",
-                  },
-                }}
-              />
-            )}
-            name="IDPassportType"
-            rules={{ required: "Заполните это поле" }}
-          />
-        </View>
-        <View style={{ flex: 1 }}>
-          <CustomText style={{ marginBottom: 10, fontSize: 18 }}>
-            Номер документа
-          </CustomText>
-          <Controller
-            control={control}
-            render={({ field: { onChange, onBlur, value } }) => (
-              <TextInput
-                placeholderTextColor={"#616992"}
-                keyboardType="numeric"
-                placeholder="Номер документа"
-                onBlur={onBlur}
-                onChangeText={onChange}
-                value={value}
-                style={{
-                  borderColor: "#dee2f1",
-                  fontSize: 14,
-                  paddingVertical: 10,
-                  borderWidth: 1,
-                  paddingHorizontal: 10,
-                  borderRadius: 10,
-                  color: "#1C2863",
-                  fontSize: 14,
-                }}
-              />
-            )}
-            name="DocumentNumber"
-            rules={{ required: "Заполните это поле" }}
-          />
-        </View>
-
-        <View style={{ flex: 1 }}>
-          <CustomText style={{ marginBottom: 10, fontSize: 18 }}>
-            ИНН
-          </CustomText>
-          <Controller
-            control={control}
-            render={({ field: { onChange, onBlur, value } }) => (
-              <TextInput
-                keyboardType="numeric"
-                placeholder="Персональный номер"
-                placeholderTextColor={"#616992"}
-                onBlur={onBlur}
-                onChangeText={onChange}
-                value={value}
-                style={{
-                  borderColor: "#dee2f1",
-                  fontSize: 14,
-                  paddingVertical: 10,
-                  borderWidth: 1,
-                  paddingHorizontal: 10,
-                  borderRadius: 10,
-                  color: "#1C2863",
-                  fontSize: 14,
-                }}
-              />
-            )}
-            name="Pin"
-            rules={{ required: "Заполните это поле" }}
-          />
-        </View>
-
-        <View style={{ flex: 1 }}>
-          <CustomText style={{ marginBottom: 10, fontSize: 18 }}>
-            Орган выдачи
-          </CustomText>
-          <Controller
-            control={control}
-            render={({ field: { onChange, onBlur, value } }) => (
-              <TextInput
-                placeholder="Орган выдачи"
-                placeholderTextColor={"#616992"}
-                onBlur={onBlur}
-                onChangeText={onChange}
-                value={value}
-                style={{
-                  borderColor: "#dee2f1",
-                  fontSize: 14,
-                  paddingVertical: 10,
-                  borderWidth: 1,
-                  paddingHorizontal: 10,
-                  borderRadius: 10,
-                  color: "#1C2863",
-                  fontSize: 14,
-                }}
-              />
-            )}
-            name="Authority"
-            rules={{ required: "Заполните это поле" }}
-          />
-        </View>
-
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            columnGap: 10,
-          }}
-        >
-          <View style={{ flex: 1 }}>
-            <CustomText style={{ marginBottom: 10, fontSize: 18 }}>
-              Дата выдачи
-            </CustomText>
-            <Controller
-              control={control}
-              render={({ field: { onChange, onBlur, value } }) => (
-                <TextInput
-                  placeholderTextColor={"#616992"}
-                  placeholder="2013-02-23"
-                  keyboardType="numeric"
-                  onBlur={onBlur}
-                  onChangeText={(text) => onChange(formatDate(text))}
-                  value={value}
-                  maxLength={10}
-                  style={{
-                    borderColor: "#dee2f1",
-                    fontSize: 14,
-                    paddingVertical: 10,
-                    borderWidth: 1,
-                    paddingHorizontal: 10,
-                    borderRadius: 10,
-                    color: "#1C2863",
-                    fontSize: 14,
-                  }}
-                />
-              )}
-              name="DateOfIssue"
-              rules={{ required: "Заполните это поле" }}
-            />
-          </View>
-          <View style={{ flex: 1 }}>
-            <CustomText style={{ marginBottom: 10, fontSize: 18 }}>
-              Дата окончания
-            </CustomText>
-            <Controller
-              control={control}
-              render={({ field: { onChange, onBlur, value } }) => (
-                <TextInput
-                  placeholderTextColor={"#616992"}
-                  placeholder="2023-02-23"
-                  keyboardType="numeric"
-                  onBlur={onBlur}
-                  onChangeText={(text) => onChange(formatDate(text))}
-                  value={value}
-                  maxLength={10}
-                  style={{
-                    borderColor: "#dee2f1",
-                    fontSize: 14,
-                    paddingVertical: 10,
-                    borderWidth: 1,
-                    paddingHorizontal: 10,
-                    borderRadius: 10,
-                    color: "#1C2863",
-                    fontSize: 14,
-                  }}
-                />
-              )}
-              name="DateOfExpiry"
-              rules={{ required: "Заполните это поле" }}
-            />
-          </View>
-        </View>
-      </View>
-      <View>
-        {isLoading ? (
-          <ActivityIndicator size="large" color={"#4B5DFF"} />
-        ) : (
-          <TouchableOpacity
-            onPress={handleSubmit(onSubmit)}
-            style={{
-              elevation: 5,
-              shadowColor: "#000",
-              shadowOffset: { width: 0, height: 2 },
-              shadowOpacity: 0.2,
-              shadowRadius: 10,
-              paddingVertical: 15,
-              textAlign: "center",
-              borderRadius: 10,
-              backgroundColor: "#4B5DFF",
-            }}
-          >
-            <Text
+        <View>
+          {isLoading ? (
+            <ActivityIndicator size="large" color={"#4B5DFF"} />
+          ) : (
+            <TouchableOpacity
+              onPress={handleSubmit(onSubmit)}
               style={{
-                color: "#fff",
+                elevation: 5,
+                shadowColor: "#000",
+                shadowOffset: { width: 0, height: 2 },
+                shadowOpacity: 0.2,
+                shadowRadius: 10,
+                paddingVertical: 15,
                 textAlign: "center",
-                fontSize: 20,
+                borderRadius: 10,
+                backgroundColor: "#4B5DFF",
               }}
             >
-              Сохранить
-            </Text>
-          </TouchableOpacity>
-        )}
-      </View>
+              <Text
+                style={{
+                  color: "#fff",
+                  textAlign: "center",
+                  fontSize: 20,
+                }}
+              >
+                Сохранить
+              </Text>
+            </TouchableOpacity>
+          )}
+        </View>
+      </SafeAreaWrapper>
     </ScrollView>
   );
 };

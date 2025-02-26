@@ -10,7 +10,7 @@ import {
   Switch,
 } from "react-native";
 import Fontisto from "react-native-vector-icons/Fontisto";
-import MapAddress from "../../components/Map/MapAddress";
+// import MapAddress from "../../components/Map/MapAddress";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { useForm, Controller } from "react-hook-form";
 import { LinearGradient } from "expo-linear-gradient";
@@ -18,7 +18,6 @@ import { useSelector } from "react-redux";
 import ListImages from "../../components/List/ListImages/ListImages";
 import Toast from "react-native-toast-message";
 import CustomText from "../../components/CustomText/CustomText";
-import { fonts } from "@rneui/base";
 
 const ConfirmationScreen = () => {
   const navigation = useNavigation();
@@ -88,13 +87,10 @@ const ConfirmationScreen = () => {
         const responseDataError = await response.json();
         const errorMessage =
           responseDataError.error.Message || "Произошла ошибка";
-
-        console.log("errorMessage", errorMessage);
       }
 
       const responseData = await response.json();
 
-      // Определяем, какие поля показывать
       const fieldsToShow = [];
       if (!responseData.Profile.Name) fieldsToShow.push("Name");
       if (!responseData.Profile.Surname) fieldsToShow.push("Surname");
@@ -134,21 +130,28 @@ const ConfirmationScreen = () => {
         const responseDataError = await response.json();
         const errorMessage =
           responseDataError.error.Message || "Произошла ошибка";
-        console.log("errorMessage", errorMessage);
+        Toast.show({
+          type: "error",
+          position: "bottom",
+          text2: errorMessage,
+          visibilityTime: 3000,
+          autoHide: true,
+          topOffset: 30,
+        });
         return;
       }
 
-      const responseData = await response.json();
-      console.log("Успешный ответ:", responseData);
-      navigation.navigate("Главная страница");
-      Toast.show({
-        type: "success",
-        position: "top",
-        text2: "Вы успешно забронировали",
-        visibilityTime: 3000,
-        autoHide: true,
-        topOffset: 30,
-      });
+      if (response.ok) {
+        navigation.navigate("Главная страница");
+        Toast.show({
+          type: "success",
+          position: "bottom",
+          text2: "Вы успешно забронировали",
+          visibilityTime: 3000,
+          autoHide: true,
+          topOffset: 30,
+        });
+      }
     } catch (error) {
       console.log("Ошибка при отправке:", error);
     }
@@ -202,10 +205,10 @@ const ConfirmationScreen = () => {
         <CustomText style={{ fontSize: 18, fontWeight: 500, marginBottom: 10 }}>
           Местоположение
         </CustomText>
-        <MapAddress
+        {/* <MapAddress
           latitude={route?.params?.latitude}
           longitude={route?.params?.longitude}
-        />
+        /> */}
         <View>
           <View
             style={{

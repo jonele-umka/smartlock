@@ -85,7 +85,6 @@ const ReservationScreen = () => {
                     borderColor: "rgba(75, 93, 255, 0.2)",
                   }}
                 >
-                  {console.log(reservation)}
                   <CustomText
                     style={{
                       textAlign: "center",
@@ -257,7 +256,7 @@ const ReservationScreen = () => {
                         />
 
                         <CustomText style={{ color: "green" }}>
-                          С животными можно
+                          Есть животные
                         </CustomText>
                       </View>
                     </View>
@@ -284,7 +283,7 @@ const ReservationScreen = () => {
                         />
 
                         <CustomText style={{ color: "#F36A7B" }}>
-                          С животными нельзя
+                          Нет животных
                         </CustomText>
                       </View>
                     </View>

@@ -27,7 +27,6 @@ const LockDetails = () => {
   const [deleteLoadingId, setDeleteLoadingId] = useState(null);
 
   const handleDelete = async (ID) => {
-    console.log(ID);
     setDeleteLoadingId(ID);
     try {
       const response = await fetch(`${API_URL}/passcode/${ID}`, {
@@ -37,13 +36,13 @@ const LockDetails = () => {
           Authorization: `Bearer ${token}`,
         },
       });
-      console.log(response);
+
       if (response.ok) {
         fetchData();
         setDeleteLoadingId(null);
         Toast.show({
           type: "success",
-          position: "top",
+          position: "bottom",
           text1: "Пин код успешно удален",
           visibilityTime: 3000,
           autoHide: true,
@@ -207,7 +206,6 @@ const LockDetails = () => {
                         columnGap: 15,
                       }}
                     >
-                      {console.log(passcode)}
                       <View
                         style={{
                           padding: 20,

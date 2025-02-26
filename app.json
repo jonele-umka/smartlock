@@ -1,10 +1,14 @@
 {
   "expo": {
-    "name": "Smartlock",
-    "slug": "smartlock",
+    "name": "TogoLock",
+    "slug": "togolock",
     "version": "1.0.0",
+    "sdkVersion": "52.0.0",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
     "orientation": "portrait",
-    "scheme": "com.joneleumka.smartlock",
+    "scheme": "com.joneleumka.togolock",
     "icon": "./src/assets/apkIcons/icon.png",
     "splash": {
       "image": "./src/assets/apkIcons/splashImg.png",
@@ -13,7 +17,8 @@
     "userInterfaceStyle": "light",
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.joneleumka.smartlock",
+      "buildNumber": "1.0.0",
+      "bundleIdentifier": "com.joneleumka.togolock",
       "splash": {
         "image": "./src/assets/apkIcons/splashImg.png",
         "resizeMode": "cover"
@@ -21,23 +26,28 @@
       "infoPlist": {
         "NSPhotoLibraryUsageDescription": "Разрешение на доступ к вашей галерее",
         "NSCameraUsageDescription": "Разрешение на доступ к вашей камере",
-        "NSFaceIDUsageDescription": "Allow Smartlock to use Face ID.",
+        "NSFaceIDUsageDescription": "Allow TogoLock to use Face ID.",
         "CFBundleURLTypes": [
           {
-            "CFBundleURLSchemes": ["com.joneleumka.smartlock"]
+            "CFBundleURLSchemes": [
+              "com.joneleumka.togolock"
+            ]
+          },
+          {
+            "CFBundleURLSchemes": [
+              "com.joneleumka.togolock"
+            ]
           }
-        ]
+        ],
+        "ITSAppUsesNonExemptEncryption": false
       }
     },
     "android": {
+      "minSdkVersion": 21,
+      "targetSdkVersion": 33,
       "adaptiveIcon": {
         "foregroundImage": "./src/assets/apkIcons/adaptive-icon.png",
         "backgroundColor": "#fff"
-      },
-      "config": {
-        "googleMaps": {
-          "apiKey": "AIzaSyBvwtsqmVTETIZtsUUcmkW0nNUBeET_MeY"
-        }
       },
       "permissions": [
         "android.permission.READ_EXTERNAL_STORAGE",
@@ -50,23 +60,26 @@
         "android.permission.ACCESS_COARSE_LOCATION",
         "android.permission.ACCESS_FINE_LOCATION",
         "android.permission.FOREGROUND_SERVICE",
-        "android.permission.SCHEDULE_EXACT_ALARM"
+        "android.permission.SCHEDULE_EXACT_ALARM",
+        "android.permission.CAMERA"
       ],
-      "package": "com.joneleumka.smartlock"
+      "package": "com.joneleumka.togolock",
+      "versionCode": 1
     },
     "web": {
       "favicon": "./src/assets/apkIcons/icon.png"
     },
     "extra": {
+      "googleMapsApiKey": "AIzaSyBvwtsqmVTETIZtsUUcmkW0nNUBeET_MeY",
       "eas": {
-        "projectId": "ca4f4746-60f3-4a50-b5c9-cafb4a2641ec"
+        "projectId": "40d0d522-2374-4de5-9b85-3c24bff9c7c5"
       }
     },
     "plugins": [
       [
         "expo-local-authentication",
         {
-          "faceIDPermission": "Allow Smartlock to use Face ID."
+          "faceIDPermission": "Allow TogoLock to use Face ID."
         }
       ],
       [
@@ -78,14 +91,14 @@
       [
         "expo-location",
         {
-          "locationAlwaysAndWhenInUsePermission": "Allow Smartlock to use your location."
+          "locationAlwaysAndWhenInUsePermission": "Allow TogoLock to use your location."
         }
       ],
       [
         "expo-camera",
         {
-          "cameraPermission": "Allow Smartlock to access your camera",
-          "microphonePermission": "Allow Smartlock to access your microphone",
+          "cameraPermission": "Allow TogoLock to access your camera",
+          "microphonePermission": "Allow TogoLock to access your microphone",
           "recordAudioAndroid": true
         }
       ],
@@ -97,7 +110,14 @@
           "defaultChannel": "default"
         }
       ],
-      
+      [
+        "expo-build-properties",
+        {
+          "ios": {
+            "useFrameworks": "static"
+          }
+        }
+      ],
       "expo-localization",
       "expo-font"
     ],

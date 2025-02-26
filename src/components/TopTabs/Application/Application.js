@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, TouchableOpacity, Image } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchApplications } from "../../../Store/applicationsSlice/applicationsSlice";
@@ -9,11 +9,13 @@ import SimpleLineIcons from "react-native-vector-icons/SimpleLineIcons";
 
 const Application = ({ application, status }) => {
   const [isRejectSheetVisible, setRejectSheetVisible] = useState(false);
+  const [loading, setLoading] = useState("");
   const API_URL = process.env.API_URL;
   const token = useSelector((state) => state.auth.token);
   const dispatch = useDispatch();
 
   const handleReject = async (applicationID, rejectReason) => {
+    setLoading(true);
     try {
       const response = await fetch(
         `${API_URL}/booking/reject/${applicationID}`,
@@ -27,20 +29,23 @@ const Application = ({ application, status }) => {
         }
       );
 
-      const result = await response.json();
-
       if (response.ok) {
-        console.log("result", result);
+        setLoading(false);
         dispatch(fetchApplications("pending"));
         dispatch(fetchApplications("active"));
         dispatch(fetchApplications("rejected"));
       } else {
+        setLoading(false);
         console.error("Server Error:", result);
       }
     } catch (error) {
+      setLoading(false);
       console.error("Error:", error);
     }
   };
+  useEffect(() => {
+    dispatch(fetchApplications("active"));
+  }, []);
 
   const handleActive = async () => {
     try {
@@ -58,7 +63,6 @@ const Application = ({ application, status }) => {
       const result = await response.json();
 
       if (response.ok) {
-        console.log("result", result);
         dispatch(fetchApplications("pending"));
         dispatch(fetchApplications("active"));
         dispatch(fetchApplications("rejected"));
@@ -202,7 +206,7 @@ const Application = ({ application, status }) => {
                   />
 
                   <CustomText style={{ color: "#57d673" }}>
-                    С животными можно
+                    Есть животные
                   </CustomText>
                 </View>
               </View>
@@ -225,7 +229,7 @@ const Application = ({ application, status }) => {
                     style={{ color: "#F36A7B", fontSize: 25 }}
                   />
 
-                  <CustomText>С животными нельзя</CustomText>
+                  <CustomText>Нет животных</CustomText>
                 </View>
               </View>
             )}
@@ -290,6 +294,7 @@ const Application = ({ application, status }) => {
         onReject={handleReject}
         visible={isRejectSheetVisible}
         onClose={() => setRejectSheetVisible(false)}
+        loading={loading}
       />
     </View>
   );

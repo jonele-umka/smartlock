@@ -1,10 +1,9 @@
-import React, { useEffect, useState, useRef, useCallback } from "react";
+import React, { useEffect, useState } from "react";
 import { View } from "react-native";
-// import { useDispatch } from "react-redux";
-// import { useNavigation } from "@react-navigation/native";
 import * as Location from "expo-location";
 import Map from "../components/Map/Map";
 import { useSelector } from "react-redux";
+import SafeAreaWrapper from "../components/SafeAreaWrapper/SafeAreaWrapper";
 // import Search from "../components/Search/Search";
 // import { LinearGradient } from "expo-linear-gradient";
 
@@ -50,7 +49,6 @@ const MapScreen = () => {
     (state) => state.accommodation.accommodations
   );
 
-  console.log(accommodations.Latitude);
   useEffect(() => {
     (async () => {
       let { status } = await Location.requestForegroundPermissionsAsync();
@@ -64,9 +62,9 @@ const MapScreen = () => {
     })();
   }, []);
   return (
-    <View style={{ flex: 1 }}>
+    <SafeAreaWrapper style={{ flex: 1 }}>
       <Map location={location} accommodations={accommodations} />
-      {/* <View style={{ flex: isSearchVisible ? 1 : 1.15 }}>
+      {/* <SafeAreaWrapper style={{ flex: isSearchVisible ? 1 : 1.15 }}>
         {!isSearchVisible && (
           <TouchableOpacity
             onPress={() => handleSheetChanges()}
@@ -104,18 +102,18 @@ const MapScreen = () => {
             </LinearGradient>
           </TouchableOpacity>
         )}
-      </View> */}
+      </SafeAreaWrapper> */}
       {/* {isSearchVisible && (
-        <Animated.View
+        <Animated.SafeAreaWrapper
           style={{
             flex: animatedHeight,
             opacity: animatedOpacity,
           }}
         >
           <Search handleSheetChanges={handleSheetChanges} />
-        </Animated.View>
+        </Animated.SafeAreaWrapper>
       )} */}
-    </View>
+    </SafeAreaWrapper>
   );
 };
 

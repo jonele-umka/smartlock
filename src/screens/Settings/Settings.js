@@ -6,7 +6,7 @@ import * as Localization from "expo-localization";
 import i18n from "../../components/i18n/i18n";
 import { Dialog } from "@rneui/themed";
 import Link from "../../components/Link/Link";
-import ActionLanguage from "../../components/ActionSheet/ActionLanguage/ActionLanguage";
+// import ActionLanguage from "../../components/ActionSheet/ActionLanguage/ActionLanguage";
 import SafeAreaWrapper from "../../components/SafeAreaWrapper/SafeAreaWrapper";
 import { useSelector } from "react-redux";
 
@@ -68,7 +68,7 @@ const Settings = () => {
           </View>
         </Dialog>
 
-        <ActionLanguage language={language} setLanguage={setLanguage} />
+        {/* <ActionLanguage language={language} setLanguage={setLanguage} /> */}
         {token && (
           <View>
             {links.map((link, index) => (

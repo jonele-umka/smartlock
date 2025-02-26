@@ -4,7 +4,6 @@ import Toast from "react-native-toast-message";
 
 const API_URL = process.env.API_URL;
 
-// Асинхронные действия (thunks)
 export const loginUser = createAsyncThunk(
   "auth/loginUser",
   async (userData, { rejectWithValue }) => {
@@ -27,7 +26,6 @@ export const loginUser = createAsyncThunk(
       const data = await response.json();
 
       const token = data?.token;
-      const userProfile = data?.user?.Profile;
       const owner = data?.user?.Role;
       const login = userData?.Email;
       const password = userData?.Password;
@@ -35,9 +33,8 @@ export const loginUser = createAsyncThunk(
       await AsyncStorage.setItem("login", login);
       await AsyncStorage.setItem("password", password);
 
-      return { token, userProfile, owner };
+      return { token, owner };
     } catch (error) {
-      console.log(error);
       return rejectWithValue(error.toString());
     }
   }
@@ -60,14 +57,6 @@ export const sendEmail = createAsyncThunk(
         const errorMessage =
           responseDataError.error.Message || "Произошла ошибка";
 
-        // Toast.show({
-        //   type: "error",
-        //   position: "top",
-        //   text2: errorMessage,
-        //   visibilityTime: 3000,
-        //   autoHide: true,
-        //   topOffset: 30,
-        // });
         return rejectWithValue(errorMessage);
       }
       const responseData = await response.json();
@@ -81,7 +70,6 @@ export const sendEmail = createAsyncThunk(
 export const verifyCode = createAsyncThunk(
   "auth/verifyCode",
   async (code, { rejectWithValue }) => {
-    console.log("dw", code);
     try {
       const response = await fetch(`${API_URL}/api/auth/verify_email/${code}`, {
         method: "POST",
@@ -92,17 +80,10 @@ export const verifyCode = createAsyncThunk(
 
       if (!response.ok) {
         const responseDataError = await response.json();
-        console.log(responseDataError);
+
         const errorMessage =
           responseDataError.error.Message || "Произошла ошибка";
-        // Toast.show({
-        //   type: "error",
-        //   position: "top",
-        //   text2: errorMessage,
-        //   visibilityTime: 3000,
-        //   autoHide: true,
-        //   topOffset: 30,
-        // });
+
         return rejectWithValue(errorMessage);
       }
     } catch (error) {
@@ -131,7 +112,7 @@ export const resendCode = createAsyncThunk(
           responseDataError.error.Error || "Произошла ошибка";
         Toast.show({
           type: "error",
-          position: "top",
+          position: "bottom",
           text2: errorMessage,
           visibilityTime: 3000,
           autoHide: true,
@@ -156,15 +137,15 @@ export const loginGoogle = createAsyncThunk(
           "Content-Type": "application/json",
         },
       });
-      console.log(response);
+
       if (!response.ok) {
         const responseDataError = await response.json();
-        console.log(responseDataError);
+
         const errorMessage =
           responseDataError.error.Error || "Произошла ошибка";
         Toast.show({
           type: "error",
-          position: "top",
+          position: "bottom",
           text2: errorMessage,
           visibilityTime: 3000,
           autoHide: true,
@@ -181,10 +162,8 @@ export const loginGoogle = createAsyncThunk(
 );
 export const logoutUser = createAsyncThunk(
   "auth/logout",
-  async (_, { rejectWithValue }) => {
+  async (token, { rejectWithValue }) => {
     try {
-      const token = await AsyncStorage.getItem("token");
-
       const response = await fetch(`${API_URL}/api/auth/logout`, {
         method: "POST",
         headers: {
@@ -192,14 +171,14 @@ export const logoutUser = createAsyncThunk(
           Authorization: `Bearer ${token}`,
         },
       });
-console.log(response)
+
       if (!response.ok) {
         const responseDataError = await response.json();
         const errorMessage =
           responseDataError.error.Message || "Произошла ошибка";
         Toast.show({
           type: "error",
-          position: "top",
+          position: "bottom",
           text1: "Ошибка",
           text2: "Не удалось выйти",
           visibilityTime: 3000,
@@ -217,7 +196,7 @@ console.log(response)
     } catch (error) {
       Toast.show({
         type: "error",
-        position: "top",
+        position: "bottom",
         text1: "Ошибка",
         text2: error.message,
         visibilityTime: 3000,
@@ -225,6 +204,33 @@ console.log(response)
         topOffset: 30,
       });
       return rejectWithValue(error.message);
+    }
+  }
+);
+export const getUserProfile = createAsyncThunk(
+  "auth/getUserProfile",
+  async (token, { rejectWithValue }) => {
+    try {
+      const response = await fetch(`${API_URL}/api/auth/profile`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        const responseDataError = await response.json();
+        const errorMessage =
+          responseDataError.error.Error || "Произошла ошибка";
+        return rejectWithValue(errorMessage);
+      }
+
+      const data = await response.json();
+
+      return data.Profile;
+    } catch (error) {
+      return rejectWithValue(error.toString());
     }
   }
 );
@@ -250,7 +256,6 @@ const authSlice = createSlice({
       })
       .addCase(loginUser.fulfilled, (state, action) => {
         state.token = action.payload.token;
-        state.userProfile = action.payload.userProfile;
         state.owner = action.payload.owner;
         state.loading = false;
       })
@@ -297,6 +302,18 @@ const authSlice = createSlice({
         state.owner = null;
       })
       .addCase(logoutUser.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(getUserProfile.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getUserProfile.fulfilled, (state, action) => {
+        state.userProfile = action.payload;
+        state.loading = false;
+      })
+      .addCase(getUserProfile.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });

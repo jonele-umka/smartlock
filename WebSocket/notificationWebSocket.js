@@ -22,7 +22,6 @@ const NotificationWebSocket = () => {
       );
 
       newWs.onopen = () => {
-        console.log("WebSocket открыт");
         newWs.send("something");
       };
 

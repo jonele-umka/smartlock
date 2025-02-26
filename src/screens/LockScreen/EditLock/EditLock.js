@@ -1,7 +1,6 @@
 import React, { useRef, useState } from "react";
 import {
   View,
-  Text,
   TextInput,
   TouchableOpacity,
   ScrollView,
@@ -10,13 +9,11 @@ import {
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { Controller, useForm } from "react-hook-form";
 import Toast from "react-native-toast-message";
-import { LinearGradient } from "expo-linear-gradient";
-
 import ActionDateTime from "../../../components/ActionSheet/ActionDateTime/ActionDateTimePin";
 import { useSelector } from "react-redux";
-import RNPickerSelect from "react-native-picker-select";
 import CustomText from "../../../components/CustomText/CustomText";
 import { formatDate } from "../../../components/FormatDate/FormatDate";
+import CustomPicker from "../../../components/CustomPicker/CustomPicker";
 
 const EditLock = () => {
   const navigation = useNavigation();
@@ -30,7 +27,7 @@ const EditLock = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
-  const [passcodeType, setPasscodeType] = useState(1); // Default to 1 (Permanent code)
+  const [passcodeType, setPasscodeType] = useState(1);
 
   const dateTimeSheetRef = useRef(null);
   const [dateType, setDateType] = useState("");
@@ -47,8 +44,6 @@ const EditLock = () => {
       EndDate: passcodeType === 2 ? String(endDate) : null,
     };
 
-    console.log("Request Body:", requestBody);
-
     setIsLoading(true);
 
     try {
@@ -61,13 +56,12 @@ const EditLock = () => {
         body: JSON.stringify(requestBody),
       });
 
-      const result = await response.json();
-      console.log("Response result:", result);
+      // const result = await response.json();
 
       if (response.ok) {
         Toast.show({
           type: "success",
-          position: "top",
+          position: "bottom",
           text1: "Пин код успешно создан",
           visibilityTime: 3000,
           autoHide: true,
@@ -103,31 +97,14 @@ const EditLock = () => {
           <CustomText style={{ marginBottom: 10, fontSize: 18 }}>
             Тип пин кода
           </CustomText>
-          <RNPickerSelect
+          <CustomPicker
+            selectedValue={passcodeType}
             onValueChange={(value) => setPasscodeType(value)}
+            placeholder="Выберите тип кода"
             items={[
               { label: "Постоянный код", value: 1 },
               { label: "Временный код", value: 2 },
             ]}
-            value={passcodeType}
-            style={{
-              inputAndroid: {
-                paddingVertical: 15,
-                paddingHorizontal: 10,
-                borderRadius: 10,
-                color: "#1C2863",
-                fontSize: 14,
-                backgroundColor: "#dee2f1",
-              },
-              inputIOS: {
-                paddingVertical: 15,
-                paddingHorizontal: 10,
-                borderRadius: 10,
-                color: "#1C2863",
-                fontSize: 14,
-                backgroundColor: "#dee2f1",
-              },
-            }}
           />
         </View>
 

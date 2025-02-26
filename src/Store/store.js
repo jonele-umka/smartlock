@@ -6,6 +6,7 @@ import favoritesSlice from "./favoritesSlice/favoritesSlice";
 import searchSlice from "./searchSlice/searchSlice";
 import applicationsSlice from "./applicationsSlice/applicationsSlice";
 import reservationSlice from "./reservationSlice/reservationSlice";
+import dictionarySlice from "./dictionarySlice/dictionarySlice";
 
 const store = configureStore({
   reducer: {
@@ -16,6 +17,7 @@ const store = configureStore({
     search: searchSlice,
     applications: applicationsSlice,
     reservation: reservationSlice,
+    dictionary: dictionarySlice,
   },
 });
 

@@ -23,7 +23,7 @@ const Header = () => {
         paddingHorizontal: 10,
       }}
     >
-      <CustomText style={{ fontSize: 35 }}>Smartlock</CustomText>
+      <CustomText style={{ fontSize: 35 }}>TogoLock</CustomText>
       <TouchableOpacity onPress={() => navigation.navigate("Уведомления")}>
         <AntDesign
           name="bells"

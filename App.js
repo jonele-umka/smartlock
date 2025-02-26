@@ -60,7 +60,6 @@ const App = () => {
           throw new Error("Идентификатор проекта не найден");
         }
         token = (await Notifications.getExpoPushTokenAsync({ projectId })).data;
-        console.log(token);
       } catch (error) {
         console.error("Ошибка при получении токена уведомлений:", error);
         token = null;
@@ -81,11 +80,7 @@ const App = () => {
   return (
     <Provider store={store}>
       <SafeAreaProvider>
-        <StatusBar
-          translucent={true}
-          backgroundColor="transparent"
-          barStyle="default" // Вы можете выбрать 'light-content' в зависимости от темы
-        />
+        <StatusBar style="light" translucent={true} />
         <Navigator />
         <NotificationWebSocket />
         <Toast />

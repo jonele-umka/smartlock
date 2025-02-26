@@ -5,23 +5,26 @@ import {
   StyleSheet,
   Text,
   View,
-  Button,
   TouchableOpacity,
+  Platform,
 } from "react-native";
 import Entypo from "react-native-vector-icons/Entypo";
+import { ScrollView } from "react-native-actions-sheet";
+import ListImages from "../List/ListImages/ListImages";
+import { useNavigation } from "@react-navigation/native";
 
 export default function Map({ location, accommodations }) {
   const mapRef = useRef(null);
+  const navigation = useNavigation();
   const [selectedAccommodation, setSelectedAccommodation] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
-
   useEffect(() => {
     if (location) {
       mapRef.current?.animateCamera(
         {
           center: {
-            latitude: location.latitude,
-            longitude: location.longitude,
+            latitude: location?.latitude,
+            longitude: location?.longitude,
           },
           zoom: 13,
         },
@@ -43,7 +46,7 @@ export default function Map({ location, accommodations }) {
   return (
     <View style={{ flex: 1 }}>
       <MapView
-        provider={PROVIDER_GOOGLE}
+        provider={Platform.OS === "android" ? PROVIDER_GOOGLE : undefined}
         style={styles.map}
         showsUserLocation
         showsMyLocationButton
@@ -51,17 +54,19 @@ export default function Map({ location, accommodations }) {
       >
         {accommodations.map((accommodation) => (
           <Marker
-            key={accommodation.ID}
-            title={accommodation.Title}
+            key={accommodation?.ID}
+            title={accommodation?.Title}
             coordinate={{
-              latitude: parseFloat(accommodation.Latitude),
-              longitude: parseFloat(accommodation.Longitude),
+              latitude: parseFloat(accommodation?.Latitude),
+              longitude: parseFloat(accommodation?.Longitude),
             }}
             onPress={() => onMarkerSelected(accommodation)}
           >
             <Callout>
-              <View style={{ padding: 10 }}>
-                <Text style={{ fontSize: 24 }}>{accommodation.Title}</Text>
+              <View style={{ padding: 5 }}>
+                <Text style={{ fontSize: 16, flexWrap: "wrap" }}>
+                  {accommodation?.Title}
+                </Text>
               </View>
             </Callout>
           </Marker>
@@ -90,26 +95,64 @@ export default function Map({ location, accommodations }) {
               >
                 <Entypo name="cross" style={{ fontSize: 30 }} />
               </TouchableOpacity>
-              <Text style={{ fontSize: 25, fontWeight: 600, marginBottom: 10 }}>
-                {selectedAccommodation.Title}
+              <Text style={{ fontSize: 22, fontWeight: 600, marginBottom: 20 }}>
+                {selectedAccommodation?.Title || "Без названия"}
               </Text>
-              <View style={{ marginBottom: 10 }}>
+              {selectedAccommodation?.Images?.length > 0 ? (
+                <ListImages images={selectedAccommodation.Images} />
+              ) : (
+                <Text>Изображений нет</Text>
+              )}
+
+              <View style={{ marginVertical: 10 }}>
                 <Text
                   style={{ fontWeight: 500, fontSize: 18, marginBottom: 5 }}
                 >
                   Описание:
                 </Text>
-                <Text>{selectedAccommodation.Description}</Text>
+                <ScrollView style={{ height: 200 }}>
+                  <Text>
+                    {selectedAccommodation?.Description ||
+                      "Описание отсутствует"}
+                  </Text>
+                </ScrollView>
               </View>
               <View
                 style={{
                   flexDirection: "row",
                   alignItems: "center",
                   columnGap: 5,
+                  marginBottom: 20,
                 }}
               >
                 <Text style={{ fontWeight: 500, fontSize: 18 }}>Цена:</Text>
-                <Text>{selectedAccommodation.Price} сом</Text>
+                <Text style={{ fontSize: 18 }}>
+                  {selectedAccommodation?.Price
+                    ? `${selectedAccommodation.Price} сом/ночь`
+                    : "Цена не указана"}
+                </Text>
+              </View>
+              <View>
+                <TouchableOpacity
+                  onPress={() => {
+                    navigation.navigate("Детали объекта", {
+                      id: selectedAccommodation.ID,
+                    });
+                    setModalVisible(false);
+                  }}
+                  style={{
+                    backgroundColor: "#4B5DFF",
+                    paddingVertical: 10,
+                    paddingHorizontal: 20,
+                    borderRadius: 10,
+                  }}
+                >
+                  <Text
+                    style={{ fontSize: 18, color: "#fff", textAlign: "center" }}
+                  >
+                    Бронировать
+                  </Text>
+                </TouchableOpacity>
               </View>
             </View>
           </View>

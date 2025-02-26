@@ -15,7 +15,7 @@ export const fetchReservation = createAsyncThunk(
 
       if (!response.ok) {
         const responseDataError = await response.json();
-        console.log(responseDataError);
+
         const errorMessage =
           responseDataError.error.Message || "Произошла ошибка";
         return rejectWithValue(errorMessage);

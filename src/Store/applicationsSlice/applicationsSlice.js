@@ -48,7 +48,7 @@ const applicationSlice = createSlice({
       })
       .addCase(fetchApplications.fulfilled, (state, action) => {
         state.status = "succeeded";
-        const status = action.meta.arg; // статус из вызова
+        const status = action.meta.arg;
         state.data[status] = action.payload;
       })
       .addCase(fetchApplications.rejected, (state, action) => {

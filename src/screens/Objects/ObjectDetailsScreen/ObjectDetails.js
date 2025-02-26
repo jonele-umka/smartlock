@@ -1,7 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import {
   View,
-  Text,
   Image,
   ScrollView,
   TouchableOpacity,
@@ -12,14 +11,12 @@ import {
 import Fontisto from "react-native-vector-icons/Fontisto";
 import Ionicons from "react-native-vector-icons/Ionicons";
 
-import MapAddress from "../../../components/Map/MapAddress";
+// import MapAddress from "../../../components/Map/MapAddress";
 
 import CarouselImage from "../../../components/CarouselImage/CarouselImage";
-import Reviews from "../../../components/List/ListReviews/Reviews";
 import { useNavigation, useRoute } from "@react-navigation/native";
 
 import ListFacilities from "../../../components/List/ListFacilities/ListFacilities";
-import { LinearGradient } from "expo-linear-gradient";
 import CustomText from "../../../components/CustomText/CustomText";
 import {
   addFavorite,
@@ -30,7 +27,8 @@ import { useDispatch, useSelector } from "react-redux";
 import CalendarReserv from "../../../components/Calendars/CalendarReserv/CalendarReserv";
 import ActionAddReview from "../../../components/ActionSheet/ActionAddReview/ActionAddReview";
 import ActionDescription from "../../../components/ActionSheet/ActionDescription/ActionDescription";
- 
+import ListReviews from "../../../components/List/ListReviews/ListReviews";
+
 const ObjectDetails = () => {
   const navigation = useNavigation();
   const route = useRoute();
@@ -46,6 +44,8 @@ const ObjectDetails = () => {
   const [image, setImage] = useState([]);
   const [calendar, setCalendar] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [canReview, setCanReview] = useState(null);
+
   // const [currentType, setCurrentType] = useState(null);
 
   // const [isActionSheetVisible, setIsActionSheetVisible] = useState(false);
@@ -88,9 +88,38 @@ const ObjectDetails = () => {
     fetchObjectDetails();
   }, [route.params?.id]);
 
+  const fetchReviewsCheck = async () => {
+    try {
+      const response = await fetch(
+        `${API_URL}/review/check/${route?.params?.id}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.ok) {
+        const data = await response.json();
+
+        setCanReview(data);
+      } else {
+        console.error("Ошибка при получении данных:", response.status);
+      }
+    } catch (error) {
+      console.error("Ошибка при отправке запроса:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchReviewsCheck();
+  }, [route.params?.id]);
+
   const latitude = parseFloat(objectDetails?.Latitude);
   const longitude = parseFloat(objectDetails?.Longitude);
-console.log(route.params?.id)
+
   // more reviews
   const [descriptionExpanded, setDescriptionExpanded] = useState(false);
   const descriptionText = objectDetails?.Description || "";
@@ -145,9 +174,8 @@ console.log(route.params?.id)
       await dispatch(addFavorite({ id: route.params?.id, token }));
     }
 
-    // Обновляем локальное состояние немедленно
     setIsFavorite(!isFavorite);
-    // Обновляем список фаворитов после добавления или удаления
+
     dispatch(fetchFavorites(token));
   };
   // actionsheet more reviews
@@ -231,8 +259,9 @@ console.log(route.params?.id)
             onPress={handleFavoritePress}
           >
             <Ionicons
+              color={"#fff"}
               name={isFavorite ? "heart" : "heart-outline"}
-              style={{ color: "#fff ", fontSize: 35 }}
+              style={{ fontSize: 35 }}
             />
           </TouchableOpacity>
         </View>
@@ -389,7 +418,7 @@ console.log(route.params?.id)
               />
 
               <CustomText style={{ fontSize: 16, fontWeight: 500 }}>
-                {objectDetails?.Category.Name || "Нет категории"}
+                {objectDetails?.Category.NameRu || "Нет категории"}
               </CustomText>
             </View>
             <CustomText style={{ fontSize: 16 }}>Категория</CustomText>
@@ -506,7 +535,7 @@ console.log(route.params?.id)
           >
             Местоположение
           </CustomText>
-          <MapAddress latitude={latitude} longitude={longitude} />
+          {/* <MapAddress latitude={latitude} longitude={longitude} /> */}
           <View>
             <View
               style={{
@@ -535,183 +564,74 @@ console.log(route.params?.id)
               return (
                 <View
                   key={rule.ID}
-                  style={{ flexDirection: "row", columnGap: 8 }}
+                  style={{
+                    flexDirection: "row",
+                    columnGap: 10,
+                    alignItems: "center",
+                  }}
                 >
                   <Image
                     source={{ uri: rule.Icon }}
                     style={{ width: 25, height: 25 }}
                   />
 
-                  <CustomText>{rule.Value}</CustomText>
+                  <CustomText>{rule?.ValueRu}</CustomText>
                 </View>
               );
             })}
           </View>
         </View>
-
+        {/* <Reviews
+          reviewsData={objectDetails}
+          toggleDescriptionReviews={toggleDescriptionReviews}
+          expandedReviewIndex={expandedReviewIndex}
+        /> */}
         <View style={{ marginTop: 40 }}>
-          {/* <View>
-            <View style={{ flexDirection: "column", rowGap: 20 }}>
-              <View>
-                <View
-                  style={{
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                  }}
-                >
-                  <CustomText>Wi-Fi</CustomText>
-                  <CustomText>9</CustomText>
-                </View>
-                <View
-                  style={{
-                    backgroundColor: "green",
-                    height: 10,
-                    borderRadius: 100,
-                    marginTop: 5,
-                  }}
-                ></View>
-              </View>
-              <View>
-                <View
-                  style={{
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                  }}
-                >
-                  <CustomText>Комфорт</CustomText>
-                  <CustomText>9</CustomText>
-                </View>
-                <View
-                  style={{
-                    backgroundColor: "green",
-                    height: 10,
-                    borderRadius: 100,
-                    marginTop: 5,
-                  }}
-                ></View>
-              </View>
-              <View>
-                <View
-                  style={{
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                  }}
-                >
-                  <CustomText>Персонал</CustomText>
-                  <CustomText>9</CustomText>
-                </View>
-                <View
-                  style={{
-                    backgroundColor: "green",
-                    height: 10,
-                    borderRadius: 100,
-                    marginTop: 5,
-                  }}
-                ></View>
-              </View>
-              <View>
-                <View
-                  style={{
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                  }}
-                >
-                  <CustomText>Расположение</CustomText>
-                  <CustomText>9</CustomText>
-                </View>
-                <View
-                  style={{
-                    backgroundColor: "green",
-                    height: 10,
-                    borderRadius: 100,
-                    marginTop: 5,
-                  }}
-                ></View>
-              </View>
-              <View>
-                <View
-                  style={{
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                  }}
-                >
-                  <CustomText>Соотношение цена/качество</CustomText>
-                  <CustomText>9</CustomText>
-                </View>
-                <View
-                  style={{
-                    backgroundColor: "green",
-                    height: 10,
-                    borderRadius: 100,
-                    marginTop: 5,
-                  }}
-                ></View>
-              </View>
-              <View>
-                <View
-                  style={{
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                  }}
-                >
-                  <CustomText>Удобства</CustomText>
-                  <CustomText>9</CustomText>
-                </View>
-                <View
-                  style={{
-                    backgroundColor: "green",
-                    height: 10,
-                    borderRadius: 100,
-                    marginTop: 5,
-                  }}
-                ></View>
-              </View>
-              <View>
-                <View
-                  style={{
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                  }}
-                >
-                  <CustomText>Чистота</CustomText>
-                  <CustomText>9</CustomText>
-                </View>
-                <View
-                  style={{
-                    backgroundColor: "green",
-                    height: 10,
-                    borderRadius: 100,
-                    marginTop: 5,
-                  }}
-                ></View>
-              </View>
-            </View>
-          </View> */}
-
           {objectDetails?.Reviews && objectDetails?.Reviews.length > 0 ? (
-            <View style={{ marginTop: 20 }}>
-              <Reviews
-                reviewsData={objectDetails}
-                toggleDescriptionReviews={toggleDescriptionReviews}
-                expandedReviewIndex={expandedReviewIndex}
-              />
-            </View>
+            <ListReviews
+              reviewsData={objectDetails}
+              toggleDescriptionReviews={toggleDescriptionReviews}
+              expandedReviewIndex={expandedReviewIndex}
+              fetchObjectDetails={fetchObjectDetails}
+              fetchReviewsCheck={fetchReviewsCheck}
+              canReview={canReview}
+              toggleReviews={toggleReviews}
+            />
           ) : (
             <View style={{ marginTop: 20 }}>
               <CustomText style={{ fontSize: 18, fontWeight: 500 }}>
                 Отзывы
               </CustomText>
-              <CustomText style={{ marginTop: 10, fontSize: 16 }}>
-                Нет отзывов
-              </CustomText>
-              <View style={{ marginTop: 10, alignItems: "center", flex: 1 }}>
-                <TouchableOpacity onPress={toggleReviews}>
-                  <CustomText
-                    style={{ fontSize: 18, fontWeight: 500, color: "#005fb8" }}
-                  >
-                    Добавьте первый отзыв
-                  </CustomText>
-                </TouchableOpacity>
+              <View
+                style={{
+                  padding: 15,
+                  borderRadius: 5,
+                  borderColor: "#dee2f1",
+                  borderWidth: 1,
+                  marginTop: 10,
+                }}
+              >
+                <CustomText style={{ fontSize: 16 }}>Нет отзывов</CustomText>
+                <View style={{ marginTop: 20, alignItems: "center", flex: 1 }}>
+                  {canReview === 0 ? (
+                    <CustomText style={{ fontSize: 16, color: "gray" }}>
+                      Оставить отзыв невозможно, так как вы не проживали в
+                      данном жилье.
+                    </CustomText>
+                  ) : (
+                    <TouchableOpacity onPress={toggleReviews}>
+                      <CustomText
+                        style={{
+                          fontSize: 18,
+                          fontWeight: 500,
+                          color: "#005fb8",
+                        }}
+                      >
+                        Добавьте первый отзыв
+                      </CustomText>
+                    </TouchableOpacity>
+                  )}
+                </View>
               </View>
             </View>
           )}
@@ -852,6 +772,7 @@ console.log(route.params?.id)
         actionSheetReviewRef={actionSheetReviewRef}
         id={objectDetails?.ID}
         fetchReviews={fetchObjectDetails}
+        fetchReviewsCheck={fetchReviewsCheck}
       />
       <ActionDescription
         actionSheetRef={actionSheetRef}

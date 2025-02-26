@@ -1,9 +1,21 @@
 import React, { useRef, useState, useEffect } from "react";
-import { View, Text, TextInput, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  ActivityIndicator,
+} from "react-native";
 import ActionSheet from "react-native-actions-sheet";
 import CustomText from "../../CustomText/CustomText";
 
-const ActionRejectReason = ({ onReject, applicationID, visible, onClose }) => {
+const ActionRejectReason = ({
+  onReject,
+  applicationID,
+  visible,
+  onClose,
+  loading,
+}) => {
   const [rejectReason, setRejectReason] = useState("");
   const actionSheetRef = useRef(null);
 
@@ -44,21 +56,25 @@ const ActionRejectReason = ({ onReject, applicationID, visible, onClose }) => {
           value={rejectReason}
           onChangeText={setRejectReason}
         />
-        <TouchableOpacity
-          onPress={handleReject}
-          style={{
-            backgroundColor: "#4B5DFF",
-            padding: 15,
-            borderRadius: 10,
-            marginTop: 20,
-          }}
-        >
-          <Text
-            style={{ color: "#fff", textAlign: "center", fontWeight: "500" }}
+        {loading ? (
+          <ActivityIndicator size="large" color={"#4B5DFF"} />
+        ) : (
+          <TouchableOpacity
+            onPress={handleReject}
+            style={{
+              backgroundColor: "#4B5DFF",
+              padding: 15,
+              borderRadius: 10,
+              marginTop: 20,
+            }}
           >
-            Отправить
-          </Text>
-        </TouchableOpacity>
+            <Text
+              style={{ color: "#fff", textAlign: "center", fontWeight: "500" }}
+            >
+              Отправить
+            </Text>
+          </TouchableOpacity>
+        )}
       </View>
     </ActionSheet>
   );

@@ -30,7 +30,7 @@ const CameraScreen = () => {
       setType("international");
     }
   }, [route.params?.type]);
-console.log('qqww', type)
+
   const handleImageCaptured = (imageUri) => {
     setCapturedImage(imageUri);
   };

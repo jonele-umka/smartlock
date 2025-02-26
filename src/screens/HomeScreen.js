@@ -1,10 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { View, ScrollView, RefreshControl } from "react-native";
-import SimpleLineIcons from "react-native-vector-icons/SimpleLineIcons";
-
-import ListCard from "../components/List/HomeListCard/ListCard";
+import ListCard from "../components/List/BestObjects/BestObjectsList";
 import Header from "../components/Header/Header";
-
 import ObjectList from "./Objects/ObjectList/ObjectList";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchNotifications } from "../Store/notificationsSlice/notificationsSlice";
@@ -13,8 +10,7 @@ import { fetchAccommodations } from "../Store/accommodationSlice/accommodationSl
 import Search from "../components/Search/Search";
 import SafeAreaWrapper from "../components/SafeAreaWrapper/SafeAreaWrapper";
 import { useNavigation } from "@react-navigation/core";
-import { Button } from "@rneui/base";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import BestObjectsList from "../components/List/BestObjects/BestObjectsList";
 
 const HomeScreen = ({ navigation }) => {
   const dispatch = useDispatch();
@@ -27,12 +23,12 @@ const HomeScreen = ({ navigation }) => {
     (state) => state.accommodation.accommodations
   );
 
-  // Функция, выполняющаяся при обновлении
   const onRefresh = () => {
     setRefreshing(true);
     fetchHotels();
     dispatch(fetchNotifications(token));
     dispatch(fetchAccommodations());
+
     setTimeout(() => {
       setRefreshing(false);
     }, 500);
@@ -41,7 +37,7 @@ const HomeScreen = ({ navigation }) => {
   const fetchHotels = async () => {
     try {
       const response = await fetch(
-        `${API_URL}/accommodation/get-all?min_rating=5`,
+        `${API_URL}/accommodation/get-all?min_rating=-12`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -66,10 +62,11 @@ const HomeScreen = ({ navigation }) => {
   useEffect(() => {
     dispatch(fetchAccommodations());
   }, []);
+
   // list
   const clickHandler = (page) =>
     navigation.push("Главная страница", { screen: page });
-  console.log(token);
+
   return (
     <ScrollView
       style={{
@@ -90,19 +87,21 @@ const HomeScreen = ({ navigation }) => {
               await AsyncStorage.removeItem("login");
               await AsyncStorage.removeItem("password");
 
-              console.log("Data removed");
+           
             } catch (exception) {
-              console.log(exception);
+              
             }
           }}
         /> */}
         {/* <ListCategories clickHandler={clickHandler} items={categories} /> */}
+
         {hotels && hotels.length > 0 && (
           <View style={{ marginBottom: 30 }}>
             <CustomText
               style={{
                 fontSize: 25,
-                marginBottom: 15,paddingHorizontal: 10
+                marginBottom: 15,
+                paddingHorizontal: 10,
               }}
             >
               Популярные

@@ -10,7 +10,7 @@ import SignUpEmail from "../screens/Registration/SignUp/SignUpEmail";
 import SignUpCode from "../screens/Registration/SignUp/SignUpCode";
 
 import ChangePassword from "../screens/ChangePassword/ChangePassword";
-import SearchResults from "../screens/SearchResults/SearchResults";
+// import SearchResults from "../screens/SearchResults/SearchResults";
 import ObjectDetailsScreen from "../screens/Objects/ObjectDetailsScreen/ObjectDetails";
 import AllReviewsScreen from "../screens/Reviews/AllReviewsScreen";
 
@@ -22,7 +22,6 @@ import EditProfile from "../screens/EditProfile/EditProfile";
 import MyObjectsScreen from "../screens/Objects/MyObjectList/MyObjectsList";
 import Payments from "../screens/Payments/Payments";
 
-import AddCard from "../screens/AddCard/AddCard";
 import LockScreen from "../screens/LockScreen/LockScreen";
 import EditLock from "../screens/LockScreen/EditLock/EditLock";
 import ForgotPassword from "../screens/Registration/ForgotPassword/ForgotPassword";
@@ -39,8 +38,8 @@ import ChangeEmail from "../screens/EditProfile/ChangeEmail/ChangeEmail";
 import ConfirmCode from "../screens/EditProfile/ChangeEmail/ConfirmCode";
 import BecomeOwner from "../screens/Owner/BecomeOwner/BecomeOwner";
 import MoreDetailsApplications from "../screens/Owner/MoreDetailsApplications/MoreDetailsApplications";
-import EditObject from "../screens/Objects/ObjectDetailsScreen/EditObject";
 import LockDetails from "../screens/LockScreen/LockDetails/LockDetails";
+import Consideration from "../screens/Owner/Consideration/Consideration";
 
 const Stack = createStackNavigator();
 
@@ -97,7 +96,7 @@ const Navigator = () => {
         <Stack.Screen name="Регистрация" component={SignUpEmail} />
         <Stack.Screen name="Код подтверждения" component={SignUpCode} />
         <Stack.Screen name="Сменить пароль" component={ChangePassword} />
-        <Stack.Screen name="Результаты поиска" component={SearchResults} />
+        {/* <Stack.Screen name="Результаты поиска" component={SearchResults} /> */}
         <Stack.Screen name="Детали объекта" component={ObjectDetailsScreen} />
         <Stack.Screen name="Все отзывы" component={AllReviewsScreen} />
         {/* <Stack.Screen name="Все вопросы" component={AllQuestionsScreen} /> */}
@@ -110,7 +109,7 @@ const Navigator = () => {
         <Stack.Screen name="Редактировать профиль" component={EditProfile} />
         <Stack.Screen name="Управление объектами" component={MyObjectsScreen} />
         <Stack.Screen name="Платежи" component={Payments} />
-        <Stack.Screen name="Добавить карту" component={AddCard} />
+
         <Stack.Screen name="Замок" component={LockScreen} />
         <Stack.Screen name="Редактировать замок" component={EditLock} />
         <Stack.Screen name="Забыли пароль" component={ForgotPassword} />
@@ -138,10 +137,15 @@ const Navigator = () => {
         <Stack.Screen name="Подтверждение кода" component={ConfirmCode} />
         <Stack.Screen name="Стать владельцем" component={BecomeOwner} />
         <Stack.Screen
+          name="Заявка на подтверждение"
+          component={Consideration}
+          options={{ headerShown: false, gestureEnabled: false }}
+        />
+        <Stack.Screen
           name="Подробнее о Заявке"
           component={MoreDetailsApplications}
         />
-        <Stack.Screen name="Редактировать объект" component={EditObject} />
+
         <Stack.Screen name="Детали замка" component={LockDetails} />
       </Stack.Navigator>
     </NavigationContainer>

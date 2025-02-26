@@ -5,12 +5,10 @@ import {
   TouchableOpacity,
   Image,
   TextInput,
-  SafeAreaView,
   Platform,
   ScrollView,
   ActivityIndicator,
 } from "react-native";
-import { SafeAreaView as SafeAreaViewContext } from "react-native-safe-area-context";
 import {
   useFocusEffect,
   useNavigation,
@@ -20,18 +18,17 @@ import PickImage from "../../components/PickImage/PickImage";
 import ActionSheet from "react-native-actions-sheet";
 import { useDispatch, useSelector } from "react-redux";
 import { Controller, useForm } from "react-hook-form";
-import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-import RNPickerSelect from "react-native-picker-select";
-import { Skeleton } from "@rneui/themed";
 import Entypo from "react-native-vector-icons/Entypo";
 import CustomText from "../../components/CustomText/CustomText";
+import CustomPicker from "../../components/CustomPicker/CustomPicker";
+import SafeAreaWrapper from "../../components/SafeAreaWrapper/SafeAreaWrapper";
+import { getUserProfile } from "../../Store/authSlice/authSlice";
 
 const EditProfile = () => {
-  const SafeAreaWrapper =
-    Platform.OS === "android" ? SafeAreaViewContext : SafeAreaView;
   const route = useRoute();
-  const { control, handleSubmit, setValue } = useForm();
   const dispatch = useDispatch();
+
+  const { control, handleSubmit, setValue } = useForm();
   const API_URL = process.env.API_URL;
   const [frontImage, setFrontImage] = useState(null);
   const [backImage, setBackImage] = useState(null);
@@ -46,7 +43,7 @@ const EditProfile = () => {
   const navigation = useNavigation();
   const actionSheetRef = useRef();
   const token = useSelector((state) => state.auth.token);
-  const owner = useSelector((state) => state.auth.owner);
+  // const owner = useSelector((state) => state.auth.owner);
   const userProfile = useSelector((state) => state.auth.userProfile);
   const avatar = userProfile?.Avatar;
   const IDPassportPhotoFront = userProfile?.Passport?.IDPassportPhotoFront;
@@ -57,7 +54,11 @@ const EditProfile = () => {
     userProfile?.Passport?.InternationalPassportPhoto;
   const InternationalPassportPhotoWithClient =
     userProfile?.Passport?.InternationalPassportPhotoWithClient;
-  const [passportType, setPassportType] = useState("ID");
+  // const [passportType, setPassportType] = useState("ID");
+
+  useEffect(() => {
+    dispatch(getUserProfile(token));
+  }, [dispatch, token]);
 
   const loadProfileData = () => {
     const timestamp = new Date().getTime();
@@ -103,7 +104,6 @@ const EditProfile = () => {
   );
 
   const navigateToCamera = (type) => {
-    console.log("Navigating to camera with type:", type);
     navigation.navigate("Камера", { type });
   };
   useEffect(() => {
@@ -140,9 +140,9 @@ const EditProfile = () => {
   }, [isActionSheetVisible]);
 
   useEffect(() => {
-    setValue("nickname", userProfile?.Nickname || "");
-    setValue("biography", userProfile?.Biography || "");
-    setValue("phoneNumber", userProfile?.PhoneNumber || "");
+    setValue("Nickname", userProfile?.Nickname || "");
+    setValue("Biography", userProfile?.Biography || "");
+    setValue("PhoneNumber", userProfile?.PhoneNumber || "");
   }, [userProfile, setValue]);
 
   const handleProfileUpdate = async () => {
@@ -193,7 +193,6 @@ const EditProfile = () => {
       const response = await fetch(`${API_URL}/api/auth/change_photo`, {
         method: "PATCH",
         headers: {
-          "Content-Type": "multipart/form-data",
           Authorization: `Bearer ${token}`,
         },
         body: formData,
@@ -206,7 +205,7 @@ const EditProfile = () => {
 
         if (result.Profile.Avatar) {
           setAvatarImage(
-            `${API_URL}/${result.Profile.Avatar}?timestamp=${timestamp}`
+            `${API_URL}/${result?.Profile?.Avatar}?timestamp=${timestamp}`
           );
         }
         if (
@@ -264,7 +263,6 @@ const EditProfile = () => {
       const response = await fetch(`${API_URL}/api/auth`, {
         method: "PATCH",
         headers: {
-          "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(data),
@@ -278,20 +276,20 @@ const EditProfile = () => {
         console.error("Error updating user profile:", errorMessage);
         return;
       }
+      if (response.ok) {
+        await handleProfileUpdate();
+        await getUserProfile(token);
+        navigation.navigate("Главная страница");
 
-      const result = await response.json();
-      navigation.navigate("Главная страница");
-      await handleProfileUpdate();
-      setLoading(false);
+        setLoading(false);
+      }
     } catch (error) {
       setLoading(false);
-
       console.error("Error updating user profile", error);
     }
   };
 
   const handleImageSelected = (imageUri, type) => {
-    console.log(type);
     if (type === "avatar") {
       setAvatarImage(imageUri);
     } else if (type === "front") {
@@ -369,7 +367,7 @@ const EditProfile = () => {
                 </TouchableOpacity>
               )}
             />
-            {owner === "client" && (
+            {/* {owner === "client" && (
               <TouchableOpacity
                 onPress={() => navigation.navigate("Стать владельцем")}
                 style={{
@@ -391,8 +389,8 @@ const EditProfile = () => {
                   Стать владельцем
                 </CustomText>
               </TouchableOpacity>
-            )}
-            <View style={{ marginBottom: 40 }}>
+            )} */}
+            <View>
               <CustomText style={{ marginBottom: 15, fontSize: 25 }}>
                 Редактировать данные
               </CustomText>
@@ -424,7 +422,7 @@ const EditProfile = () => {
                         onChangeText={(text) => onChange(text)}
                       />
                     )}
-                    name="nickname"
+                    name="Nickname"
                     defaultValue=""
                   />
                 </View>
@@ -457,7 +455,7 @@ const EditProfile = () => {
                   />
                 </View>
                 <View>
-                  <CustomText style={{ marginBottom: 10 }}>Описание</CustomText>
+                  <CustomText style={{ marginBottom: 10 }}>Био</CustomText>
                   <Controller
                     control={control}
                     render={({ field: { onChange, value } }) => (
@@ -473,60 +471,33 @@ const EditProfile = () => {
                         }}
                         underlineColorAndroid="transparent"
                         placeholderTextColor={"#616992"}
-                        placeholder="Описание"
+                        placeholder="Био"
                         value={value}
                         onChangeText={(text) => onChange(text)}
                       />
                     )}
-                    name="biography"
+                    name="Biography"
                     defaultValue=""
                   />
                 </View>
               </View>
             </View>
-            <View style={{ marginBottom: 20 }}>
+            {/* <View style={{ marginBottom: 20 }}>
               <CustomText style={{ marginBottom: 15, fontSize: 25 }}>
                 Фото паспорта
               </CustomText>
-              <View
-                style={{
-                  marginBottom: 20,
-                  backgroundColor: "#F2F2F3",
-                  borderRadius: 10,
-                  padding: Platform.OS === "ios" ? 15 : 0,
-                }}
-              >
-                <RNPickerSelect
-                  itemKey="value"
-                  placeholder={{
-                    label: "Выберите тип паспорта",
-                    value: null,
-                    color: "gray",
-                  }}
-                  onValueChange={(value) => setPassportType(value)}
+              <View>
+                <CustomText style={{ marginBottom: 10 }}>
+                  Тип паспорта
+                </CustomText>
+                <CustomPicker
                   items={[
                     { label: "ID паспорт", value: "ID" },
                     { label: "Загран паспорт", value: "International" },
                   ]}
-                  value={passportType}
-                  style={{
-                    inputAndroid: {
-                      paddingVertical: 15,
-                      paddingHorizontal: 10,
-                      borderRadius: 10,
-                      color: "#1C2863",
-                      fontSize: 14,
-                      backgroundColor: "#dee2f1",
-                    },
-                    inputIOS: {
-                      paddingVertical: 15,
-                      paddingHorizontal: 10,
-                      borderRadius: 10,
-                      color: "#1C2863",
-                      fontSize: 14,
-                      backgroundColor: "#dee2f1",
-                    },
-                  }}
+                  selectedValue={passportType}
+                  onValueChange={setPassportType}
+                  placeholder="Выберите тип паспорта"
                 />
               </View>
             </View>
@@ -796,7 +767,7 @@ const EditProfile = () => {
                   </View>
                 </View>
               </View>
-            )}
+            )} */}
           </View>
           {loading ? (
             <ActivityIndicator
@@ -834,7 +805,7 @@ const EditProfile = () => {
         </View>
       </SafeAreaWrapper>
 
-      <ActionSheet
+      {/* <ActionSheet
         ref={actionSheetRef}
         onClose={() => setIsActionSheetVisible(false)}
       >
@@ -866,12 +837,11 @@ const EditProfile = () => {
             <PickImage
               onImageSelected={(imageUri) => {
                 handleImageSelected(imageUri, currentPhotoType);
-                console.log("imageUri", imageUri);
+                setIsActionSheetVisible(false);
               }}
               renderPicker={({ pickImage }) => (
                 <TouchableOpacity
                   onPress={() => {
-                    setIsActionSheetVisible(false);
                     pickImage();
                   }}
                   style={{ alignItems: "center", rowGap: 5 }}
@@ -886,7 +856,7 @@ const EditProfile = () => {
             />
           </View>
         </View>
-      </ActionSheet>
+      </ActionSheet> */}
     </ScrollView>
   );
 };

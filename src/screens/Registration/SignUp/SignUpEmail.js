@@ -7,20 +7,17 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   View,
+  Image,
 } from "react-native";
-
 import { useNavigation } from "@react-navigation/core";
 import i18n from "../../../components/i18n/i18n";
-
 import Feather from "react-native-vector-icons/Feather";
-import { LinearGradient } from "expo-linear-gradient";
 import CustomText from "../../../components/CustomText/CustomText";
 import SafeAreaWrapper from "../../../components/SafeAreaWrapper/SafeAreaWrapper";
+import { registrationFields } from "../../../assets/data/Fields";
+import { ScrollView } from "react-native";
 
 const SignUpEmail = () => {
-  //   const isDarkModeEnabled = useSelector(
-  //     (state) => state.theme.isDarkModeEnabled
-  //   );
   const {
     control,
     handleSubmit,
@@ -30,13 +27,14 @@ const SignUpEmail = () => {
   const navigation = useNavigation();
   const loading = useSelector((state) => state.auth.loading);
   const [error, setError] = useState("");
+  const [showPassword, setShowPassword] = useState(false); // Состояние для отображения пароля
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false); // Состояние для отображения пароля подтверждения
 
-  const onSubmit = async (email) => {
+  const onSubmit = async (data) => {
     try {
-      const response = await dispatch(sendEmail(email));
-
+      const response = await dispatch(sendEmail(data));
       if (response.type === "auth/sendEmail/fulfilled") {
-        navigation.navigate("Код подтверждения", { email: email.Email });
+        navigation.navigate("Код подтверждения", { email: data.Email });
       } else {
         setError(response.payload);
       }
@@ -47,193 +45,95 @@ const SignUpEmail = () => {
   };
 
   return (
-    <SafeAreaWrapper
-      style={[
-        { flex: 1, backgroundColor: "#fff" },
-
-        // isDarkModeEnabled && { backgroundColor: "#191a1d" },
-      ]}
+    <ScrollView
+      style={{ flex: 1, backgroundColor: "#fff" }}
+      contentContainerStyle={{
+        flexGrow: 1,
+        justifyContent: "center",
+        paddingHorizontal: 10,
+        paddingVertical: 20,
+      }}
+      keyboardShouldPersistTaps="handled"
     >
-      <View
-        style={{
-          paddingHorizontal: 10,
-          paddingVertical: 20,
-        }}
-      >
-        <CustomText
+      <SafeAreaWrapper>
+        <Image
+          source={require("../../../assets/apkIcons/logo.png")}
           style={{
-            fontSize: 30,
-            marginBottom: 20,
-            color: "#1C2863",
-            fontWeight: 600,
+            marginBottom: 80,
+            alignSelf: "center",
+            objectFit: "contain",
           }}
-        >
-          {i18n.t("enterEmail")}
-        </CustomText>
-        <View
-          style={{
-            marginBottom: 10,
-          }}
-        >
-          <View style={{ marginBottom: 30 }}>
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                columnGap: 5,
-                borderWidth: 0.5,
-                borderColor: "#dee2f1",
-                paddingHorizontal: 10,
-                borderRadius: 10,
-                paddingVertical: 10,
-                borderColor: errors.Email ? "red" : "#dee2f1",
-              }}
-            >
-              <Feather name="mail" style={{ color: "#616992", fontSize: 20 }} />
-              <Controller
-                control={control}
-                name="Email"
-                rules={{
-                  required: i18n.t("fillInTheField"),
-                  pattern: {
-                    value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                    message: i18n.t("pleaseEnterAValidEmailAddress"),
-                  },
-                }}
-                render={({ field }) => (
-                  <TextInput
-                    placeholder={i18n.t("enterEmail")}
-                    placeholderTextColor="#616992"
-                    onChangeText={(value) => {
-                      field.onChange(value);
-                      setError("");
-                    }}
-                    value={field.value}
-                    style={{
-                      flex: 1,
-                      color: "#1C2863",
-                      fontSize: 14,
-                    }}
-                  />
-                )}
-              />
-            </View>
-            {errors.Email && (
-              <CustomText style={{ color: "red", fontSize: 12, marginTop: 7 }}>
-                {errors.Email.message}
-              </CustomText>
-            )}
-          </View>
-          <View style={{ marginBottom: 30 }}>
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                columnGap: 5,
-                borderWidth: 0.5,
-                borderColor: "#dee2f1",
-                paddingHorizontal: 10,
-                borderRadius: 10,
-                paddingVertical: 10,
-                borderColor: errors.Password ? "red" : "#dee2f1",
-              }}
-            >
-              <Feather name="lock" style={{ color: "#616992", fontSize: 20 }} />
-              <Controller
-                control={control}
-                name="Password"
-                rules={{
-                  required: i18n.t("fillInTheField"),
-                  minLength: {
-                    value: 8,
-                    message: i18n.t("passwordMinEight"),
-                  },
-                  pattern: {
-                    value: /^[^\sа-яА-Я]+$/i,
-                    message: i18n.t("enterInLatin"),
-                  },
-                }}
-                render={({ field }) => (
-                  <TextInput
-                    type="Пароль"
-                    placeholder={i18n.t("enterPassword")}
-                    placeholderTextColor="#616992"
-                    onChangeText={(value) => {
-                      field.onChange(value);
-                      setError("");
-                    }}
-                    value={field.value}
-                    style={{
-                      color: "#1C2863",
-                      fontSize: 14,
-                      flex: 1,
-                    }}
-                  />
-                )}
-              />
-            </View>
-            {errors.Password && (
-              <CustomText style={{ color: "red", fontSize: 12, marginTop: 7 }}>
-                {errors.Password.message}
-              </CustomText>
-            )}
-          </View>
-          <View>
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                columnGap: 5,
-                borderWidth: 0.5,
-                borderColor: "#dee2f1",
-                paddingHorizontal: 10,
-                borderRadius: 10,
-                paddingVertical: 10,
-                borderColor: errors.PasswordConfirm ? "red" : "#dee2f1",
-              }}
-            >
-              <Feather name="lock" style={{ color: "#616992", fontSize: 20 }} />
-              <Controller
-                control={control}
-                name="PasswordConfirm"
-                rules={{
-                  required: i18n.t("fillInTheField"),
-                  minLength: {
-                    value: 8,
-                    message: i18n.t("passwordMinEight"),
-                  },
-                  pattern: {
-                    value: /^[^\sа-яА-Я]+$/i,
-                    message: i18n.t("enterInLatin"),
-                  },
-                }}
-                render={({ field }) => (
-                  <TextInput
-                    type="Пароль"
-                    placeholder={i18n.t("confirmPassword")}
-                    placeholderTextColor="#616992"
-                    onChangeText={(value) => {
-                      field.onChange(value);
-                      setError("");
-                    }}
-                    value={field.value}
-                    style={{
-                      color: "#1C2863",
-                      fontSize: 14,
-                      flex: 1,
-                    }}
-                  />
-                )}
-              />
-            </View>
-            {errors.PasswordConfirm && (
-              <CustomText style={{ color: "red", fontSize: 12, marginTop: 7 }}>
-                {errors.PasswordConfirm.message}
-              </CustomText>
-            )}
-          </View>
-        </View>
+        />
 
+        {registrationFields.map((field) => (
+          <View key={field.name} style={{ marginBottom: 20 }}>
+            <CustomText>{field.label}</CustomText>
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                borderWidth: 0.5,
+                borderColor: errors[field.name] ? "red" : "#dee2f1",
+                paddingHorizontal: 10,
+                borderRadius: 50,
+                paddingVertical: 10,
+                marginTop: 12,
+                gap: 5,
+              }}
+            >
+              <Feather
+                name={field.icon}
+                style={{ color: "#616992", fontSize: 20 }}
+              />
+              <Controller
+                control={control}
+                name={field.name}
+                rules={field.rules}
+                render={({ field: { onChange, value } }) => (
+                  <TextInput
+                    placeholder={field.placeholder}
+                    placeholderTextColor="#616992"
+                    onChangeText={(text) => {
+                      onChange(text);
+                      setError("");
+                    }}
+                    value={value}
+                    style={{ flex: 1, color: "#1C2863", fontSize: 14 }}
+                    // secureTextEntry={
+                    //   (field.name === "Password" && !showPassword) ||
+                    //   (field.name === "PasswordConfirm" && !showConfirmPassword)
+                    // }
+                  />
+                )}
+              />
+              {field.name === "Password" && (
+                <TouchableOpacity
+                  onPress={() => setShowPassword(!showPassword)}
+                >
+                  <Feather
+                    name={showPassword ? "eye" : "eye-off"}
+                    style={{ color: "#616992", fontSize: 20 }}
+                  />
+                </TouchableOpacity>
+              )}
+              {field.name === "PasswordConfirm" && (
+                <TouchableOpacity
+                  onPress={() => setShowConfirmPassword(!showConfirmPassword)}
+                >
+                  <Feather
+                    name={showConfirmPassword ? "eye" : "eye-off"}
+                    style={{ color: "#616992", fontSize: 20 }}
+                  />
+                </TouchableOpacity>
+              )}
+            </View>
+            {errors[field.name] && (
+              <CustomText style={{ color: "red", fontSize: 12, marginTop: 7 }}>
+                {errors[field.name].message}
+              </CustomText>
+            )}
+          </View>
+        ))}
         {loading ? (
           <ActivityIndicator
             size="large"
@@ -257,23 +157,19 @@ const SignUpEmail = () => {
             }}
           >
             <CustomText
-              style={{
-                color: "#fff",
-                textAlign: "center",
-                fontSize: 20,
-              }}
+              style={{ color: "#fff", textAlign: "center", fontSize: 20 }}
             >
-              Войти
+              Зарегистрироваться
             </CustomText>
           </TouchableOpacity>
         )}
-        {error == 400 && (
+        {error && (
           <CustomText style={{ color: "red", fontSize: 12, marginTop: 7 }}>
             {i18n.t("invalidEmail")}
           </CustomText>
         )}
-      </View>
-    </SafeAreaWrapper>
+      </SafeAreaWrapper>
+    </ScrollView>
   );
 };
 

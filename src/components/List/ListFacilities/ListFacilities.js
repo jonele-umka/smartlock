@@ -1,15 +1,15 @@
 import React from "react";
-import { FlatList, Text, View, TouchableOpacity, Image } from "react-native";
+import { FlatList, View, Image } from "react-native";
 import CustomText from "../../CustomText/CustomText";
 
 const ListFacilities = ({ facilitiesData }) => {
-  const formatText = (text) => {
-    const words = text.split(" ");
-    if (words.length > 1) {
-      return `${words[0]}\n${words.slice(1).join(" ")}`;
-    }
-    return text;
-  };
+  // const formatText = (text) => {
+  //   const words = text.split(" ");
+  //   if (words.length > 1) {
+  //     return `${words[0]}\n${words.slice(1).join(" ")}`;
+  //   }
+  //   return text;
+  // };
 
   const renderItem = ({ item }) => {
     return (
@@ -27,7 +27,7 @@ const ListFacilities = ({ facilitiesData }) => {
       >
         <Image source={{ uri: item.Icon }} style={{ width: 30, height: 30 }} />
 
-        <CustomText style={{ textAlign: "center" }}>{item.Value}</CustomText>
+        <CustomText style={{ textAlign: "center" }}>{item.ValueRu}</CustomText>
       </View>
     );
   };

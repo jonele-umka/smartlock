@@ -42,3 +42,5 @@ build
 # Ignore iOS and Android folders
 ios/
 android/
+
+.codegpt

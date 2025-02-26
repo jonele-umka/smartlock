@@ -11,7 +11,6 @@ export const toggleDarkMode = (isEnabled) => {
         "isDarkModeEnabled",
         JSON.stringify(isEnabled)
       );
-      // console.log("Состояние темной темы сохранено в AsyncStorage.");
     } catch (error) {
       console.log("Ошибка при сохранении состояния темной темы: ", error);
     }

@@ -1,226 +1,39 @@
-// import {
-//   View,
-//   Text,
-//   TouchableOpacity,
-//   Modal,
-//   Pressable,
-//   Switch,
-//   TextInput,
-// } from "react-native";
-// import React, { useState } from "react";
-// import i18n from "../i18n/i18n";
-// import Ionicons from "react-native-vector-icons/Ionicons";
-// import * as ImagePicker from "expo-image-picker";
-
-// const ReviewsInput = () => {
-//   const [modalReviews, setModalReviews] = useState(false);
-//   const handleReviews = () => {
-//     setModalReviews(!modalReviews);
-//   };
-//   const pickImage = async () => {
-//     try {
-//       let result = await ImagePicker.launchImageLibraryAsync({
-//         mediaTypes: ImagePicker.MediaTypeOptions.All,
-//         allowsEditing: true,
-//         aspect: [4, 3],
-//         quality: 1,
-//       });
-
-//       if (!result.canceled) {
-//         setImage(result.assets[0].uri);
-//         uploadImage(result.assets[0].uri);
-//       }
-//     } catch (error) {
-//       console.error("Ошибка при выборе изображения", error);
-//     }
-//   };
-
-//   return (
-//     <View>
-//       <View>
-//         <TouchableOpacity
-//           style={{
-//             backgroundColor: "#f0f0f0",
-//             paddingVertical: 15,
-//             paddingHorizontal: 10,
-//             borderRadius: 10,
-//           }}
-//           onPress={handleReviews}
-//         >
-//           <Text
-//             style={{
-//               color: "#000",
-//               textAlign: "center",
-//               fontSize: 16,
-//               fontWeight: 500,
-//             }}
-//           >
-//             Написать отзыв
-//           </Text>
-//         </TouchableOpacity>
-//       </View>
-//       <Modal animationType="fade" transparent={true} visible={modalReviews}>
-//         <Pressable
-//           onPress={handleReviews}
-//           style={{
-//             flex: 1,
-//             justifyContent: "center",
-//             alignItems: "center",
-//             backgroundColor: "rgba(0,0,0,0.5)",
-//           }}
-//         >
-//           <View
-//             style={{
-//               width: "95%",
-//               backgroundColor: "#fff",
-//               borderRadius: 20,
-//               paddingVertical: 30,
-//               paddingHorizontal: 20,
-//               shadowColor: "#000",
-//               shadowOffset: {
-//                 width: 0,
-//                 height: 2,
-//               },
-//               shadowOpacity: 0.25,
-//               shadowRadius: 4,
-//               elevation: 5,
-//             }}
-//           >
-//             <View style={{ marginBottom: 20 }}>
-//               <View style={{ marginBottom: 20 }}>
-//                 <Text style={{ marginBottom: 10, fontSize: 18 }}>
-//                   Электронная почта
-//                 </Text>
-//                 <View
-//                   style={{
-//                     borderColor: "#e3e3e3",
-//                     borderWidth: 1,
-//                     padding: 5,
-//                     borderRadius: 10,
-//                   }}
-//                 >
-//                   <TextInput
-//                     style={{
-//                       paddingVertical: 10,
-//                       paddingHorizontal: 5,
-//                       fontSize: 16,
-//                     }}
-//                     underlineColorAndroid="transparent"
-//                     placeholder="Задайте вопрос"
-//                     placeholderTextColor="grey"
-//                     numberOfLines={10}
-//                     multiline={true}
-//                   />
-//                 </View>
-//               </View>
-//               <View style={{ marginBottom: 20 }}>
-//                 <Text style={{ marginBottom: 10, fontSize: 18 }}>
-//                   Ваш отзыв
-//                 </Text>
-//                 <View
-//                   style={{
-//                     borderColor: "#e3e3e3",
-//                     borderWidth: 1,
-//                     padding: 5,
-//                     borderRadius: 10,
-//                   }}
-//                 >
-//                   <TextInput
-//                     style={{
-//                       height: 100,
-//                       fontSize: 16,
-//                     }}
-//                     underlineColorAndroid="transparent"
-//                     placeholder="Задайте вопрос"
-//                     placeholderTextColor="grey"
-//                     numberOfLines={10}
-//                     multiline={true}
-//                   />
-//                 </View>
-//               </View>
-//               <View>
-//                 <TouchableOpacity
-//                   onPress={pickImage}
-//                   style={{
-//                     flexDirection: "row",
-//                     alignItems: "center",
-//                     columnGap: 10,
-//                     backgroundColor: "#e3e3e3",
-//                     paddingVertical: 10,
-//                     paddingHorizontal: 10,
-//                     borderRadius: 10,
-//                     alignSelf: "flex-start",
-//                   }}
-//                 >
-//                   <Ionicons name="image-outline" style={{ fontSize: 20 }} />
-//                   <Text style={{ fontSize: 16 }}>Добавить изображение</Text>
-//                 </TouchableOpacity>
-//               </View>
-//             </View>
-
-//             <TouchableOpacity
-//               onPress={handleReviews}
-//               style={{
-//                 backgroundColor: "green",
-//                 paddingVertical: 15,
-//                 paddingHorizontal: 20,
-//                 borderRadius: 10,
-//                 alignSelf: "center",
-//               }}
-//             >
-//               <Text
-//                 style={{
-//                   color: "#fff",
-//                   fontSize: 18,
-//                   textAlign: "center",
-//                   fontWeight: 500,
-//                 }}
-//               >
-//                 Отправить
-//               </Text>
-//             </TouchableOpacity>
-//           </View>
-//         </Pressable>
-//       </Modal>
-//     </View>
-//   );
-// };
-
-// export default ReviewsInput;
-import {
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  ActivityIndicator,
-} from "react-native";
+import { View, TouchableOpacity, ActivityIndicator } from "react-native";
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import { AirbnbRating } from "@rneui/base";
-import { LinearGradient } from "expo-linear-gradient";
 import { Controller, useForm } from "react-hook-form";
 import Toast from "react-native-toast-message";
 import CustomText from "../CustomText/CustomText";
+import CustomInput from "../CustomInput/CustomInput";
 
-const ReviewsInput = ({ actionSheetReviewRef, id, fetchReviews }) => {
+const ReviewsInput = ({
+  actionSheetReviewRef,
+  id,
+  fetchReviews,
+  fetchReviewsCheck,
+}) => {
   const {
     control,
     handleSubmit,
     formState: { errors },
   } = useForm();
+
   const [rating, setRating] = useState(3);
   const API_URL = process.env.API_URL;
   const token = useSelector((state) => state.auth.token);
   const [loading, setLoading] = useState(false);
+
   const onSubmit = async (data) => {
     const requestBody = {
       Content: data.Content,
       Star: rating,
-      AccommodationID: id,
+      AccommodationId: id,
     };
+
     setLoading(true);
     try {
-      const response = await fetch(`${API_URL}/review`, {
+      const response = await fetch(`${API_URL}/review/create`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -229,12 +42,28 @@ const ReviewsInput = ({ actionSheetReviewRef, id, fetchReviews }) => {
         body: JSON.stringify(requestBody),
       });
 
-      if (response.ok) {
+      if (!response.ok) {
+        const responseDataError = await response.json();
+        const errorMessage =
+          responseDataError.error.Error || "Произошла ошибка";
+
+        Toast.show({
+          type: "error",
+          position: "bottom",
+          text1: "Ошибка",
+          text2: errorMessage,
+          visibilityTime: 3000,
+          autoHide: true,
+          topOffset: 30,
+        });
+        actionSheetReviewRef?.current?.hide();
+        setLoading(false);
+      } else {
         setLoading(false);
 
         Toast.show({
           type: "success",
-          position: "top",
+          position: "bottom",
           text1: "Успех",
           text2: "Отзыв отправлен",
           visibilityTime: 3000,
@@ -243,37 +72,25 @@ const ReviewsInput = ({ actionSheetReviewRef, id, fetchReviews }) => {
         });
         actionSheetReviewRef?.current?.hide();
         fetchReviews();
-      } else {
-        actionSheetReviewRef?.current?.hide();
-        setLoading(false);
-
-        Toast.show({
-          type: "error",
-          position: "top",
-          text1: "Ошибка",
-          text2: "Произошла ошибка при отправке отзыва",
-          visibilityTime: 3000,
-          autoHide: true,
-          topOffset: 30,
-        });
+        fetchReviewsCheck();
       }
     } catch (error) {
       setLoading(false);
 
-      console.log(error);
       actionSheetReviewRef?.current?.hide();
 
       Toast.show({
         type: "error",
-        position: "top",
+        position: "bottom",
         text1: "Ошибка",
-        text2: `Произошла ошибка при отправке отзыва ${error}`,
+        text2: `Произошла ошибка при отправке отзыва: ${error.message}`,
         visibilityTime: 3000,
         autoHide: true,
         topOffset: 30,
       });
     }
   };
+
   return (
     <View>
       <View style={{ marginBottom: 20 }}>
@@ -292,12 +109,14 @@ const ReviewsInput = ({ actionSheetReviewRef, id, fetchReviews }) => {
             required: "Поле объязателен к заполнению",
           }}
           render={({ field }) => (
-            <TextInput
+            <CustomInput
               placeholder={"Чистый, удобный ..."}
               placeholderTextColor="#616992"
               onChangeText={(value) => {
                 field.onChange(value);
               }}
+              numberOfLines={10}
+              multiline={true}
               value={field.value}
               style={{
                 borderWidth: 1,
@@ -307,6 +126,7 @@ const ReviewsInput = ({ actionSheetReviewRef, id, fetchReviews }) => {
                 borderColor: "#dee2f1",
                 color: "#1C2863",
                 fontSize: 14,
+                textAlignVertical: "top",
               }}
             />
           )}
@@ -342,7 +162,11 @@ const ReviewsInput = ({ actionSheetReviewRef, id, fetchReviews }) => {
         </View>
       </View>
       {loading ? (
-        <ActivityIndicator size="large"  color={"#4B5DFF"} />
+        <ActivityIndicator
+          size="large"
+          color={"#4B5DFF"}
+          style={{ marginTop: 20 }}
+        />
       ) : (
         <TouchableOpacity
           style={{

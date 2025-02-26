@@ -4,7 +4,12 @@ import ActionSheet from "react-native-actions-sheet";
 import { Text, View } from "react-native";
 import CustomText from "../../CustomText/CustomText";
 
-const ActionAddReview = ({ actionSheetReviewRef, id, fetchReviews }) => {
+const ActionAddReview = ({
+  actionSheetReviewRef,
+  id,
+  fetchReviews,
+  fetchReviewsCheck,
+}) => {
   return (
     <ActionSheet ref={actionSheetReviewRef}>
       <View style={{ paddingVertical: 20, paddingHorizontal: 10 }}>
@@ -15,6 +20,7 @@ const ActionAddReview = ({ actionSheetReviewRef, id, fetchReviews }) => {
           actionSheetReviewRef={actionSheetReviewRef}
           id={id}
           fetchReviews={fetchReviews}
+          fetchReviewsCheck={fetchReviewsCheck}
         />
       </View>
     </ActionSheet>

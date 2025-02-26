@@ -21,6 +21,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import CustomText from "../../components/CustomText/CustomText";
 import SafeAreaWrapper from "../../components/SafeAreaWrapper/SafeAreaWrapper";
+import CustomInput from "../../components/CustomInput/CustomInput";
 
 const ChangePassword = () => {
   const {
@@ -75,14 +76,7 @@ const ChangePassword = () => {
 
         // await AsyncStorage.removeItem("password");
         await AsyncStorage.setItem("password", NewPasswordConfirm);
-        // Toast.show({
-        //   type: "success",
-        //   position: "top",
-        //   text2: i18n.t("youHaveSuccessfullyChangedYourPassword"),
-        //   visibilityTime: 3000,
-        //   autoHide: true,
-        //   topOffset: 30,
-        // });
+
         navigation.navigate("Главная страница");
       } else {
         setLoading(false);
@@ -97,232 +91,162 @@ const ChangePassword = () => {
   };
 
   return (
-    <SafeAreaWrapper
-      style={[
-        { flex: 1, backgroundColor: "#fff" },
-        // isDarkModeEnabled && { backgroundColor: "#191a1d" },
-      ]}
+    <View
+      style={{
+        flex: 1,
+        backgroundColor: "#fff",
+        paddingHorizontal: 10,
+        paddingVertical: 20,
+      }}
     >
-      <View
-        style={{
-          paddingHorizontal: 10,
-          paddingVertical: 20,
-        }}
-      >
+      <CustomText style={{ fontSize: 40, marginBottom: 30, fontWeight: "600" }}>
+        Сменить пароль
+      </CustomText>
+
+      {/** Старый пароль */}
+      <View style={{ marginBottom: 20 }}>
         <CustomText
-          style={{
-            fontSize: 40,
-            marginBottom: 30,
-            fontWeight: 600,
-          }}
+          style={{ marginBottom: 15, fontWeight: "500", fontSize: 16 }}
         >
-          Сменить пароль
+          Старый пароль
         </CustomText>
-
-        <View
-          style={{
-            marginBottom: 10,
+        <Controller
+          control={control}
+          name="CurrentPassword"
+          rules={{
+            required: "Заполните поле",
+            minLength: { value: 8, message: "Минимум 8 символов" },
+            pattern: {
+              value: /^[^\sа-яА-Я]+$/i,
+              message: "Введите на латинице",
+            },
           }}
-        >
-          <View style={{ marginBottom: 20 }}>
-            <CustomText
-              style={{ marginBottom: 15, fontWeight: 500, fontSize: 16 }}
-            >
-              Старый пароль
-            </CustomText>
-            <View>
-              <Controller
-                control={control}
-                name="CurrentPassword"
-                rules={{
-                  required: i18n.t("fillInTheField"),
-                  minLength: {
-                    value: 8,
-                    message: i18n.t("passwordMinEight"),
-                  },
-                  pattern: {
-                    value: /^[^\sа-яА-Я]+$/i,
-                    message: i18n.t("enterInLatin"),
-                  },
-                }}
-                render={({ field }) => (
-                  <TextInput
-                    type="Пароль"
-                    placeholder={"********"}
-                    placeholderTextColor="#616992"
-                    onChangeText={(value) => {
-                      field.onChange(value);
-                      setOldError("");
-                    }}
-                    value={field.value}
-                    style={{
-                      borderWidth: 1,
-                      paddingVertical: 10,
-                      paddingHorizontal: 10,
-                      borderRadius: 10,
-                      borderColor:
-                        errors.password_confirm === "passwords do not match"
-                          ? "red"
-                          : "#dee2f1",
-                      color: "#1C2863",
-                      fontSize: 14,
-                    }}
-                  />
-                )}
-              />
-            </View>
-            {errors.CurrentPassword && (
-              <CustomText style={{ color: "red", fontSize: 12, marginTop: 7 }}>
-                {errors.CurrentPassword.message}
-              </CustomText>
-            )}
-            {oldError && (
-              <CustomText style={{ color: "red", fontSize: 12, marginTop: 7 }}>
-                {oldError}
-              </CustomText>
-            )}
-          </View>
-          <View style={{ marginBottom: 20 }}>
-            <CustomText
-              style={{ marginBottom: 15, fontWeight: 500, fontSize: 16 }}
-            >
-              Новый пароль
-            </CustomText>
-            <View>
-              <Controller
-                control={control}
-                name="NewPassword"
-                rules={{
-                  required: i18n.t("fillInTheField"),
-                  minLength: {
-                    value: 8,
-                    message: i18n.t("passwordMinEight"),
-                  },
-                  pattern: {
-                    value: /^[^\sа-яА-Я]+$/i,
-                    message: i18n.t("enterInLatin"),
-                  },
-                }}
-                render={({ field }) => (
-                  <TextInput
-                    type="Пароль"
-                    placeholder={"********"}
-                    placeholderTextColor="#616992"
-                    onChangeText={(value) => {
-                      field.onChange(value);
-                      //   setError("");
-                    }}
-                    value={field.value}
-                    style={{
-                      borderWidth: 1,
-                      paddingVertical: 10,
-                      paddingHorizontal: 10,
-                      borderRadius: 10,
-                      borderColor:
-                        errors.password_confirm === "passwords do not match"
-                          ? "red"
-                          : "#dee2f1",
-                      color: "#1C2863",
-                      fontSize: 14,
-                    }}
-                  />
-                )}
-              />
-            </View>
-            {errors.NewPassword && (
-              <CustomText style={{ color: "red", fontSize: 12, marginTop: 7 }}>
-                {errors.NewPassword.message}
-              </CustomText>
-            )}
-          </View>
-          <View>
-            <CustomText
-              style={{ marginBottom: 15, fontWeight: 500, fontSize: 16 }}
-            >
-              Подтверждение пароля
-            </CustomText>
-            <View>
-              <Controller
-                control={control}
-                name="NewPasswordConfirm"
-                rules={{
-                  required: i18n.t("fillInTheField"),
-                  minLength: {
-                    value: 8,
-                    message: i18n.t("passwordMinEight"),
-                  },
-                  pattern: {
-                    value: /^[^\sа-яА-Я]+$/i,
-                    message: i18n.t("enterInLatin"),
-                  },
-                }}
-                render={({ field }) => (
-                  <TextInput
-                    type="Пароль"
-                    placeholder={"********"}
-                    placeholderTextColor="#616992"
-                    onChangeText={(value) => {
-                      field.onChange(value);
-                      setConfirmError("");
-                    }}
-                    value={field.value}
-                    style={{
-                      borderWidth: 1,
-                      paddingVertical: 10,
-                      paddingHorizontal: 10,
-                      borderRadius: 10,
-                      borderColor:
-                        errors.password_confirm === "passwords do not match"
-                          ? "red"
-                          : "#dee2f1",
-                      color: "#1C2863",
-                      fontSize: 14,
-                    }}
-                  />
-                )}
-              />
-            </View>
-            {errors.NewPasswordConfirm && (
-              <CustomText style={{ color: "red", fontSize: 12, marginTop: 7 }}>
-                {errors.NewPasswordConfirm.message}
-              </CustomText>
-            )}
-            {confirmError && (
-              <CustomText style={{ color: "red", fontSize: 12, marginTop: 7 }}>
-                {confirmError}
-              </CustomText>
-            )}
-          </View>
-        </View>
-
-        {loading ? (
-          <ActivityIndicator
-            size="large"
-            style={{ marginTop: 40 }}
-            color={"#4B5DFF"}
-          />
-        ) : (
-          <TouchableOpacity
-            onPress={handleSubmit(handleChangePassword)}
-            disabled={loading}
-            style={{
-              marginTop: 30,
-              padding: 15,
-              borderRadius: 10,
-              shadowColor: "#000",
-              marginBottom: 30,
-              backgroundColor: "#4B5DFF",
-            }}
-          >
-            <CustomText
-              style={{ color: "#fff", textAlign: "center", fontSize: 20 }}
-            >
-              {i18n.t("next")}
-            </CustomText>
-          </TouchableOpacity>
+          render={({ field }) => (
+            <CustomInput
+              placeholder="********"
+              secureTextEntry
+              onChange={(value) => {
+                field.onChange(value);
+                setOldError("");
+              }}
+              value={field.value}
+            />
+          )}
+        />
+        {errors.CurrentPassword && (
+          <CustomText style={{ color: "red", fontSize: 12 }}>
+            {errors.CurrentPassword.message}
+          </CustomText>
+        )}
+        {oldError && (
+          <CustomText style={{ color: "red", fontSize: 12 }}>
+            {oldError}
+          </CustomText>
         )}
       </View>
-    </SafeAreaWrapper>
+
+      {/** Новый пароль */}
+      <View style={{ marginBottom: 20 }}>
+        <CustomText
+          style={{ marginBottom: 15, fontWeight: "500", fontSize: 16 }}
+        >
+          Новый пароль
+        </CustomText>
+        <Controller
+          control={control}
+          name="NewPassword"
+          rules={{
+            required: "Заполните поле",
+            minLength: { value: 8, message: "Минимум 8 символов" },
+            pattern: {
+              value: /^[^\sа-яА-Я]+$/i,
+              message: "Введите на латинице",
+            },
+          }}
+          render={({ field }) => (
+            <CustomInput
+              placeholder="********"
+              secureTextEntry
+              onChange={field.onChange}
+              value={field.value}
+            />
+          )}
+        />
+        {errors.NewPassword && (
+          <CustomText style={{ color: "red", fontSize: 12 }}>
+            {errors.NewPassword.message}
+          </CustomText>
+        )}
+      </View>
+
+      {/** Подтверждение пароля */}
+      <View>
+        <CustomText
+          style={{ marginBottom: 15, fontWeight: "500", fontSize: 16 }}
+        >
+          Подтверждение пароля
+        </CustomText>
+        <Controller
+          control={control}
+          name="NewPasswordConfirm"
+          rules={{
+            required: "Заполните поле",
+            minLength: { value: 8, message: "Минимум 8 символов" },
+            pattern: {
+              value: /^[^\sа-яА-Я]+$/i,
+              message: "Введите на латинице",
+            },
+          }}
+          render={({ field }) => (
+            <CustomInput
+              placeholder="********"
+              secureTextEntry
+              onChange={(value) => {
+                field.onChange(value);
+                setConfirmError("");
+              }}
+              value={field.value}
+            />
+          )}
+        />
+        {errors.NewPasswordConfirm && (
+          <CustomText style={{ color: "red", fontSize: 12 }}>
+            {errors.NewPasswordConfirm.message}
+          </CustomText>
+        )}
+        {confirmError && (
+          <CustomText style={{ color: "red", fontSize: 12 }}>
+            {confirmError}
+          </CustomText>
+        )}
+      </View>
+
+      {/** Кнопка */}
+      {loading ? (
+        <ActivityIndicator
+          size="large"
+          style={{ marginTop: 40 }}
+          color={"#4B5DFF"}
+        />
+      ) : (
+        <TouchableOpacity
+          onPress={handleSubmit(handleChangePassword)}
+          disabled={loading}
+          style={{
+            marginTop: 30,
+            padding: 15,
+            borderRadius: 10,
+            backgroundColor: "#4B5DFF",
+          }}
+        >
+          <CustomText
+            style={{ color: "#fff", textAlign: "center", fontSize: 20 }}
+          >
+            Далее
+          </CustomText>
+        </TouchableOpacity>
+      )}
+    </View>
   );
 };
 

@@ -1,6 +1,5 @@
 import {
   View,
-  Text,
   TouchableOpacity,
   ScrollView,
   Platform,
@@ -11,6 +10,7 @@ import ActionSheet from "react-native-actions-sheet";
 import { CheckBox } from "@rneui/base";
 import SafeAreaWrapper from "../../SafeAreaWrapper/SafeAreaWrapper";
 import Entypo from "react-native-vector-icons/Entypo";
+import CustomText from "../../CustomText/CustomText";
 
 const ActionLandlord = ({
   actionSheetRef,
@@ -25,7 +25,6 @@ const ActionLandlord = ({
   checkInOutList,
   selectedCheckIn,
   selectedCheckOut,
-  categoryIcon,
   toggleAmenity,
   toggleCategory,
   toggleRule,
@@ -61,14 +60,14 @@ const ActionLandlord = ({
               justifyContent: "space-between",
             }}
           >
-            <Text style={{ fontSize: 18, marginBottom: 10 }}>
+            <CustomText style={{ fontSize: 18, marginBottom: 10 }}>
               {currentType === "amenities" && "Удобства"}
               {currentType === "rules" && "Порядок проживания"}
               {currentType === "category" && "Категории"}
 
               {currentType === "checkIn" && "Время въезда"}
               {currentType === "checkOut" && "Время выезда"}
-            </Text>
+            </CustomText>
             <TouchableOpacity onPress={() => setIsActionSheetVisible(false)}>
               <Entypo name="cross" style={{ fontSize: 30 }} />
             </TouchableOpacity>
@@ -79,123 +78,128 @@ const ActionLandlord = ({
               paddingBottom: Platform.OS === "ios" ? 40 : 20,
             }}
           >
-            {currentType === "amenities" &&
-              amenitiesList.map((amenity) => (
-                <View
-                  key={amenity.ID}
-                  style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                    columnGap: 10,
-                    marginBottom: 10,
-                  }}
-                >
-                  <CheckBox
-                    checked={selectedAmenities.includes(amenity.ID)}
-                    onPress={() => {
-                      toggleAmenity(amenity.ID);
-                    }}
-                    iconType="material-community"
-                    checkedIcon="checkbox-marked"
-                    uncheckedIcon="checkbox-blank-outline"
-                    size={30}
-                    checkedColor="#4B5DFF"
-                    containerStyle={{
-                      margin: 0,
-                      padding: 0,
-                      marginLeft: 0,
-                      marginRight: 0,
-                    }}
-                  />
-                  <View
-                    style={{
-                      flexDirection: "row",
-                      alignItems: "center",
-                      columnGap: 8,
-                    }}
-                  >
-                    <Image
-                      source={{ uri: amenity.Icon }}
-                      style={{ width: 30, height: 30 }}
-                    />
-                    <Text>{amenity.Value}</Text>
-                  </View>
-                </View>
-              ))}
-            {currentType === "rules" &&
-              rulesList.map((rule) => (
-                <View
-                  key={rule.ID}
-                  style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                    columnGap: 10,
-                    marginBottom: 10,
-                  }}
-                >
-                  <CheckBox
-                    checked={selectedRules.includes(rule.ID)}
-                    onPress={() => {
-                      toggleRule(rule.ID);
-                    }}
-                    iconType="material-community"
-                    checkedIcon="checkbox-marked"
-                    uncheckedIcon="checkbox-blank-outline"
-                    size={30}
-                    checkedColor="#4B5DFF"
-                    containerStyle={{
-                      margin: 0,
-                      padding: 0,
-                      marginLeft: 0,
-                      marginRight: 0,
-                    }}
-                  />
-                  <View
-                    style={{
-                      flexDirection: "row",
-                      alignItems: "center",
-                      columnGap: 8,
-                    }}
-                  >
-                    <Image
-                      source={{ uri: rule.Icon }}
-                      style={{ width: 30, height: 30 }}
-                    />
-                    <Text>{rule.Value}</Text>
-                  </View>
-                </View>
-              ))}
             {currentType === "category" &&
               categoryList.map((category) => (
                 <TouchableOpacity
-                  key={category.ID}
+                  key={category.Id}
                   onPress={() => {
-                    toggleCategory(category.ID);
+                    toggleCategory(category.Id);
                     setIsActionSheetVisible(false);
                   }}
                   style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                    justifyContent: "flex-start",
                     marginBottom: 10,
                     backgroundColor:
-                      selectedCategory === category.ID ? "#f0f0f0" : "#fff",
+                      selectedCategory === category.Id ? "#f0f0f0" : "#fff",
                     paddingVertical: 15,
                     paddingHorizontal: 10,
                     borderRadius: 10,
                     borderWidth: 1,
                     borderColor:
-                      selectedCategory === category.ID ? "#4B5DFF" : "#f0f0f0",
+                      selectedCategory === category.Id ? "#4B5DFF" : "#f0f0f0",
                   }}
                 >
-                  <Image
-                    source={categoryIcon[category.ID]}
-                    style={{ width: 30, height: 30 }}
-                  />
-                  <Text style={{ marginLeft: 8 }}>{category.Name}</Text>
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      alignItems: "center",
+                      columnGap: 8,
+                    }}
+                  >
+                    <Image
+                      source={{ uri: category?.Icon }}
+                      style={{ width: 20, height: 20, objectFit: "contain" }}
+                    />
+                    <CustomText>{category?.Name}</CustomText>
+                  </View>
                 </TouchableOpacity>
               ))}
 
+            {currentType === "rules" &&
+              rulesList.map((rule) => (
+                <View
+                  key={rule.Id}
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    columnGap: 10,
+                    marginBottom: 10,
+                  }}
+                >
+                  <CheckBox
+                    checked={selectedRules.includes(rule.Id)}
+                    onPress={() => {
+                      toggleRule(rule.Id);
+                    }}
+                    iconType="material-community"
+                    checkedIcon="checkbox-marked"
+                    uncheckedIcon="checkbox-blank-outline"
+                    size={30}
+                    checkedColor="#4B5DFF"
+                    containerStyle={{
+                      margin: 0,
+                      padding: 0,
+                      marginLeft: 0,
+                      marginRight: 0,
+                    }}
+                  />
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      alignItems: "center",
+                      columnGap: 8,
+                    }}
+                  >
+                    <Image
+                      source={{ uri: rule?.Icon }}
+                      style={{ width: 20, height: 20, objectFit: "contain" }}
+                    />
+                    <CustomText>{rule?.Value}</CustomText>
+                  </View>
+                </View>
+              ))}
+            {currentType === "amenities" &&
+              amenitiesList.map((amenity) => (
+                <View
+                  key={amenity.Id}
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    columnGap: 10,
+                    marginBottom: 10,
+                  }}
+                >
+                  <CheckBox
+                    checked={selectedAmenities.includes(amenity.Id)}
+                    onPress={() => {
+                      toggleAmenity(amenity.Id);
+                    }}
+                    iconType="material-community"
+                    checkedIcon="checkbox-marked"
+                    uncheckedIcon="checkbox-blank-outline"
+                    size={30}
+                    checkedColor="#4B5DFF"
+                    containerStyle={{
+                      margin: 0,
+                      padding: 0,
+                      marginLeft: 0,
+                      marginRight: 0,
+                    }}
+                  />
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      alignItems: "center",
+                      columnGap: 8,
+                    }}
+                  >
+                    <Image
+                      source={{ uri: amenity?.Icon }}
+                      style={{ width: 20, height: 20, objectFit: "contain" }}
+                    />
+                    <CustomText>{amenity?.Value}</CustomText>
+                  </View>
+                </View>
+              ))}
             {currentType === "checkIn" &&
               checkInOutList.map((checkIn) => (
                 <View
@@ -225,6 +229,7 @@ const ActionLandlord = ({
                       marginRight: 0,
                     }}
                   />
+
                   <View
                     style={{
                       flexDirection: "row",
@@ -232,7 +237,7 @@ const ActionLandlord = ({
                       columnGap: 8,
                     }}
                   >
-                    <Text>{checkIn.Name}</Text>
+                    <CustomText>{checkIn.Name}</CustomText>
                   </View>
                 </View>
               ))}
@@ -251,7 +256,7 @@ const ActionLandlord = ({
                   <CheckBox
                     checked={selectedCheckOut === checkOut.ID}
                     onPress={() => {
-                      toggleCheckOut(checkOut.ID);
+                      toggleCheckOut(checkOut.id);
                       setIsActionSheetVisible(false);
                     }}
                     iconType="material-community"
@@ -273,7 +278,7 @@ const ActionLandlord = ({
                       columnGap: 8,
                     }}
                   >
-                    <Text>{checkOut.Name}</Text>
+                    <CustomText>{checkOut.Name}</CustomText>
                   </View>
                 </View>
               ))}
