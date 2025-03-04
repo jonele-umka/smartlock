@@ -1,74 +1,72 @@
 import React from "react";
-import {
-  FlatList,
-  Text,
-  View,
-  StyleSheet,
-  TouchableOpacity,
-  ImageBackground,
-} from "react-native";
-import Fontisto from "react-native-vector-icons/Fontisto";
-import CustomText from "../../CustomText/CustomText";
-import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+import { FlatList, View, StyleSheet } from "react-native";
+// import Fontisto from "react-native-vector-icons/Fontisto";
+// import CustomText from "../../CustomText/CustomText";
+// import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+import Objects from "../../ObjectsComponent/Objects";
 
-const BestObjectsList = ({ items, API_URL, navigation }) => {
+const BestObjectsList = ({ items }) => {
+  console.log(items);
   const renderItem = ({ item }) => {
     return (
-      <TouchableOpacity
-        style={styles.cardContainer}
-        onPress={() =>
-          navigation.navigate("Детали объекта", {
-            id: item.ID,
-          })
-        }
-      >
-        <ImageBackground
-          style={styles.imageBackground}
-          resizeMode={
-            item.Images && item.Images.length > 0 && item.Images[0].ImageUrl
-              ? "cover"
-              : "contain"
-          }
-          source={
-            item.Images && item.Images.length > 0 && item.Images[0].ImageUrl
-              ? { uri: `${API_URL}/${item.Images[0].ImageUrl}` }
-              : require("../../../assets/noImg.png")
-          }
-        >
-          {/* <View style={styles.overlay} /> */}
-          <View style={styles.contentContainer}>
-            <View style={styles.priceContainer}>
-              <CustomText style={styles.price}>
-                {item.DiscountPrice} c /ночь
-              </CustomText>
-            </View>
+      <View style={{ width: 320 }}>
+        <Objects items={item} />
+      </View>
+      // <TouchableOpacity
+      //   style={styles.cardContainer}
+      //   onPress={() =>
+      //     navigation.navigate("Детали объекта", {
+      //       id: item.ID,
+      //     })
+      //   }
+      // >
+      //   <ImageBackground
+      //     style={styles.imageBackground}
+      //     resizeMode={
+      //       item.Images && item.Images.length > 0 && item.Images[0].ImageUrl
+      //         ? "cover"
+      //         : "contain"
+      //     }
+      //     source={
+      //       item.Images && item.Images.length > 0 && item.Images[0].ImageUrl
+      //         ? { uri: `${API_URL}/${item.Images[0].ImageUrl}` }
+      //         : require("../../../assets/noImg.png")
+      //     }
+      //   >
+      //     {/* <View style={styles.overlay} /> */}
+      //     <View style={styles.contentContainer}>
+      //       <View style={styles.priceContainer}>
+      //         <CustomText style={styles.price}>
+      //           {item.DiscountPrice} c /ночь
+      //         </CustomText>
+      //       </View>
 
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                columnGap: 5,
-                backgroundColor: "rgba(97, 105, 146, 0.8)",
-                padding: 5,
-                borderRadius: 10,
-              }}
-            >
-              <MaterialIcons
-                name="star-outline"
-                style={{ color: "#fff", fontSize: 20 }}
-              />
-              <CustomText
-                style={{ color: "#fff", fontWeight: 500, fontSize: 16 }}
-              >
-                {item.Rating}
-              </CustomText>
-            </View>
-          </View>
-          <View style={styles.bottomContent}>
-            <CustomText style={styles.title}>{item.Title}</CustomText>
-          </View>
-        </ImageBackground>
-      </TouchableOpacity>
+      //       <View
+      //         style={{
+      //           flexDirection: "row",
+      //           alignItems: "center",
+      //           columnGap: 5,
+      //           backgroundColor: "rgba(97, 105, 146, 0.8)",
+      //           padding: 5,
+      //           borderRadius: 10,
+      //         }}
+      //       >
+      //         <MaterialIcons
+      //           name="star-outline"
+      //           style={{ color: "#fff", fontSize: 20 }}
+      //         />
+      //         <CustomText
+      //           style={{ color: "#fff", fontWeight: 500, fontSize: 16 }}
+      //         >
+      //           {item.Rating}
+      //         </CustomText>
+      //       </View>
+      //     </View>
+      //     <View style={styles.bottomContent}>
+      //       <CustomText style={styles.title}>{item.Title}</CustomText>
+      //     </View>
+      //   </ImageBackground>
+      // </TouchableOpacity>
     );
   };
 

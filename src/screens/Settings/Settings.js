@@ -9,6 +9,7 @@ import Link from "../../components/Link/Link";
 // import ActionLanguage from "../../components/ActionSheet/ActionLanguage/ActionLanguage";
 import SafeAreaWrapper from "../../components/SafeAreaWrapper/SafeAreaWrapper";
 import { useSelector } from "react-redux";
+import ActionLanguage from "../../components/ActionSheet/ActionLanguage/ActionLanguage";
 
 const Settings = () => {
   const navigation = useNavigation();
@@ -24,11 +25,11 @@ const Settings = () => {
   };
   const links = [
     {
-      title: "Изменить почту",
+      title: i18n.t("changeEmail"),
       onPress: () => navigation.navigate("Изменить почту"),
     },
     {
-      title: "Сменить пароль",
+      title: i18n.t("changePassword"),
       onPress: () => navigation.navigate("Сменить пароль"),
     },
   ];
@@ -68,7 +69,7 @@ const Settings = () => {
           </View>
         </Dialog>
 
-        {/* <ActionLanguage language={language} setLanguage={setLanguage} /> */}
+        <ActionLanguage language={language} setLanguage={setLanguage} />
         {token && (
           <View>
             {links.map((link, index) => (

@@ -15,6 +15,7 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import { LinearGradient } from "expo-linear-gradient";
 import Toast from "react-native-toast-message";
 import CustomText from "../../../components/CustomText/CustomText";
+import i18n from "../../../components/i18n/i18n";
 
 const LockDetails = () => {
   const navigation = useNavigation();
@@ -43,7 +44,7 @@ const LockDetails = () => {
         Toast.show({
           type: "success",
           position: "bottom",
-          text1: "Пин код успешно удален",
+          text1: i18n.t("pinDelete"),
           visibilityTime: 3000,
           autoHide: true,
           topOffset: 30,

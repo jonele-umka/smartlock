@@ -6,6 +6,7 @@ import { Controller, useForm } from "react-hook-form";
 import Toast from "react-native-toast-message";
 import CustomText from "../CustomText/CustomText";
 import CustomInput from "../CustomInput/CustomInput";
+import i18n from "../i18n/i18n";
 
 const ReviewsInput = ({
   actionSheetReviewRef,
@@ -50,7 +51,7 @@ const ReviewsInput = ({
         Toast.show({
           type: "error",
           position: "bottom",
-          text1: "Ошибка",
+          text1: "Error",
           text2: errorMessage,
           visibilityTime: 3000,
           autoHide: true,
@@ -64,8 +65,8 @@ const ReviewsInput = ({
         Toast.show({
           type: "success",
           position: "bottom",
-          text1: "Успех",
-          text2: "Отзыв отправлен",
+          text1: "Success",
+          text2: i18n.t("sentReview"),
           visibilityTime: 3000,
           autoHide: true,
           topOffset: 30,
@@ -83,7 +84,7 @@ const ReviewsInput = ({
         type: "error",
         position: "bottom",
         text1: "Ошибка",
-        text2: `Произошла ошибка при отправке отзыва: ${error.message}`,
+        text2: `${i18n.t("errorSentReview")}: ${error.message}`,
         visibilityTime: 3000,
         autoHide: true,
         topOffset: 30,
@@ -100,7 +101,7 @@ const ReviewsInput = ({
             marginBottom: 10,
           }}
         >
-          Напишите отзыв
+          {i18n.t("writeReview")}
         </CustomText>
         <Controller
           control={control}
@@ -140,7 +141,7 @@ const ReviewsInput = ({
 
       <View style={{ marginBottom: 30 }}>
         <CustomText style={{ fontSize: 18, marginBottom: 10 }}>
-          Оцените как все прошло?
+          {i18n.t("rate")}
         </CustomText>
         <View
           style={{
@@ -154,7 +155,7 @@ const ReviewsInput = ({
         >
           <AirbnbRating
             count={5}
-            reviews={["Ужасно", "Плохо", "Нормально", "Хорошо", "Отлично"]}
+            reviews={["Terrible", "Bad", "Normal", "Good", "Excellent"]}
             size={40}
             defaultRating={rating}
             onFinishRating={(value) => setRating(value)}
@@ -185,7 +186,7 @@ const ReviewsInput = ({
               textAlign: "center",
             }}
           >
-            Отправить
+            {i18n.t("send")}
           </CustomText>
         </TouchableOpacity>
       )}

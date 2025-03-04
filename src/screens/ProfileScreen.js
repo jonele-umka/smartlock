@@ -116,14 +116,14 @@ const ProfileScreen = () => {
   };
   const links = [
     token && {
-      title: "Настройки",
+      title: i18n.t("settings"),
       onPress: () => navigation.navigate("Настройки"),
       icon: "settings-outline",
     },
     token
-      ? { title: i18n.t("logOut"), onPress: toggleModal, icon: "logout" }
+      ? { title: i18n.t("logout"), onPress: toggleModal, icon: "logout" }
       : {
-          title: "Войти",
+          title: i18n.t("login"),
           onPress: () => navigation.navigate("Войти"),
           icon: "logout",
         },
@@ -132,7 +132,7 @@ const ProfileScreen = () => {
   if (owner === "owner") {
     if (Array.isArray(links)) {
       links.unshift({
-        title: "Владелец",
+        title: i18n.t("owner"),
         onPress: () => navigation.navigate("Владелец"),
         icon: "person-outline",
       });
@@ -178,9 +178,9 @@ const ProfileScreen = () => {
               <CustomText style={styles.nickname}>
                 {userProfile?.Nickname || "User"}
               </CustomText>
-              <CustomText style={styles.biography}>
+              {/* <CustomText style={styles.biography}>
                 {userProfile?.Biography || "Description"}
-              </CustomText>
+              </CustomText> */}
             </View>
           </View>
           {token && (
@@ -205,7 +205,7 @@ const ProfileScreen = () => {
           ))}
         </View>
         <Dialog isVisible={modal} onBackdropPress={toggleModal}>
-          <Dialog.Title title={i18n.t("areYouSureYouWantToLogOut")} />
+          <Dialog.Title title={i18n.t("logoutQuestions")} />
           <View style={styles.modalActions}>
             <TouchableOpacity onPress={toggleModal}>
               <CustomText style={styles.modalText}>{i18n.t("no")}</CustomText>

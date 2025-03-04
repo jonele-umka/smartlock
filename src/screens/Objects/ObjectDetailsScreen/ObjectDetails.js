@@ -28,6 +28,7 @@ import CalendarReserv from "../../../components/Calendars/CalendarReserv/Calenda
 import ActionAddReview from "../../../components/ActionSheet/ActionAddReview/ActionAddReview";
 import ActionDescription from "../../../components/ActionSheet/ActionDescription/ActionDescription";
 import ListReviews from "../../../components/List/ListReviews/ListReviews";
+import i18n from "../../../components/i18n/i18n";
 
 const ObjectDetails = () => {
   const navigation = useNavigation();
@@ -66,9 +67,9 @@ const ObjectDetails = () => {
           },
         }
       );
-
       if (response.ok) {
         const data = await response.json();
+
         setObjectDetails(data?.Accommodation);
         setFacilities(data?.Accommodation.Facilities);
         setRules(data?.Accommodation?.Rules);
@@ -178,6 +179,7 @@ const ObjectDetails = () => {
 
     dispatch(fetchFavorites(token));
   };
+
   // actionsheet more reviews
   const [expandedReviewIndex, setExpandedReviewIndex] = useState(null);
   const [expandedReviewText, setExpandedReviewText] = useState("");
@@ -222,7 +224,7 @@ const ObjectDetails = () => {
           backgroundColor: "#fff",
         }}
       >
-        <CustomText>Нет данных</CustomText>
+        <CustomText>{i18n.t("noData")}</CustomText>
       </View>
     );
   }
@@ -328,7 +330,7 @@ const ObjectDetails = () => {
                   }}
                 >
                   {" "}
-                  /ночь
+                  /{i18n.t("night")}
                 </CustomText>
               </View>
             ) : (
@@ -340,7 +342,7 @@ const ObjectDetails = () => {
                 </CustomText>
                 <CustomText style={{ fontSize: 18, color: "#4B5DFF" }}>
                   {" "}
-                  /ночь
+                  /{i18n.t("night")}
                 </CustomText>
               </View>
             )}
@@ -353,7 +355,7 @@ const ObjectDetails = () => {
                 </CustomText>
                 <CustomText style={{ fontSize: 18, color: "#4B5DFF" }}>
                   {" "}
-                  /ночь
+                  /{i18n.t("night")}
                 </CustomText>
               </View>
             )}
@@ -416,12 +418,14 @@ const ObjectDetails = () => {
                 name="home-outline"
                 style={{ color: "#000", fontSize: 20 }}
               />
-
+{console.log(objectDetails?.Category) }
               <CustomText style={{ fontSize: 16, fontWeight: 500 }}>
-                {objectDetails?.Category.NameRu || "Нет категории"}
+                {objectDetails?.Category.NameEn || "Нет категории"}
               </CustomText>
             </View>
-            <CustomText style={{ fontSize: 16 }}>Категория</CustomText>
+            <CustomText style={{ fontSize: 16 }}>
+              {i18n.t("categories")}
+            </CustomText>
           </View>
           <View
             style={{
@@ -447,7 +451,7 @@ const ObjectDetails = () => {
                 {objectDetails?.PeopleQuantity || "Нет гостей"}
               </CustomText>
             </View>
-            <CustomText>Гости</CustomText>
+            <CustomText>{i18n.t("guests")}</CustomText>
           </View>
           <View
             style={{
@@ -473,7 +477,7 @@ const ObjectDetails = () => {
                 {objectDetails?.RoomsQuantity || "Нет комнат"}
               </CustomText>
             </View>
-            <CustomText>Комнаты</CustomText>
+            <CustomText>{i18n.t("placeholder_rooms_quantity")}</CustomText>
           </View>
         </View>
         <View
@@ -489,7 +493,7 @@ const ObjectDetails = () => {
           <CustomText
             style={{ fontSize: 18, fontWeight: 500, marginBottom: 5 }}
           >
-            Описание
+            {i18n.t("label_description")}
           </CustomText>
           <CustomText>{renderDescription()}</CustomText>
           {isLongDescription && !descriptionExpanded && (
@@ -502,7 +506,7 @@ const ObjectDetails = () => {
                   fontWeight: 500,
                 }}
               >
-                Показать полное описание
+                {i18n.t("showFullDescription")}
               </CustomText>
             </TouchableOpacity>
           )}
@@ -516,7 +520,7 @@ const ObjectDetails = () => {
                   fontWeight: 500,
                 }}
               >
-                Скрыть описание
+                {i18n.t("hideDescription")}
               </CustomText>
             </TouchableOpacity>
           )}
@@ -525,7 +529,7 @@ const ObjectDetails = () => {
           <CustomText
             style={{ fontSize: 18, fontWeight: 500, marginBottom: 10 }}
           >
-            Удобства
+            {i18n.t("facilities")}
           </CustomText>
           <ListFacilities facilitiesData={facilities} />
         </View>
@@ -533,7 +537,7 @@ const ObjectDetails = () => {
           <CustomText
             style={{ fontSize: 18, fontWeight: 500, marginBottom: 10 }}
           >
-            Местоположение
+            {i18n.t("location")}
           </CustomText>
           {/* <MapAddress latitude={latitude} longitude={longitude} /> */}
           <View>
@@ -553,34 +557,36 @@ const ObjectDetails = () => {
           </View>
         </View>
 
-        <View style={{ marginTop: 40, paddingRight: 25 }}>
-          <CustomText
-            style={{ fontSize: 18, fontWeight: 500, marginBottom: 10 }}
-          >
-            Порядок проживания
-          </CustomText>
-          <View style={{ flexDirection: "column", rowGap: 8 }}>
-            {rules.map((rule) => {
-              return (
-                <View
-                  key={rule.ID}
-                  style={{
-                    flexDirection: "row",
-                    columnGap: 10,
-                    alignItems: "center",
-                  }}
-                >
-                  <Image
-                    source={{ uri: rule.Icon }}
-                    style={{ width: 25, height: 25 }}
-                  />
+        {rules && rules.length > 0 && (
+          <View style={{ marginTop: 40, paddingRight: 25 }}>
+            <CustomText
+              style={{ fontSize: 18, fontWeight: 500, marginBottom: 10 }}
+            >
+              {i18n.t("rules")}
+            </CustomText>
+            <View style={{ flexDirection: "column", rowGap: 8 }}>
+              {rules.map((rule) => {
+                return (
+                  <View
+                    key={rule.ID}
+                    style={{
+                      flexDirection: "row",
+                      columnGap: 10,
+                      alignItems: "center",
+                    }}
+                  >
+                    <Image
+                      source={{ uri: rule.Icon }}
+                      style={{ width: 25, height: 25 }}
+                    />
 
-                  <CustomText>{rule?.ValueRu}</CustomText>
-                </View>
-              );
-            })}
+                    <CustomText>{rule?.ValueRu}</CustomText>
+                  </View>
+                );
+              })}
+            </View>
           </View>
-        </View>
+        )}
         {/* <Reviews
           reviewsData={objectDetails}
           toggleDescriptionReviews={toggleDescriptionReviews}
@@ -600,7 +606,7 @@ const ObjectDetails = () => {
           ) : (
             <View style={{ marginTop: 20 }}>
               <CustomText style={{ fontSize: 18, fontWeight: 500 }}>
-                Отзывы
+                {i18n.t("reviews")}
               </CustomText>
               <View
                 style={{
@@ -611,12 +617,13 @@ const ObjectDetails = () => {
                   marginTop: 10,
                 }}
               >
-                <CustomText style={{ fontSize: 16 }}>Нет отзывов</CustomText>
+                <CustomText style={{ fontSize: 16 }}>
+                  {i18n.t("noReviews")}
+                </CustomText>
                 <View style={{ marginTop: 20, alignItems: "center", flex: 1 }}>
                   {canReview === 0 ? (
                     <CustomText style={{ fontSize: 16, color: "gray" }}>
-                      Оставить отзыв невозможно, так как вы не проживали в
-                      данном жилье.
+                      {i18n.t("noReviewPossible")}
                     </CustomText>
                   ) : (
                     <TouchableOpacity onPress={toggleReviews}>
@@ -627,7 +634,7 @@ const ObjectDetails = () => {
                           color: "#005fb8",
                         }}
                       >
-                        Добавьте первый отзыв
+                        {i18n.t("addFirstReview")}
                       </CustomText>
                     </TouchableOpacity>
                   )}
@@ -652,7 +659,7 @@ const ObjectDetails = () => {
           <CustomText
             style={{ fontSize: 18, fontWeight: 500, marginBottom: 10 }}
           >
-            Укажите дату въезда и выезда
+            {i18n.t("specifyDate")}
           </CustomText>
 
           <CalendarReserv

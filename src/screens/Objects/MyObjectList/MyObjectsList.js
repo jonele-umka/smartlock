@@ -1,16 +1,17 @@
 import React, { useEffect, useState } from "react";
-import { ActivityIndicator, ScrollView, Text, View } from "react-native";
+import { ActivityIndicator, ScrollView, View } from "react-native";
 
 import MyObjects from "../../../components/ObjectsComponent/MyObjects";
 
 import { TouchableOpacity } from "react-native";
 import Entypo from "react-native-vector-icons/Entypo";
-import { useNavigation, useRoute } from "@react-navigation/core";
+import { useNavigation } from "@react-navigation/core";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchMyAccommodations } from "../../../Store/accommodationSlice/accommodationSlice";
 import SafeAreaWrapper from "../../../components/SafeAreaWrapper/SafeAreaWrapper";
 import CustomText from "../../../components/CustomText/CustomText";
 import { RefreshControl } from "react-native";
+import i18n from "../../../components/i18n/i18n";
 
 const MyObjectsList = () => {
   const dispatch = useDispatch();
@@ -101,7 +102,7 @@ const MyObjectsList = () => {
           <Entypo name="plus" style={{ fontSize: 50, color: "#4B5DFF" }} />
           <View>
             <CustomText style={{ fontSize: 16, textAlign: "center" }}>
-              Добавить объект
+              {i18n.t("addObject")}
             </CustomText>
           </View>
         </TouchableOpacity>

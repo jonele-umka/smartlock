@@ -18,6 +18,7 @@ import CustomText from "../../../components/CustomText/CustomText";
 import CustomInput from "../../../components/CustomInput/CustomInput";
 import CustomPicker from "../../../components/CustomPicker/CustomPicker"; // Подключаем универсальный Picker
 import Toast from "react-native-toast-message";
+import i18n from "../../../components/i18n/i18n";
 
 const BecomeOwner = () => {
   const API_URL = process.env.API_URL;
@@ -47,8 +48,8 @@ const BecomeOwner = () => {
         Toast.show({
           type: "error",
           position: "bottom",
-          text1: "Ошибка",
-          text2: `Ошибка при заполнении: ${errorResponse.error.Error}`,
+          text1: "Error",
+          text2: `${i18n.t("errorWrite")}: ${errorResponse.error.Error}`,
           visibilityTime: 3000,
           autoHide: true,
           topOffset: 30,

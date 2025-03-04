@@ -9,6 +9,8 @@ import SafeAreaWrapper from "../../components/SafeAreaWrapper/SafeAreaWrapper";
 
 import CustomText from "../../components/CustomText/CustomText";
 import Notification from "../../components/Notification/Notification";
+import i18n from "../../components/i18n/i18n";
+import Toast from "react-native-toast-message";
 
 const NotificationScreen = () => {
   const dispatch = useDispatch();
@@ -21,12 +23,10 @@ const NotificationScreen = () => {
     (state) => state.notifications.notifications
   );
 
-  // Загружаем уведомления при монтировании компонента
   useEffect(() => {
     dispatch(fetchNotifications(token));
   }, [dispatch, token]);
 
-  // Обновляем уведомления при возвращении на экран
   useFocusEffect(
     React.useCallback(() => {
       dispatch(fetchNotifications(token));
@@ -52,9 +52,18 @@ const NotificationScreen = () => {
         console.error(
           `Не удалось пометить уведомление с ID ${notificationId} как прочитанное.`
         );
+        Toast.show({
+          type: "error",
+          position: "bottom",
+          text1: "Ошибка",
+          text2: `Не удалось пометить уведомление с ID ${notificationId} как прочитанное.`,
+          visibilityTime: 3000,
+          autoHide: true,
+          topOffset: 30,
+        });
       }
     } catch (error) {
-      console.error("Ошибка при отправке запроса PATCH:", error);
+      console.error(i18n.t("errorServer"), error);
     }
   };
 
@@ -83,7 +92,7 @@ const NotificationScreen = () => {
           backgroundColor: "#fff",
         }}
       >
-        <Text style={{ fontSize: 16 }}>Нет уведомлений</Text>
+        <Text style={{ fontSize: 16 }}>{i18n.t("noNotifications")}</Text>
       </SafeAreaWrapper>
     );
   }
@@ -98,7 +107,7 @@ const NotificationScreen = () => {
             fontWeight: 600,
           }}
         >
-          Уведомления
+          {i18n.t("notifications")}
         </CustomText>
         <View style={{ flexDirection: "column", rowGap: 20 }}>
           {notifications &&

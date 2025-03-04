@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
 } from "react-native";
 import ApplicationList from "../Application/ApplicationList";
+import i18n from "../../i18n/i18n";
 
 export default function ApplicationsTabs() {
   const [activeTab, setActiveTab] = useState("first");
@@ -43,7 +44,7 @@ export default function ApplicationsTabs() {
           onPress={() => setActiveTab("first")}
         >
           <Text style={{ color: activeTab === "first" ? "#fff" : "#000" }}>
-            Входящие
+            {i18n.t("incoming")}
           </Text>
         </TouchableOpacity>
 
@@ -57,7 +58,7 @@ export default function ApplicationsTabs() {
           onPress={() => setActiveTab("second")}
         >
           <Text style={{ color: activeTab === "second" ? "#fff" : "#000" }}>
-            В процессе
+            {i18n.t("inProcess")}
           </Text>
         </TouchableOpacity>
 
@@ -71,7 +72,7 @@ export default function ApplicationsTabs() {
           onPress={() => setActiveTab("third")}
         >
           <Text style={{ color: activeTab === "third" ? "#fff" : "#000" }}>
-            Отклонён
+            {i18n.t("rejected")}
           </Text>
         </TouchableOpacity>
       </View>

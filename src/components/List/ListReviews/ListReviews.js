@@ -5,6 +5,7 @@ import ActionDescription from "../../ActionSheet/ActionDescription/ActionDescrip
 import CustomText from "../../CustomText/CustomText";
 import ReviewItem from "../../Reviews/ReviewItem";
 import Feather from "react-native-vector-icons/Feather";
+import i18n from "../../i18n/i18n";
 
 const ListReviews = ({
   reviewsData,
@@ -34,7 +35,7 @@ const ListReviews = ({
         }}
       >
         <CustomText style={{ fontSize: 18, fontWeight: 500 }}>
-          Отзывы
+          {i18n.t("reviews")}
         </CustomText>
 
         {/* <TouchableOpacity

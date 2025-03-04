@@ -1,8 +1,9 @@
 import { useNavigation } from "@react-navigation/core";
 import React from "react";
-import { ActivityIndicator, Text, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, TouchableOpacity, View } from "react-native";
 import { formatDate } from "../../components/FormatDate/FormatDate";
 import CustomText from "../../components/CustomText/CustomText";
+import i18n from "../../components/i18n/i18n";
 
 const LockList = ({ data, loading }) => {
   const navigation = useNavigation();
@@ -37,7 +38,7 @@ const LockList = ({ data, loading }) => {
               }}
             >
               <CustomText style={{ fontWeight: 500, fontSize: 18 }}>
-                Название замка:{" "}
+                {i18n.t("nameLock")}:{" "}
               </CustomText>
               <CustomText style={{ fontWeight: 500, fontSize: 18 }}>
                 {item.LockAlias}
@@ -50,7 +51,7 @@ const LockList = ({ data, loading }) => {
           </TouchableOpacity>
         ))
       ) : (
-        <CustomText style={{ fontSize: 16 }}>Нет замков</CustomText>
+        <CustomText style={{ fontSize: 16 }}>{i18n.t("noLocks")}</CustomText>
       )}
     </View>
   );

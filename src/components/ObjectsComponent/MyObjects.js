@@ -1,4 +1,4 @@
-import { View, TouchableOpacity, ImageBackground } from "react-native";
+import { View, TouchableOpacity, ImageBackground, Text } from "react-native";
 import React from "react";
 import { useNavigation } from "@react-navigation/native";
 
@@ -8,6 +8,7 @@ import CustomText from "../CustomText/CustomText";
 import { useDispatch, useSelector } from "react-redux";
 import Toast from "react-native-toast-message";
 import { fetchMyAccommodations } from "../../Store/accommodationSlice/accommodationSlice";
+import i18n from "../i18n/i18n";
 
 const MyObjects = ({ myAccommodation }) => {
   const dispatch = useDispatch();
@@ -33,8 +34,8 @@ const MyObjects = ({ myAccommodation }) => {
         Toast.show({
           type: "success",
           position: "bottom",
-          text1: "Успех",
-          text2: "Объект был деактивирован",
+          text1: "Success",
+          text2: i18n.t("objectDeactivated"),
           visibilityTime: 3000,
           autoHide: true,
           topOffset: 30,
@@ -43,8 +44,8 @@ const MyObjects = ({ myAccommodation }) => {
         Toast.show({
           type: "error",
           position: "bottom",
-          text1: "Ошибка",
-          text2: "Произошла ошибка при попытке деактивировать объект.",
+          text1: "Error",
+          text2: i18n.t("errorObjectDeactivated"),
           visibilityTime: 3000,
           autoHide: true,
           topOffset: 30,
@@ -54,9 +55,8 @@ const MyObjects = ({ myAccommodation }) => {
       Toast.show({
         type: "error",
         position: "bottom",
-        text1: "Ошибка",
-        text2: `Произошла ошибка при попытке деактивировать объект: ${error}`,
-
+        text1: "Error",
+        text2: `${i18n.t("errorObjectDeactivated")}: ${error}`,
         visibilityTime: 3000,
         autoHide: true,
         topOffset: 30,
@@ -82,8 +82,8 @@ const MyObjects = ({ myAccommodation }) => {
         Toast.show({
           type: "success",
           position: "bottom",
-          text1: "Успех",
-          text2: "Объект был активирован",
+          text1: "Success",
+          text2: i18n.t("objectActivated"),
           visibilityTime: 3000,
           autoHide: true,
           topOffset: 30,
@@ -92,8 +92,8 @@ const MyObjects = ({ myAccommodation }) => {
         Toast.show({
           type: "error",
           position: "bottom",
-          text1: "Ошибка",
-          text2: "Произошла ошибка при попытке активировать объект.",
+          text1: "Error",
+          text2: i18n.t("errorObjectActivated"),
           visibilityTime: 3000,
           autoHide: true,
           topOffset: 30,
@@ -104,8 +104,8 @@ const MyObjects = ({ myAccommodation }) => {
       Toast.show({
         type: "error",
         position: "bottom",
-        text1: "Ошибка",
-        text2: "Произошла ошибка при попытке активировать объект.",
+        text1: "Error",
+        text2: `${i18n.t("errorObjectActivated")}: ${error}`,
         visibilityTime: 3000,
         autoHide: true,
         topOffset: 30,
@@ -130,8 +130,8 @@ const MyObjects = ({ myAccommodation }) => {
         Toast.show({
           type: "success",
           position: "bottom",
-          text1: "Успех",
-          text2: "Объект был удален",
+          text1: "Success",
+          text2: i18n.t("deleteMyObject"),
           visibilityTime: 3000,
           autoHide: true,
           topOffset: 30,
@@ -140,8 +140,8 @@ const MyObjects = ({ myAccommodation }) => {
         Toast.show({
           type: "error",
           position: "bottom",
-          text1: "Ошибка",
-          text2: "Произошла ошибка при попытке удаления объекта.",
+          text1: "Error",
+          text2: i18n.t("errorDeleteMyObject"),
           visibilityTime: 3000,
           autoHide: true,
           topOffset: 30,
@@ -152,8 +152,8 @@ const MyObjects = ({ myAccommodation }) => {
       Toast.show({
         type: "error",
         position: "bottom",
-        text1: "Ошибка",
-        text2: "Произошла ошибка при попытке удаления объекта",
+        text1: "Error",
+        text2: `${i18n.t("errorDeleteMyObject")}: ${error}`,
         visibilityTime: 3000,
         autoHide: true,
         topOffset: 30,
@@ -223,8 +223,9 @@ const MyObjects = ({ myAccommodation }) => {
               padding: 5,
             }}
           >
+            {/* {i18n.t("night")} */}
             <CustomText style={{ color: "#fff", fontWeight: 500 }}>
-              {isActive ? "Деактивировать" : "Активировать"}
+              {isActive ? i18n.t("deactivate") : i18n.t("activate")}
             </CustomText>
           </TouchableOpacity>
         </View>
@@ -244,15 +245,18 @@ const MyObjects = ({ myAccommodation }) => {
             }}
           >
             <View style={{ flex: 1 }}>
-              <CustomText
+              <Text
                 style={{
                   fontSize: 20,
                   fontWeight: 500,
                   color: "#fff",
+                  marginBottom: 5,
                 }}
+                numberOfLines={1}
+                ellipsizeMode="tail"
               >
-                {myAccommodation.Title}
-              </CustomText>
+                {myAccommodation?.Title}
+              </Text>
               <View
                 style={{
                   flexDirection: "row",
@@ -264,9 +268,13 @@ const MyObjects = ({ myAccommodation }) => {
                   name="map-marker-alt"
                   style={{ color: "#f0f0f0", fontSize: 15 }}
                 />
-                <CustomText style={{ color: "#f0f0f0" }}>
+                <Text
+                  style={{ color: "#f0f0f0" }}
+                  numberOfLines={1}
+                  ellipsizeMode="tail"
+                >
                   {myAccommodation.LocationLabel}
-                </CustomText>
+                </Text>
               </View>
             </View>
 
@@ -286,7 +294,7 @@ const MyObjects = ({ myAccommodation }) => {
                   color: "#b8b8b8",
                 }}
               >
-                ночь
+                {i18n.t("night")}
               </CustomText>
             </View>
           </View>

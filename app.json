@@ -2,7 +2,7 @@
   "expo": {
     "name": "TogoLock",
     "slug": "togolock",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "sdkVersion": "52.0.0",
     "runtimeVersion": {
       "policy": "appVersion"

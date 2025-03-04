@@ -1,4 +1,4 @@
-import { View, Text, Image, TouchableOpacity } from "react-native";
+import { View, Image, TouchableOpacity } from "react-native";
 import React from "react";
 import { formatDate } from "../../components/FormatDate/FormatDate";
 import { useNavigation } from "@react-navigation/core";

@@ -12,6 +12,8 @@ import Fontisto from "react-native-vector-icons/Fontisto";
 import CustomText from "../CustomText/CustomText";
 import { formatDate } from "../FormatDate/FormatDate";
 import { useSelector } from "react-redux";
+import i18n from "../i18n/i18n";
+import { AirbnbRating } from "@rneui/base";
 
 const ReviewItem = ({
   item,
@@ -23,10 +25,11 @@ const ReviewItem = ({
   isFirstReview,
 }) => {
   const [isEditing, setIsEditing] = useState(false);
+  const [rating, setRating] = useState(item.Star || 5);
   const [editedContent, setEditedContent] = useState(item.Content);
   const [loading, setLoading] = useState(false);
   const token = useSelector((state) => state.auth.token);
-
+console.log(item)
   const handleEdit = () => {
     setIsEditing(true);
   };
@@ -40,7 +43,10 @@ const ReviewItem = ({
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ Content: editedContent }),
+        body: JSON.stringify({
+          Content: editedContent,
+          Star: rating,
+        }),
       });
 
       if (response.ok) {
@@ -117,17 +123,26 @@ const ReviewItem = ({
         </View>
 
         {isEditing ? (
-          <TextInput
-            style={{
-              borderWidth: 1,
-              borderColor: "#ccc",
-              borderRadius: 5,
-              padding: 5,
-              marginBottom: 10,
-            }}
-            value={editedContent}
-            onChangeText={setEditedContent}
-          />
+          <>
+            <TextInput
+              style={{
+                borderWidth: 1,
+                borderColor: "#ccc",
+                borderRadius: 5,
+                padding: 5,
+                marginBottom: 10,
+              }}
+              value={editedContent}
+              onChangeText={setEditedContent}
+            />
+            <AirbnbRating
+              count={5}
+              defaultRating={rating}
+              size={20}
+              showRating={false}
+              onFinishRating={(value) => setRating(value)}
+            />
+          </>
         ) : (
           <CustomText style={{ lineHeight: 22 }}>
             {isLongReviews
@@ -147,7 +162,7 @@ const ReviewItem = ({
             }}
           >
             <CustomText style={{ fontWeight: 500 }}>
-              Читать полностью
+              {i18n.t("readFull")}
             </CustomText>
             <Fontisto
               name="angle-right"

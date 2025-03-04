@@ -6,6 +6,7 @@ import ActionRejectReason from "../../ActionSheet/ActionRejectReason/ActionRejec
 import CustomText from "../../CustomText/CustomText";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import SimpleLineIcons from "react-native-vector-icons/SimpleLineIcons";
+import i18n from "../../i18n/i18n";
 
 const Application = ({ application, status }) => {
   const [isRejectSheetVisible, setRejectSheetVisible] = useState(false);
@@ -99,7 +100,7 @@ const Application = ({ application, status }) => {
               columnGap: 10,
             }}
           >
-            <CustomText>Имя: </CustomText>
+            <CustomText>{i18n.t("name")}: </CustomText>
             <CustomText style={{ fontWeight: "500" }}>
               {application?.Name}
             </CustomText>
@@ -111,7 +112,7 @@ const Application = ({ application, status }) => {
               columnGap: 10,
             }}
           >
-            <CustomText>Фамилия: </CustomText>
+            <CustomText>{i18n.t("surname")}: </CustomText>
             <CustomText style={{ fontWeight: "500" }}>
               {application?.Surname}
             </CustomText>
@@ -123,7 +124,7 @@ const Application = ({ application, status }) => {
               columnGap: 10,
             }}
           >
-            <CustomText>Номер телефона: </CustomText>
+            <CustomText>{i18n.t("phoneNumber")}: </CustomText>
             <CustomText style={{ fontWeight: "500" }}>
               {application?.PhoneNumber}
             </CustomText>
@@ -138,7 +139,7 @@ const Application = ({ application, status }) => {
               columnGap: 10,
             }}
           >
-            <CustomText>Количество гостей: </CustomText>
+            <CustomText>{i18n.t("quantityGuests")}: </CustomText>
             <CustomText style={{ fontWeight: "500" }}>
               {application?.PeopleQuantity}
             </CustomText>
@@ -150,7 +151,7 @@ const Application = ({ application, status }) => {
               columnGap: 10,
             }}
           >
-            <CustomText>Цена: </CustomText>
+            <CustomText>{i18n.t("price")}: </CustomText>
             <CustomText style={{ fontWeight: "500" }}>
               {application?.TotalSum} сом
             </CustomText>
@@ -162,7 +163,7 @@ const Application = ({ application, status }) => {
               columnGap: 10,
             }}
           >
-            <CustomText>Дата въезда: </CustomText>
+            <CustomText>{i18n.t("dateEntry")}: </CustomText>
             <CustomText style={{ fontWeight: "500" }}>
               {application?.StartDate}
             </CustomText>
@@ -174,7 +175,7 @@ const Application = ({ application, status }) => {
               columnGap: 10,
             }}
           >
-            <CustomText>Дата выезда: </CustomText>
+            <CustomText>{i18n.t("departureDate")}: </CustomText>
             <CustomText style={{ fontWeight: "500" }}>
               {application?.EndDate}
             </CustomText>
@@ -206,7 +207,7 @@ const Application = ({ application, status }) => {
                   />
 
                   <CustomText style={{ color: "#57d673" }}>
-                    Есть животные
+                    {i18n.t("haveAnimals")}
                   </CustomText>
                 </View>
               </View>
@@ -229,7 +230,7 @@ const Application = ({ application, status }) => {
                     style={{ color: "#F36A7B", fontSize: 25 }}
                   />
 
-                  <CustomText>Нет животных</CustomText>
+                  <CustomText>{i18n.t("noAnimals")}</CustomText>
                 </View>
               </View>
             )}
@@ -262,7 +263,7 @@ const Application = ({ application, status }) => {
                   fontWeight: "500",
                 }}
               >
-                Отклонить
+                {i18n.t("reject")}
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
@@ -282,7 +283,7 @@ const Application = ({ application, status }) => {
                   fontWeight: "500",
                 }}
               >
-                Подтвердить
+                {i18n.t("confirm")}
               </Text>
             </TouchableOpacity>
           </View>

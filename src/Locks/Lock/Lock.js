@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import CustomText from "../../components/CustomText/CustomText";
 import Fontisto from "react-native-vector-icons/Fontisto";
+import i18n from "../../components/i18n/i18n";
 
 const Lock = ({ id }) => {
   const API_URL = process.env.API_URL;
@@ -26,7 +27,7 @@ const Lock = ({ id }) => {
 
         const responseDataError = await response.json();
         const errorMessage =
-          responseDataError.error.Message || "Произошла ошибка";
+          responseDataError.error || "Произошла ошибка";
         console.error("Error updating user profile:", errorMessage);
         return;
       }
@@ -108,7 +109,7 @@ const Lock = ({ id }) => {
               color: "#FDE1E5",
             }}
           >
-            Закрыть
+            {i18n.t("close")}
           </CustomText>
         </TouchableOpacity>
       )}
@@ -143,7 +144,7 @@ const Lock = ({ id }) => {
               fontWeight: 500,
             }}
           >
-            Открыть
+          {i18n.t('open')}
           </CustomText>
         </TouchableOpacity>
       )}

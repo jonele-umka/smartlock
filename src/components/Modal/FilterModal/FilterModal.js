@@ -19,6 +19,7 @@ import {
   fetchCategory,
 } from "../../../Store/dictionarySlice/dictionarySlice";
 import CustomPicker from "../../CustomPicker/CustomPicker";
+import i18n from "../../i18n/i18n";
 
 const FilterModal = ({ isVisible, onClose, title }) => {
   const dispatch = useDispatch();
@@ -70,6 +71,10 @@ const FilterModal = ({ isVisible, onClose, title }) => {
     reset();
     onClose();
   };
+  const clear = () => {
+    reset();
+    setSelectedAmenities([]);
+  };
   return (
     <Modal
       visible={isVisible}
@@ -101,7 +106,9 @@ const FilterModal = ({ isVisible, onClose, title }) => {
               marginBottom: 20,
             }}
           >
-            <CustomText style={{ fontSize: 25 }}>Фильтры</CustomText>
+            <CustomText style={{ fontSize: 25 }}>
+              {i18n.t("filters")}
+            </CustomText>
             <TouchableOpacity onPress={onClose}>
               <Entypo name="cross" style={{ fontSize: 30 }} />
             </TouchableOpacity>
@@ -137,7 +144,7 @@ const FilterModal = ({ isVisible, onClose, title }) => {
             </View> */}
             <View style={{ marginBottom: 20 }}>
               <CustomText style={{ marginBottom: 10, fontSize: 20 }}>
-                Цена
+                {i18n.t("price")}
               </CustomText>
               <View
                 style={{
@@ -163,7 +170,7 @@ const FilterModal = ({ isVisible, onClose, title }) => {
                           borderRightWidth: 1,
                           borderRightColor: "#DEE2F1",
                         }}
-                        placeholder="Минимальная цена"
+                        placeholder={i18n.t("minPrice")}
                         placeholderTextColor={"#616992"}
                         keyboardType="numeric"
                         onChangeText={field.onChange}
@@ -185,7 +192,7 @@ const FilterModal = ({ isVisible, onClose, title }) => {
                           color: "#1C2863",
                         }}
                         placeholderTextColor={"#616992"}
-                        placeholder="Максимальная цена"
+                        placeholder={i18n.t("maxPrice")}
                         keyboardType="numeric"
                         onChangeText={field.onChange}
                         value={field.value}
@@ -198,7 +205,7 @@ const FilterModal = ({ isVisible, onClose, title }) => {
 
             <View style={{ marginBottom: 20 }}>
               <CustomText style={{ marginBottom: 10, fontSize: 20 }}>
-                Рейтинг
+                {i18n.t("rating")}
               </CustomText>
               <View style={{ flex: 1 }}>
                 <Controller
@@ -218,7 +225,7 @@ const FilterModal = ({ isVisible, onClose, title }) => {
 
             <View style={{ marginBottom: 20 }}>
               <CustomText style={{ marginBottom: 10, fontSize: 20 }}>
-                Тип жилья
+                {i18n.t("typeHouse")}
               </CustomText>
               <View>
                 <Controller
@@ -226,7 +233,7 @@ const FilterModal = ({ isVisible, onClose, title }) => {
                   name="category"
                   render={({ field }) => (
                     <CustomPicker
-                      placeholder="Выберите тип жилья"
+                      placeholder={i18n.t("enterTypeHouse")}
                       selectedValue={field.value}
                       onValueChange={(value) => {
                         setSelectedCategory(value);
@@ -244,7 +251,7 @@ const FilterModal = ({ isVisible, onClose, title }) => {
 
             <View>
               <CustomText style={{ marginBottom: 10, fontSize: 20 }}>
-                Удобства
+                {i18n.t("facilities")}
               </CustomText>
               {amenities.map((amenity) => (
                 <View
@@ -285,6 +292,34 @@ const FilterModal = ({ isVisible, onClose, title }) => {
                 </View>
               ))}
             </View>
+            {/* <View style={{ marginBottom: 20 }}>
+              <CustomText style={{ marginBottom: 10, fontSize: 20 }}>
+                {i18n.t("facilities")}
+              </CustomText>
+              <Controller
+                control={control}
+                name="amenities"
+                render={({ field }) => (
+                  <CustomPicker
+                    placeholder={i18n.t("selectAmenities")}
+                    selectedValue={field.value}
+                    onValueChange={(value) => {
+                      setSelectedAmenities((prev) =>
+                        prev.includes(value)
+                          ? prev.filter((id) => id !== value)
+                          : [...prev, value]
+                      );
+                      field.onChange(value);
+                    }}
+                    items={amenities.map((amenity) => ({
+                      label: amenity.Value,
+                      value: amenity.Id,
+                    }))}
+                    isMultiSelect
+                  />
+                )}
+              />
+            </View> */}
           </ScrollView>
           <View
             style={{
@@ -302,10 +337,10 @@ const FilterModal = ({ isVisible, onClose, title }) => {
                 borderBottomWidth: 1,
                 borderBlockColor: "#252525",
               }}
-              onPress={() => reset()}
+              onPress={clear}
             >
               <CustomText style={{ textAlign: "center", fontSize: 16 }}>
-                Очистить
+                {i18n.t("reset")}
               </CustomText>
             </TouchableOpacity>
             <TouchableOpacity
@@ -322,7 +357,7 @@ const FilterModal = ({ isVisible, onClose, title }) => {
               <CustomText
                 style={{ textAlign: "center", fontSize: 20, color: "white" }}
               >
-                Применить
+                {i18n.t("apply")}
               </CustomText>
             </TouchableOpacity>
           </View>

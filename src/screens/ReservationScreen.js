@@ -1,5 +1,4 @@
 import {
-  Text,
   ScrollView,
   View,
   ActivityIndicator,
@@ -13,6 +12,7 @@ import CustomText from "../components/CustomText/CustomText";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 
 import SimpleLineIcons from "react-native-vector-icons/SimpleLineIcons";
+import i18n from "../components/i18n/i18n";
 
 const ReservationScreen = () => {
   const token = useSelector((state) => state.auth.token);
@@ -66,8 +66,8 @@ const ReservationScreen = () => {
           }}
         >
           {reservation && reservation.length > 0
-            ? "Ваши брони"
-            : "Нет забронированных номеров"}
+            ? i18n.t("yourReservations")
+            : i18n.t("noYourReservations")}
         </CustomText>
         <View style={{ flexDirection: "column", rowGap: 20 }}>
           {reservation &&
@@ -120,10 +120,10 @@ const ReservationScreen = () => {
                             marginBottom: 2,
                           }}
                         >
-                          Цена:
+                          {i18n.t("price")}:
                         </CustomText>
                         <CustomText style={{ fontWeight: 500, fontSize: 16 }}>
-                          {reservation?.TotalSum} сом
+                          {reservation?.TotalSum} {i18n.t("som")}
                         </CustomText>
                       </View>
                     </View>
@@ -145,7 +145,7 @@ const ReservationScreen = () => {
                             marginBottom: 2,
                           }}
                         >
-                          Количество гостей:
+                          {i18n.t("quantityGuests")}:
                         </CustomText>
                         <CustomText style={{ fontWeight: 500, fontSize: 16 }}>
                           {reservation?.PeopleQuantity}
@@ -178,7 +178,7 @@ const ReservationScreen = () => {
                             marginBottom: 2,
                           }}
                         >
-                          Дата въезда:
+                          {i18n.t("dateEntry")}:
                         </CustomText>
                         <CustomText style={{ fontWeight: 500, fontSize: 16 }}>
                           {reservation?.StartDate}
@@ -203,7 +203,7 @@ const ReservationScreen = () => {
                             marginBottom: 2,
                           }}
                         >
-                          <Text>Дата выезда: </Text>
+                          <CustomText>{i18n.t("departureDate")}: </CustomText>
                         </CustomText>
                         <CustomText style={{ fontWeight: 500, fontSize: 16 }}>
                           {reservation?.EndDate}
@@ -226,7 +226,7 @@ const ReservationScreen = () => {
                           marginBottom: 2,
                         }}
                       >
-                        Пароль:
+                        {i18n.t("password")}
                       </CustomText>
                       <CustomText style={{ fontWeight: 500, fontSize: 16 }}>
                         {reservation?.KeyboardPwd}
@@ -256,7 +256,7 @@ const ReservationScreen = () => {
                         />
 
                         <CustomText style={{ color: "green" }}>
-                          Есть животные
+                          {i18n.t("haveAnimals")}
                         </CustomText>
                       </View>
                     </View>
@@ -283,7 +283,7 @@ const ReservationScreen = () => {
                         />
 
                         <CustomText style={{ color: "#F36A7B" }}>
-                          Нет животных
+                          {i18n.t("noAnimals")}
                         </CustomText>
                       </View>
                     </View>

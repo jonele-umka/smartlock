@@ -7,17 +7,30 @@ import * as Localization from "expo-localization";
 import i18n from "../../i18n/i18n";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import CustomText from "../../CustomText/CustomText";
+import {
+  fetchAmenities,
+  fetchCategory,
+  fetchRules,
+} from "../../../Store/dictionarySlice/dictionarySlice";
+import { useDispatch } from "react-redux";
 
 const ActionLanguage = ({ language, setLanguage }) => {
   const actionSheetRef = useRef();
+  const dispatch = useDispatch();
 
   const changeLanguage = async (newLanguage) => {
-    Localization.locale = newLanguage;
-
     try {
       await AsyncStorage.setItem("language", newLanguage);
       setLanguage(newLanguage);
+
+      // Обновляем глобальный язык
+      Localization.locale = newLanguage;
+      i18n.locale = newLanguage;
+
       actionSheetRef.current?.hide();
+      dispatch(fetchAmenities());
+      dispatch(fetchRules());
+      dispatch(fetchCategory());
     } catch (error) {
       console.error("Ошибка при сохранении языка в AsyncStorage:", error);
     }
@@ -39,6 +52,36 @@ const ActionLanguage = ({ language, setLanguage }) => {
             backgroundColor: "#fff",
           }}
         >
+          <TouchableOpacity onPress={() => changeLanguage("ky")}>
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "space-between",
+                width: "100%",
+              }}
+            >
+              <Image
+                style={{ width: 30, height: 30, objectFit: "contain" }}
+                source={require("../../../assets/Country/kyrgyzstan.png")}
+              />
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  columnGap: 10,
+                }}
+              >
+                <CustomText>Кыргызча</CustomText>
+                {language === "ky" && (
+                  <Ionicons
+                    name="checkmark"
+                    style={{ color: "#4B5DFF", fontSize: 20 }}
+                  />
+                )}
+              </View>
+            </View>
+          </TouchableOpacity>
           <TouchableOpacity onPress={() => changeLanguage("en")}>
             <View
               style={{
@@ -119,9 +162,13 @@ const ActionLanguage = ({ language, setLanguage }) => {
             alignItems: "center",
           }}
         >
-          {language === "en" ? (
+          {language === "ky" && (
+            <CustomText style={{ color: "grey" }}>Кыргызча</CustomText>
+          )}
+          {language === "en" && (
             <CustomText style={{ color: "grey" }}>English</CustomText>
-          ) : (
+          )}
+          {language === "ru" && (
             <CustomText style={{ color: "grey" }}>Русский</CustomText>
           )}
 

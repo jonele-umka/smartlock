@@ -13,10 +13,10 @@ const Tab = createBottomTabNavigator();
 
 const NavBar = () => {
   const home = i18n.t("home");
-  const map = "Карта";
-  const reservation = i18n.t("Бронь");
+  const map = "map";
+  const reservation = i18n.t("reservation");
   const favorites = i18n.t("favorites");
-  const profile = i18n.t("more");
+  const profile = i18n.t("profile");
 
   // const isDarkModeEnabled = useSelector(
   //   (state) => state.theme.isDarkModeEnabled

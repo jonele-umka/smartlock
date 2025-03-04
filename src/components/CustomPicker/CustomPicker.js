@@ -2,6 +2,7 @@ import { useState } from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import CustomText from "../CustomText/CustomText";
+import i18n from "../i18n/i18n";
 
 const CustomPicker = ({ items, selectedValue, onValueChange, placeholder }) => {
   const [isPickerVisible, setIsPickerVisible] = useState(false);
@@ -15,7 +16,7 @@ const CustomPicker = ({ items, selectedValue, onValueChange, placeholder }) => {
         <CustomText style={styles.buttonText}>
           {selectedValue
             ? items.find((item) => String(item.value) === String(selectedValue))
-                ?.label || "Не найдено"
+                ?.label || i18n.t("notFound")
             : placeholder}
         </CustomText>
       </TouchableOpacity>

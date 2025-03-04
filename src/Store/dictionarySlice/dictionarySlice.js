@@ -1,13 +1,19 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import i18n from "../../components/i18n/i18n";
 
 const API_URL = process.env.API_URL;
-
+const getLanguageCode = (locale) => (locale === "ky-KG" ? "ky" : locale);
+ 
 // Асинхронные действия для получения данных
 export const fetchAmenities = createAsyncThunk(
   "fetch/amenities",
   async (_, { rejectWithValue }) => {
     try {
-      const response = await fetch(`${API_URL}/dictionary/facilities/get_all`);
+      const response = await fetch(`${API_URL}/dictionary/facilities/get_all`, {
+        headers: {
+          "Accept-Language": i18n.locale,
+        },
+      });
       if (!response.ok) {
         throw new Error("Ошибка загрузки удобств");
       }
@@ -23,7 +29,11 @@ export const fetchRules = createAsyncThunk(
   "fetch/rules",
   async (_, { rejectWithValue }) => {
     try {
-      const response = await fetch(`${API_URL}/dictionary/rules/get_all`);
+      const response = await fetch(`${API_URL}/dictionary/rules/get_all`, {
+        headers: {
+          "Accept-Language": i18n.locale,
+        },
+      });
       if (!response.ok) {
         throw new Error("Ошибка загрузки правил");
       }
@@ -40,7 +50,11 @@ export const fetchCategory = createAsyncThunk(
   "fetch/category",
   async (_, { rejectWithValue }) => {
     try {
-      const response = await fetch(`${API_URL}/dictionary/categories/get_all`);
+      const response = await fetch(`${API_URL}/dictionary/categories/get_all`, {
+        headers: {
+          "Accept-Language": i18n.locale,
+        },
+      });
       if (!response.ok) {
         throw new Error("Ошибка загрузки категорий");
       }

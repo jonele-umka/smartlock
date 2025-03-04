@@ -16,6 +16,7 @@ import CustomInput from "../../../components/CustomInput/CustomInput";
 import { FormatDatePassport } from "../../../components/FormatDate/FormatDatePassport";
 import SafeAreaWrapper from "../../../components/SafeAreaWrapper/SafeAreaWrapper";
 import CustomPicker from "../../../components/CustomPicker/CustomPicker"; // Import CustomPicker
+import i18n from "../../../components/i18n/i18n";
 
 const EditOwner = () => {
   const {
@@ -46,8 +47,8 @@ const EditOwner = () => {
         setLoading(false);
 
         const responseDataError = await response.json();
-        const errorMessage =
-          responseDataError.error.Message || "Произошла ошибка";
+        const errorMessage = responseDataError.error || "Произошла ошибка";
+
         console.error("Error updating user profile:", errorMessage);
         return;
       }
@@ -106,7 +107,7 @@ const EditOwner = () => {
         Toast.show({
           type: "error",
           position: "bottom",
-          text1: "Ошибка",
+          text1: "Error",
           text2: result.error.Error,
           visibilityTime: 3000,
           autoHide: true,
@@ -161,7 +162,7 @@ const EditOwner = () => {
                           ]}
                           selectedValue={value}
                           onValueChange={onChange}
-                          placeholder="Выберите тип паспорта"
+                          placeholder={i18n.t("enterPassportType")}
                         />
                         {errors[field.name] && (
                           <Text style={{ color: "red", marginTop: 5 }}>
@@ -224,7 +225,7 @@ const EditOwner = () => {
                   fontSize: 20,
                 }}
               >
-                Сохранить
+                {i18n.t("save")}
               </Text>
             </TouchableOpacity>
           )}

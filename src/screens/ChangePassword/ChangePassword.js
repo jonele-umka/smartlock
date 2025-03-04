@@ -1,21 +1,12 @@
 import React, { useState } from "react";
 import { useForm, Controller } from "react-hook-form";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 
-import {
-  SafeAreaView,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  ActivityIndicator,
-  View,
-  Platform,
-} from "react-native";
-import { SafeAreaView as SafeAreaViewContext } from "react-native-safe-area-context";
+import { TouchableOpacity, ActivityIndicator, View } from "react-native";
 
 import { useNavigation } from "@react-navigation/core";
 import i18n from "../../components/i18n/i18n";
-import { LinearGradient } from "expo-linear-gradient";
+
 // import { API_URL } from "../../constants";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -100,7 +91,7 @@ const ChangePassword = () => {
       }}
     >
       <CustomText style={{ fontSize: 40, marginBottom: 30, fontWeight: "600" }}>
-        Сменить пароль
+        {i18n.t("changePassword")}
       </CustomText>
 
       {/** Старый пароль */}
@@ -108,17 +99,17 @@ const ChangePassword = () => {
         <CustomText
           style={{ marginBottom: 15, fontWeight: "500", fontSize: 16 }}
         >
-          Старый пароль
+          {i18n.t("oldPassword")}
         </CustomText>
         <Controller
           control={control}
           name="CurrentPassword"
           rules={{
-            required: "Заполните поле",
-            minLength: { value: 8, message: "Минимум 8 символов" },
+            required: i18n.t("required"),
+            minLength: { value: 8, message: i18n.t("minPassword") },
             pattern: {
               value: /^[^\sа-яА-Я]+$/i,
-              message: "Введите на латинице",
+              message: i18n.t("enterLatin"),
             },
           }}
           render={({ field }) => (
@@ -150,17 +141,17 @@ const ChangePassword = () => {
         <CustomText
           style={{ marginBottom: 15, fontWeight: "500", fontSize: 16 }}
         >
-          Новый пароль
+          {i18n.t("newPassword")}
         </CustomText>
         <Controller
           control={control}
           name="NewPassword"
           rules={{
-            required: "Заполните поле",
-            minLength: { value: 8, message: "Минимум 8 символов" },
+            required: i18n.t("required"),
+            minLength: { value: 8, message: i18n.t("minPassword") },
             pattern: {
               value: /^[^\sа-яА-Я]+$/i,
-              message: "Введите на латинице",
+              message: i18n.t("enterLatin"),
             },
           }}
           render={({ field }) => (
@@ -184,17 +175,17 @@ const ChangePassword = () => {
         <CustomText
           style={{ marginBottom: 15, fontWeight: "500", fontSize: 16 }}
         >
-          Подтверждение пароля
+          {i18n.t("confirmNewPassword")}
         </CustomText>
         <Controller
           control={control}
           name="NewPasswordConfirm"
           rules={{
-            required: "Заполните поле",
-            minLength: { value: 8, message: "Минимум 8 символов" },
+            required: i18n.t("required"),
+            minLength: { value: 8, message: i18n.t("minPassword") },
             pattern: {
               value: /^[^\sа-яА-Я]+$/i,
-              message: "Введите на латинице",
+              message: i18n.t("enterLatin"),
             },
           }}
           render={({ field }) => (
@@ -242,7 +233,7 @@ const ChangePassword = () => {
           <CustomText
             style={{ color: "#fff", textAlign: "center", fontSize: 20 }}
           >
-            Далее
+            {i18n.t("send")}
           </CustomText>
         </TouchableOpacity>
       )}

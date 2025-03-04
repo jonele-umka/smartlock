@@ -47,7 +47,7 @@ const ChangeEmail = () => {
 
       if (response.ok) {
         setLoading(false);
-        const result = await response.json();
+        // const result = await response.json();
         navigation.navigate("Подтверждение кода");
       } else {
         const errorResponse = await response.json();
@@ -79,7 +79,7 @@ const ChangeEmail = () => {
             fontWeight: 600,
           }}
         >
-          {i18n.t("enterEmail")}
+          {i18n.t("changeEmail")}
         </CustomText>
         <View>
           <View>
@@ -162,13 +162,13 @@ const ChangeEmail = () => {
                 fontSize: 20,
               }}
             >
-              Отправить
+              {i18n.t("send")}
             </CustomText>
           </TouchableOpacity>
         )}
         {error == 400 && (
           <Text style={{ color: "red", fontSize: 12, marginTop: 7 }}>
-            {i18n.t("invalidEmail")}
+            {i18n.t("validEmail")}
           </Text>
         )}
       </SafeAreaWrapper>

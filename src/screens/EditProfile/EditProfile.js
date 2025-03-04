@@ -23,6 +23,7 @@ import CustomText from "../../components/CustomText/CustomText";
 import CustomPicker from "../../components/CustomPicker/CustomPicker";
 import SafeAreaWrapper from "../../components/SafeAreaWrapper/SafeAreaWrapper";
 import { getUserProfile } from "../../Store/authSlice/authSlice";
+import i18n from "../../components/i18n/i18n";
 
 const EditProfile = () => {
   const route = useRoute();
@@ -392,7 +393,7 @@ const EditProfile = () => {
             )} */}
             <View>
               <CustomText style={{ marginBottom: 15, fontSize: 25 }}>
-                Редактировать данные
+                {i18n.t("editData")}
               </CustomText>
               <View
                 style={{
@@ -401,7 +402,9 @@ const EditProfile = () => {
                 }}
               >
                 <View>
-                  <CustomText style={{ marginBottom: 10 }}>ФИО</CustomText>
+                  <CustomText style={{ marginBottom: 10 }}>
+                    {i18n.t("nickname")}
+                  </CustomText>
                   <Controller
                     control={control}
                     render={({ field: { onChange, value } }) => (
@@ -416,7 +419,7 @@ const EditProfile = () => {
                           borderRadius: 10,
                         }}
                         underlineColorAndroid="transparent"
-                        placeholder="Асанов Усон"
+                        placeholder={i18n.t("enterNickname")}
                         placeholderTextColor={"#616992"}
                         value={value}
                         onChangeText={(text) => onChange(text)}
@@ -428,7 +431,7 @@ const EditProfile = () => {
                 </View>
                 <View>
                   <CustomText style={{ marginBottom: 10 }}>
-                    Номер телефона
+                    {i18n.t("phoneNumber")}
                   </CustomText>
                   <Controller
                     control={control}
@@ -454,7 +457,7 @@ const EditProfile = () => {
                     defaultValue=""
                   />
                 </View>
-                <View>
+                {/* <View>
                   <CustomText style={{ marginBottom: 10 }}>Био</CustomText>
                   <Controller
                     control={control}
@@ -479,7 +482,7 @@ const EditProfile = () => {
                     name="Biography"
                     defaultValue=""
                   />
-                </View>
+                </View> */}
               </View>
             </View>
             {/* <View style={{ marginBottom: 20 }}>
@@ -798,7 +801,7 @@ const EditProfile = () => {
                   fontSize: 20,
                 }}
               >
-                Сохранить
+                {i18n.t("save")}
               </Text>
             </TouchableOpacity>
           )}

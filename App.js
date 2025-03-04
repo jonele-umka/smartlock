@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback } from "react";
+import React, { useEffect, useCallback, useState } from "react";
 import Navigator from "./src/navigation";
 import { Provider } from "react-redux";
 import store from "./src/Store/store";
@@ -12,10 +12,18 @@ import * as Notifications from "expo-notifications";
 import Constants from "expo-constants";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
+import {
+  fetchAmenities,
+  fetchCategory,
+  fetchRules,
+} from "./src/Store/dictionarySlice/dictionarySlice";
+import i18n from "./src/components/i18n/i18n";
 
 SplashScreen.preventAutoHideAsync();
 
 const App = () => {
+  const [language, setLanguage] = useState("ru"); // Добавляем useState для хранения языка
+
   const [fontsLoaded, fontError] = useFonts({
     "IBMPlexSans-Regular": require("./src/assets/Fonts/IBM_Plex_Sans/IBMPlexSans-Regular.ttf"),
     "IBMPlexSans-Medium": require("./src/assets/Fonts/IBM_Plex_Sans/IBMPlexSans-Medium.ttf"),
@@ -30,13 +38,25 @@ const App = () => {
   }, [fontsLoaded, fontError]);
 
   useEffect(() => {
-    AsyncStorage.getItem("language").then((storedLanguage) => {
-      if (storedLanguage) {
-        Localization.locale = storedLanguage;
-      } else {
-        Localization.locale = "ru";
+    const loadLanguage = async () => {
+      try {
+        const storedLanguage = await AsyncStorage.getItem("language");
+        const selectedLanguage = storedLanguage || "ru";
+
+        Localization.locale = selectedLanguage; // Устанавливаем язык для expo-localization
+        i18n.locale = selectedLanguage; // Устанавливаем язык для i18n
+        setLanguage(selectedLanguage); // Обновляем useState
+
+        // Загружаем данные после установки языка
+        store.dispatch(fetchAmenities());
+        store.dispatch(fetchRules());
+        store.dispatch(fetchCategory());
+      } catch (error) {
+        console.error("Ошибка при загрузке языка:", error);
       }
-    });
+    };
+
+    loadLanguage();
 
     const registerForPushNotifications = async () => {
       let token;
@@ -51,7 +71,6 @@ const App = () => {
         alert("Не удалось получить разрешение на отправку уведомлений!");
         return;
       }
-
       try {
         const projectId =
           Constants?.expoConfig?.extra?.eas?.projectId ??

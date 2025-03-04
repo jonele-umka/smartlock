@@ -4,6 +4,7 @@ import { ScrollView, View } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import Link from "../../components/Link/Link";
 import SafeAreaWrapper from "../../components/SafeAreaWrapper/SafeAreaWrapper";
+import i18n from "../../components/i18n/i18n";
 
 const Owner = () => {
   const navigation = useNavigation();
@@ -18,15 +19,18 @@ const Owner = () => {
     >
       <SafeAreaWrapper>
         <Link
-          title={"Редактировать данные владельца"}
+          title={i18n.t("editDataOwner")}
           onPress={() => navigation.navigate("Редактировать данные владельца")}
         />
         <Link
-          title={"Управление объектами"}
+          title={i18n.t("objectManagement")}
           onPress={() => navigation.navigate("Управление объектами")}
         />
 
-        <Link title={"Заявки"} onPress={() => navigation.navigate("Заявки")} />
+        <Link
+          title={i18n.t("applications")}
+          onPress={() => navigation.navigate("Заявки")}
+        />
       </SafeAreaWrapper>
     </ScrollView>
   );

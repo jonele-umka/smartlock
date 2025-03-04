@@ -14,6 +14,7 @@ import { useSelector } from "react-redux";
 import CustomText from "../../../components/CustomText/CustomText";
 import { formatDate } from "../../../components/FormatDate/FormatDate";
 import CustomPicker from "../../../components/CustomPicker/CustomPicker";
+import i18n from "../../../components/i18n/i18n";
 
 const EditLock = () => {
   const navigation = useNavigation();
@@ -62,7 +63,7 @@ const EditLock = () => {
         Toast.show({
           type: "success",
           position: "bottom",
-          text1: "Пин код успешно создан",
+          text1: i18n.t('pinCreate'),
           visibilityTime: 3000,
           autoHide: true,
           topOffset: 30,

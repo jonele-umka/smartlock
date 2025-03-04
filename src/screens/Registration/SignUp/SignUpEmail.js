@@ -27,8 +27,8 @@ const SignUpEmail = () => {
   const navigation = useNavigation();
   const loading = useSelector((state) => state.auth.loading);
   const [error, setError] = useState("");
-  const [showPassword, setShowPassword] = useState(false); // Состояние для отображения пароля
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false); // Состояние для отображения пароля подтверждения
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const onSubmit = async (data) => {
     try {
@@ -40,6 +40,7 @@ const SignUpEmail = () => {
       }
     } catch (error) {
       console.error("Ошибка при входе:", error);
+
       setError(error.message);
     }
   };
@@ -94,7 +95,13 @@ const SignUpEmail = () => {
                     placeholder={field.placeholder}
                     placeholderTextColor="#616992"
                     onChangeText={(text) => {
-                      onChange(text);
+                      let formattedText = text.trim();
+                      if (field.name === "Email") {
+                        formattedText =
+                          formattedText.charAt(0).toLowerCase() +
+                          formattedText.slice(1);
+                      }
+                      onChange(formattedText);
                       setError("");
                     }}
                     value={value}
@@ -134,6 +141,7 @@ const SignUpEmail = () => {
             )}
           </View>
         ))}
+
         {loading ? (
           <ActivityIndicator
             size="large"
@@ -159,13 +167,20 @@ const SignUpEmail = () => {
             <CustomText
               style={{ color: "#fff", textAlign: "center", fontSize: 20 }}
             >
-              Зарегистрироваться
+              {i18n.t("register")}
             </CustomText>
           </TouchableOpacity>
         )}
-        {error && (
-          <CustomText style={{ color: "red", fontSize: 12, marginTop: 7 }}>
-            {i18n.t("invalidEmail")}
+        {error === "exception:password no match with password confirmation" && (
+          <CustomText
+            style={{
+              color: "red",
+              fontSize: 12,
+              marginTop: 7,
+              textAlign: "center",
+            }}
+          >
+            {i18n.t("passwordsDontMatch")}
           </CustomText>
         )}
       </SafeAreaWrapper>

@@ -18,6 +18,7 @@ import { useNavigation } from "@react-navigation/core";
 import CustomText from "../components/CustomText/CustomText";
 import { RefreshControl } from "react-native";
 import SafeAreaWrapper from "../components/SafeAreaWrapper/SafeAreaWrapper";
+import i18n from "../components/i18n/i18n";
 
 const FavoritesScreen = () => {
   const navigation = useNavigation();
@@ -78,8 +79,8 @@ const FavoritesScreen = () => {
           }}
         >
           {favorites && favorites.length > 0
-            ? "Ваши избранные"
-            : "Нет избранных"}
+            ? i18n.t("yourFavorites")
+            : i18n.t("noYourFavorites")}
         </CustomText>
         <View style={{ flexDirection: "column", rowGap: 20, flexWrap: "wrap" }}>
           {favorites &&
@@ -224,7 +225,7 @@ const FavoritesScreen = () => {
                           color: "#b8b8b8",
                         }}
                       >
-                        ночь
+                        {i18n.t("night")}
                       </CustomText>
                     </View>
                   </View>

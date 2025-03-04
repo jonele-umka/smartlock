@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Toast from "react-native-toast-message";
+import i18n from "../../components/i18n/i18n";
 
 const API_URL = process.env.API_URL;
 
@@ -56,7 +57,7 @@ export const sendEmail = createAsyncThunk(
         const responseDataError = await response.json();
         const errorMessage =
           responseDataError.error.Message || "Произошла ошибка";
-
+        console.log(errorMessage);
         return rejectWithValue(errorMessage);
       }
       const responseData = await response.json();
@@ -179,8 +180,8 @@ export const logoutUser = createAsyncThunk(
         Toast.show({
           type: "error",
           position: "bottom",
-          text1: "Ошибка",
-          text2: "Не удалось выйти",
+          text1: "Error",
+          text2: i18n.t("errorLogout"),
           visibilityTime: 3000,
           autoHide: true,
           topOffset: 30,

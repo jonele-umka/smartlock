@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { View, ScrollView, RefreshControl } from "react-native";
-import ListCard from "../components/List/BestObjects/BestObjectsList";
+import BestObjectsList from "../components/List/BestObjects/BestObjectsList";
 import Header from "../components/Header/Header";
 import ObjectList from "./Objects/ObjectList/ObjectList";
 import { useDispatch, useSelector } from "react-redux";
@@ -10,7 +10,7 @@ import { fetchAccommodations } from "../Store/accommodationSlice/accommodationSl
 import Search from "../components/Search/Search";
 import SafeAreaWrapper from "../components/SafeAreaWrapper/SafeAreaWrapper";
 import { useNavigation } from "@react-navigation/core";
-import BestObjectsList from "../components/List/BestObjects/BestObjectsList";
+import i18n from "../components/i18n/i18n";
 
 const HomeScreen = ({ navigation }) => {
   const dispatch = useDispatch();
@@ -37,7 +37,7 @@ const HomeScreen = ({ navigation }) => {
   const fetchHotels = async () => {
     try {
       const response = await fetch(
-        `${API_URL}/accommodation/get-all?min_rating=-12`,
+        `${API_URL}/accommodation/get-all?min_rating=5`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -104,9 +104,9 @@ const HomeScreen = ({ navigation }) => {
                 paddingHorizontal: 10,
               }}
             >
-              Популярные
+              {i18n.t("popular")}
             </CustomText>
-            <ListCard
+            <BestObjectsList
               clickHandler={clickHandler}
               items={hotels}
               API_URL={API_URL}
@@ -122,7 +122,7 @@ const HomeScreen = ({ navigation }) => {
                 marginBottom: 15,
               }}
             >
-              Топ отели
+              {i18n.t("topHotels")}
             </CustomText>
             <ObjectList />
           </View>

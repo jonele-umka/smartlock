@@ -5,6 +5,7 @@ import Application from "./Application";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchApplications } from "../../../Store/applicationsSlice/applicationsSlice";
 import CustomText from "../../CustomText/CustomText";
+import i18n from "../../i18n/i18n";
 
 const ApplicationList = ({ status }) => {
   const dispatch = useDispatch();
@@ -24,14 +25,14 @@ const ApplicationList = ({ status }) => {
   if (status === "failed") {
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <CustomText>Ошибка при получении данных</CustomText>
+        <CustomText>{i18n.t("errorData")}</CustomText>
       </View>
     );
   }
   if (!applications || applications.length <= 0) {
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <CustomText>Нет заявок</CustomText>
+        <CustomText>{i18n.t("noApplications")}</CustomText>
       </View>
     );
   }

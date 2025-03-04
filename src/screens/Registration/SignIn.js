@@ -143,7 +143,7 @@ const SignIn = () => {
           }}
         >
           <View style={{ marginBottom: 30 }}>
-            <CustomText>Email</CustomText>
+            <CustomText>{i18n.t("email")}</CustomText>
             <View
               style={{
                 flexDirection: "row",
@@ -171,7 +171,11 @@ const SignIn = () => {
                     placeholder={i18n.t("enterEmail")}
                     placeholderTextColor="#616992"
                     onChangeText={(value) => {
-                      field.onChange(value);
+                      const trimmedValue = value.trim();
+                      const formattedValue =
+                        trimmedValue.charAt(0).toLowerCase() +
+                        trimmedValue.slice(1);
+                      field.onChange(formattedValue);
                       setError("");
                     }}
                     value={field.value}
@@ -196,7 +200,7 @@ const SignIn = () => {
             )}
           </View>
           <View>
-            <CustomText>Пароль</CustomText>
+            <CustomText>{i18n.t("password")}</CustomText>
             <View
               style={{
                 flexDirection: "row",
@@ -292,7 +296,7 @@ const SignIn = () => {
                 alignSelf: "flex-end",
               }}
             >
-              {i18n.t("forgotPassword")}
+              {i18n.t("forgotYourPassword")}
             </CustomText>
           </TouchableOpacity>
         </View>
@@ -325,7 +329,7 @@ const SignIn = () => {
                 fontSize: 20,
               }}
             >
-              Войти
+              {i18n.t("login")}
             </CustomText>
           </TouchableOpacity>
         )}
@@ -345,7 +349,7 @@ const SignIn = () => {
               // },
             ]}
           >
-            {i18n.t("createAccount")}
+            {i18n.t("register")}
           </CustomText>
         </TouchableOpacity>
         {/* <View

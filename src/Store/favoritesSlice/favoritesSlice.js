@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import Toast from "react-native-toast-message";
+import i18n from "../../components/i18n/i18n";
 
 const API_URL = process.env.API_URL;
 
@@ -42,13 +43,22 @@ export const addFavorite = createAsyncThunk(
 
       if (!response.ok) {
         if (response.status === 401) {
-          // Показать уведомление об ошибке авторизации
-          Toast.error("Авторизуйтесь, чтобы добавить в избранное");
+          Toast.show({
+            type: "error",
+            position: "bottom",
+            text1: i18n.t("error"),
+            text2: i18n.t("tokenAddFavorites"),
+            visibilityTime: 3000,
+            autoHide: true,
+            topOffset: 30,
+          });
+          return rejectWithValue(i18n.t("tokenAddFavorites"));
         }
 
         const responseDataError = await response.json();
         const errorMessage =
           responseDataError.error?.Message || "Произошла ошибка";
+        console.log(errorMessage, "wewewewew");
         return rejectWithValue(errorMessage);
       }
 
@@ -72,6 +82,19 @@ export const removeFavorite = createAsyncThunk(
       });
 
       if (!response.ok) {
+        if (response.status === 401) {
+          Toast.show({
+            type: "error",
+            position: "bottom",
+            text1: i18n.t("error"),
+            text2: i18n.t("tokenRemoveFavorites"),
+            visibilityTime: 3000,
+            autoHide: true,
+            topOffset: 30,
+          });
+          return rejectWithValue(i18n.t("tokenRemoveFavorites"));
+        }
+
         const responseDataError = await response.json();
         const errorMessage =
           responseDataError.error.Message || "Произошла ошибка";
@@ -138,7 +161,7 @@ const favoritesSlice = createSlice({
       })
       .addCase(removeFavorite.fulfilled, (state, action) => {
         state.status = "succeeded";
-        // Проверяем, что favorites - это массив, перед вызовом filter
+
         if (Array.isArray(state.favorites)) {
           state.favorites = state.favorites.filter(
             (item) => item.ID !== action.payload

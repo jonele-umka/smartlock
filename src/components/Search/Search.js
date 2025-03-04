@@ -106,6 +106,7 @@ import { useDispatch } from "react-redux";
 import SafeAreaWrapper from "../SafeAreaWrapper/SafeAreaWrapper";
 import FilterModal from "../Modal/FilterModal/FilterModal";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
+import i18n from "../i18n/i18n";
 
 export default function Search() {
   const { control } = useForm();
@@ -161,7 +162,7 @@ export default function Search() {
             rules={{ required: true }}
             render={({ field }) => (
               <TextInput
-                placeholder={"Поиск"}
+                placeholder={i18n.t("search")}
                 placeholderTextColor="#616992"
                 onChangeText={(text) => {
                   field.onChange(text);

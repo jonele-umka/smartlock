@@ -11,6 +11,7 @@ import { CheckBox } from "@rneui/base";
 import SafeAreaWrapper from "../../SafeAreaWrapper/SafeAreaWrapper";
 import Entypo from "react-native-vector-icons/Entypo";
 import CustomText from "../../CustomText/CustomText";
+import i18n from "../../i18n/i18n";
 
 const ActionLandlord = ({
   actionSheetRef,
@@ -61,12 +62,12 @@ const ActionLandlord = ({
             }}
           >
             <CustomText style={{ fontSize: 18, marginBottom: 10 }}>
-              {currentType === "amenities" && "Удобства"}
-              {currentType === "rules" && "Порядок проживания"}
-              {currentType === "category" && "Категории"}
+              {currentType === "amenities" && i18n.t("facilities")}
+              {currentType === "rules" && i18n.t("rules")}
+              {currentType === "category" && i18n.t("categories")}
 
-              {currentType === "checkIn" && "Время въезда"}
-              {currentType === "checkOut" && "Время выезда"}
+              {currentType === "checkIn" && i18n.t("entryTime")}
+              {currentType === "checkOut" && i18n.t("departureTime")}
             </CustomText>
             <TouchableOpacity onPress={() => setIsActionSheetVisible(false)}>
               <Entypo name="cross" style={{ fontSize: 30 }} />

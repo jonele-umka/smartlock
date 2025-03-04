@@ -70,7 +70,7 @@ const CreateNewPassword = () => {
         Toast.show({
           type: "success",
           position: "bottom",
-          text2: i18n.t("youHaveSuccessfullyChangedYourPassword"),
+          text2: i18n.t("editPassword"),
           visibilityTime: 3000,
           autoHide: true,
           topOffset: 30,

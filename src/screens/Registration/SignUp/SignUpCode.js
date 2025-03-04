@@ -99,12 +99,12 @@ const SignUpCode = () => {
         />
         <CustomText
           style={{
-            fontSize: 30,
+            fontSize: 22,
             marginBottom: 20,
             fontWeight: 600,
           }}
         >
-          {i18n.t("enterACode")}
+          {i18n.t("enterCodeEmail")}
         </CustomText>
 
         <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
@@ -114,10 +114,10 @@ const SignUpCode = () => {
               control={control}
               name={`code${index}`}
               rules={{
-                required: i18n.t("fillInTheField"),
+                required: i18n.t("required"),
                 pattern: {
                   value: /^[0-9]$/,
-                  message: i18n.t("pleaseEnterAValidCode"),
+                  message: i18n.t("required"),
                 },
               }}
               render={({ field: { onChange, onBlur, value } }) => (
@@ -152,6 +152,11 @@ const SignUpCode = () => {
             />
           ))}
         </View>
+        {/* {errors.code && (
+          <CustomText style={{ color: "red", fontSize: 12, marginTop: 7 }}>
+            {i18n.t("required")}
+          </CustomText>
+        )} */}
         {errors.code && (
           <CustomText style={{ color: "red", fontSize: 12, marginTop: 7 }}>
             {errors.code.message}
@@ -159,7 +164,7 @@ const SignUpCode = () => {
         )}
         {error === "exception:wrong-verification-code" && (
           <CustomText style={{ color: "red", fontSize: 12, marginTop: 15 }}>
-            Неправильный пароль
+            {i18n.t("inCorrectPassword")}
           </CustomText>
         )}
         {canResend ? (
@@ -167,19 +172,19 @@ const SignUpCode = () => {
             <CustomText
               style={{ color: "#007bff", fontSize: 18, marginTop: 20 }}
             >
-              Отправить код повторно
+              {i18n.t("resendCode")}
             </CustomText>
           </TouchableOpacity>
         ) : (
           <CustomText style={{ color: "#1C2863", marginTop: 20 }}>
-            Повторная отправка кода возможна через {timer} секунд
+            {i18n.t("resending")} {timer} {i18n.t("seconds")}
           </CustomText>
         )}
-        {error === "invalid activation code" && (
+        {/* {error === "invalid activation code" && (
           <CustomText style={{ color: "red", fontSize: 12, marginTop: 7 }}>
             Неверный код
           </CustomText>
-        )}
+        )} */}
         {loading ? (
           <ActivityIndicator
             size="large"
@@ -209,7 +214,7 @@ const SignUpCode = () => {
                 fontSize: 20,
               }}
             >
-              Зарегистрироваться
+              {i18n.t("register")}
             </CustomText>
           </TouchableOpacity>
         )}

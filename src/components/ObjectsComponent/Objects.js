@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, ImageBackground, TouchableOpacity } from "react-native";
+import { View, ImageBackground, TouchableOpacity, Text } from "react-native";
 import Fontisto from "react-native-vector-icons/Fontisto";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
@@ -12,6 +12,7 @@ import {
   removeFavorite,
 } from "../../Store/favoritesSlice/favoritesSlice";
 import Toast from "react-native-toast-message";
+import i18n from "../i18n/i18n";
 
 const Objects = ({ items }) => {
   const navigation = useNavigation();
@@ -52,8 +53,8 @@ const Objects = ({ items }) => {
           Toast.show({
             type: "error",
             position: "bottom",
-            text1: "Ошибка",
-            text2: "Не удалось удалить из избранного",
+            text1: i18n.t("error"),
+            text2: resultAction.payload || i18n.t("tokenRemoveFavorites"),
             visibilityTime: 3000,
             autoHide: true,
             topOffset: 30,
@@ -70,8 +71,8 @@ const Objects = ({ items }) => {
         Toast.show({
           type: "error",
           position: "bottom",
-          text1: "Ошибка",
-          text2: "Не удалось добавить в избранное",
+          text1: i18n.t("error"),
+          text2: resultAction.payload || i18n.t("tokenAddFavorites"),
           visibilityTime: 3000,
           autoHide: true,
           topOffset: 30,
@@ -160,19 +161,22 @@ const Objects = ({ items }) => {
             alignItems: "flex-end",
             columnGap: 10,
             padding: 10,
+            height: 70,
           }}
         >
           <View style={{ flex: 1 }}>
-            <CustomText
+            <Text
               style={{
                 fontSize: 20,
-                fontWeight: 500,
+                fontWeight: "500",
                 color: "#fff",
                 marginBottom: 5,
               }}
+              numberOfLines={1}
+              ellipsizeMode="tail"
             >
               {items.Title}
-            </CustomText>
+            </Text>
 
             <View
               style={{
@@ -185,9 +189,13 @@ const Objects = ({ items }) => {
                 name="map-marker-alt"
                 style={{ color: "#f0f0f0", fontSize: 15 }}
               />
-              <CustomText style={{ color: "#f0f0f0" }}>
+              <Text
+                style={{ color: "#f0f0f0", flex: 1 }}
+                numberOfLines={1}
+                ellipsizeMode="tail"
+              >
                 {items.LocationLabel}
-              </CustomText>
+              </Text>
             </View>
           </View>
 
@@ -195,7 +203,7 @@ const Objects = ({ items }) => {
             <CustomText
               style={{
                 fontSize: 16,
-                fontWeight: 500,
+                fontWeight: "500",
                 color: "#fff",
               }}
             >
@@ -207,7 +215,7 @@ const Objects = ({ items }) => {
                 color: "#b8b8b8",
               }}
             >
-              ночь
+              {i18n.t("night")}
             </CustomText>
           </View>
         </View>

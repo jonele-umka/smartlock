@@ -5,31 +5,26 @@ import {
   Image,
   ScrollView,
   TouchableOpacity,
-  TextInput,
-  Platform,
   Switch,
+  ActivityIndicator,
 } from "react-native";
 import Fontisto from "react-native-vector-icons/Fontisto";
 // import MapAddress from "../../components/Map/MapAddress";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { useForm, Controller } from "react-hook-form";
-import { LinearGradient } from "expo-linear-gradient";
 import { useSelector } from "react-redux";
 import ListImages from "../../components/List/ListImages/ListImages";
 import Toast from "react-native-toast-message";
 import CustomText from "../../components/CustomText/CustomText";
+import i18n from "../../components/i18n/i18n";
 
 const ConfirmationScreen = () => {
   const navigation = useNavigation();
   const route = useRoute();
   const token = useSelector((state) => state.auth.token);
   const API_URL = process.env.API_URL;
-  const {
-    control,
-    handleSubmit,
-    formState: { errors },
-  } = useForm();
-  const [fieldsToShow, setFieldsToShow] = useState([]);
+  const { handleSubmit } = useForm();
+  const [loading, setLoading] = useState(false);
   // data
   const startDate = new Date(route?.params?.selectedDates.startDate);
   const endDate = new Date(route?.params?.selectedDates.endDate);
@@ -73,37 +68,38 @@ const ConfirmationScreen = () => {
     }
   };
 
-  const fetchProfile = async () => {
-    try {
-      const response = await fetch(`${API_URL}/api/auth/profile`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
+  //   const fetchProfile = async () => {
+  //     try {
+  //       const response = await fetch(`${API_URL}/api/auth/profile`, {
+  //         method: "GET",
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //           Authorization: `Bearer ${token}`,
+  //         },
+  //       });
 
-      if (!response.ok) {
-        const responseDataError = await response.json();
-        const errorMessage =
-          responseDataError.error.Message || "Произошла ошибка";
-      }
+  //       if (!response.ok) {
+  //         const responseDataError = await response.json();
+  //         const errorMessage =
+  //           responseDataError.error.Message || "Произошла ошибка";
+  //       }
 
-      const responseData = await response.json();
+  //       const responseData = await response.json();
+  // console.log(responseData)
+  //       const fieldsToShow = [];
+  //       if (!responseData.Profile.Name) fieldsToShow.push("Name");
+  //       if (!responseData.Profile.Surname) fieldsToShow.push("Surname");
+  //       if (!responseData.Profile.PhoneNumber) fieldsToShow.push("PhoneNumber");
+  //       setFieldsToShow(fieldsToShow);
 
-      const fieldsToShow = [];
-      if (!responseData.Profile.Name) fieldsToShow.push("Name");
-      if (!responseData.Profile.Surname) fieldsToShow.push("Surname");
-      if (!responseData.Profile.PhoneNumber) fieldsToShow.push("PhoneNumber");
-      setFieldsToShow(fieldsToShow);
-
-      return responseData;
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  //       return responseData;
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //   };
 
   const onSubmit = async (data) => {
+    setLoading(true);
     const booking = {
       AccommodationID: parseInt(route?.params?.id),
       StartDate: route?.params?.selectedDates.startDate,
@@ -127,6 +123,7 @@ const ConfirmationScreen = () => {
       });
 
       if (!response.ok) {
+        setLoading(false);
         const responseDataError = await response.json();
         const errorMessage =
           responseDataError.error.Message || "Произошла ошибка";
@@ -142,24 +139,26 @@ const ConfirmationScreen = () => {
       }
 
       if (response.ok) {
+        setLoading(false);
         navigation.navigate("Главная страница");
         Toast.show({
           type: "success",
           position: "bottom",
-          text2: "Вы успешно забронировали",
+          text2: i18n.t("successReserv"),
           visibilityTime: 3000,
           autoHide: true,
           topOffset: 30,
         });
       }
     } catch (error) {
+      setLoading(false);
       console.log("Ошибка при отправке:", error);
     }
   };
 
-  useEffect(() => {
-    fetchProfile();
-  }, []);
+  // useEffect(() => {
+  //   fetchProfile();
+  // }, []);
 
   return (
     <ScrollView
@@ -203,7 +202,7 @@ const ConfirmationScreen = () => {
 
       <View style={{ marginTop: 40 }}>
         <CustomText style={{ fontSize: 18, fontWeight: 500, marginBottom: 10 }}>
-          Местоположение
+          {i18n.t("location")}
         </CustomText>
         {/* <MapAddress
           latitude={route?.params?.latitude}
@@ -226,8 +225,8 @@ const ConfirmationScreen = () => {
         </View>
       </View>
       <View style={{ marginTop: 40 }}>
-        <CustomText style={{ fontSize: 18, fontWeight: 500, marginBottom: 10 }}>
-          Количество гостей и комнат
+        <CustomText style={{ fontSize: 18, fontWeight: 500, marginBottom: 20 }}>
+          {i18n.t("quantityPersonGuest")}
         </CustomText>
         <View
           style={{
@@ -242,14 +241,13 @@ const ConfirmationScreen = () => {
             <CustomText
               style={{
                 fontSize: 16,
-                marginBottom: 3,
               }}
             >
-              Гости
+              {i18n.t("guests")}
             </CustomText>
-            <CustomText style={{ color: "#616992", fontSize: 12 }}>
+            {/* <CustomText style={{ color: "#616992", fontSize: 12 }}>
               От 18 лет
-            </CustomText>
+            </CustomText> */}
           </View>
           <View
             style={{
@@ -297,14 +295,13 @@ const ConfirmationScreen = () => {
             <CustomText
               style={{
                 fontSize: 16,
-                marginBottom: 3,
               }}
             >
-              Комнаты
+              {i18n.t("placeholder_rooms_quantity")}
             </CustomText>
-            <CustomText style={{ color: "#616992", fontSize: 12 }}>
+            {/* <CustomText style={{ color: "#616992", fontSize: 12 }}>
               1-х комн
-            </CustomText>
+            </CustomText> */}
           </View>
           <View
             style={{
@@ -345,7 +342,7 @@ const ConfirmationScreen = () => {
             marginBottom: 20,
           }}
         >
-          <CustomText>Есть дети?</CustomText>
+          <CustomText>{i18n.t("haveChild")}</CustomText>
           <Switch
             value={withChildren}
             onValueChange={setWithChildren}
@@ -364,7 +361,7 @@ const ConfirmationScreen = () => {
           marginBottom: 20,
         }}
       >
-        <CustomText>Есть животные?</CustomText>
+        <CustomText>{i18n.t("doYouHaveAnimals")}</CustomText>
         <Switch
           value={withAnimals}
           onValueChange={setWithAnimals}
@@ -374,7 +371,7 @@ const ConfirmationScreen = () => {
       </View>
       <View style={{ marginTop: 40 }}>
         <CustomText style={{ fontSize: 18, fontWeight: 600, marginBottom: 15 }}>
-          Детали бронирования
+          {i18n.t("bookingDetails")}
         </CustomText>
 
         <View
@@ -393,7 +390,7 @@ const ConfirmationScreen = () => {
             }}
           >
             <CustomText style={{ fontSize: 16, color: "#616992" }}>
-              Заезд:
+              {i18n.t("dateEntry")}:
             </CustomText>
             <CustomText style={{ fontWeight: 500 }}>
               {route?.params?.selectedDates.startDate}
@@ -406,7 +403,7 @@ const ConfirmationScreen = () => {
             }}
           >
             <CustomText style={{ fontSize: 16, color: "#616992" }}>
-              Выезд:
+              {i18n.t("departureDate")}:
             </CustomText>
             <CustomText style={{ fontWeight: 500 }}>
               {route?.params?.selectedDates.endDate}
@@ -419,7 +416,7 @@ const ConfirmationScreen = () => {
             }}
           >
             <CustomText style={{ fontSize: 16, color: "#616992" }}>
-              Количество гостей:
+              {i18n.t("quantityGuests")}:
             </CustomText>
             <CustomText style={{ fontWeight: 500 }}>
               {quantityPerson}
@@ -432,7 +429,7 @@ const ConfirmationScreen = () => {
             }}
           >
             <CustomText style={{ fontSize: 16, color: "#616992" }}>
-              Количество комнаты:
+              {i18n.t("label_rooms_quantity")}:
             </CustomText>
             <CustomText style={{ fontWeight: 500 }}>{quantityRooms}</CustomText>
           </View>
@@ -447,7 +444,7 @@ const ConfirmationScreen = () => {
         }}
       />
 
-      {fieldsToShow.length > 0 && (
+      {/* {fieldsToShow.length > 0 && (
         <View style={{ marginTop: 40 }}>
           <CustomText
             style={{ fontSize: 18, fontWeight: 500, marginBottom: 10 }}
@@ -571,7 +568,7 @@ const ConfirmationScreen = () => {
             )}
           </View>
         </View>
-      )}
+      )} */}
       <View style={{ marginTop: 20 }}>
         <View
           style={{
@@ -614,33 +611,37 @@ const ConfirmationScreen = () => {
           </View>
         </View>
       </View>
-
-      <TouchableOpacity
-        onPress={handleSubmit(onSubmit)}
-        style={{
-          elevation: 5,
-          shadowColor: "#000",
-          shadowOffset: { width: 0, height: 2 },
-          shadowOpacity: 0.2,
-          shadowRadius: 10,
-          marginTop: 30,
-          backgroundColor: "#4B5DFF",
-          paddingVertical: 15,
-          textAlign: "center",
-          borderRadius: 10,
-        }}
-      >
-        <CustomText
-          style={{
-            color: "#fff",
-            fontSize: 18,
-            fontWeight: 500,
-            textAlign: "center",
-          }}
-        >
-          Забронировать
-        </CustomText>
-      </TouchableOpacity>
+      <View style={{ marginTop: 30 }}>
+        {loading ? (
+          <ActivityIndicator size="large" color="#4B5DFF" />
+        ) : (
+          <TouchableOpacity
+            onPress={handleSubmit(onSubmit)}
+            style={{
+              elevation: 5,
+              shadowColor: "#000",
+              shadowOffset: { width: 0, height: 2 },
+              shadowOpacity: 0.2,
+              shadowRadius: 10,
+              backgroundColor: "#4B5DFF",
+              paddingVertical: 15,
+              textAlign: "center",
+              borderRadius: 10,
+            }}
+          >
+            <CustomText
+              style={{
+                color: "#fff",
+                fontSize: 18,
+                fontWeight: 500,
+                textAlign: "center",
+              }}
+            >
+              Забронировать
+            </CustomText>
+          </TouchableOpacity>
+        )}
+      </View>
     </ScrollView>
   );
 };

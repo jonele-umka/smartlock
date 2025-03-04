@@ -6,6 +6,7 @@ import SafeAreaWrapper from "../../components/SafeAreaWrapper/SafeAreaWrapper";
 import LockList from "../../Locks/LockList/LockList";
 import { useSelector } from "react-redux";
 import CustomText from "../../components/CustomText/CustomText";
+import i18n from "../../components/i18n/i18n";
 
 const LockScreen = () => {
   const route = useRoute();
@@ -64,7 +65,7 @@ const LockScreen = () => {
         }}
       >
         <CustomText style={{ fontSize: 30, marginBottom: 25 }}>
-          Замки
+          {i18n.t("locks")}
         </CustomText>
         <LockList data={data} loading={loading} />
       </SafeAreaWrapper>

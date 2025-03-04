@@ -32,6 +32,7 @@ import {
 import { editObjectFields } from "../../../assets/data/Fields";
 import CustomInput from "../../../components/CustomInput/CustomInput";
 import SelectionSection from "../../../components/ActionSheet/ActionLandlord/SelectedSection";
+import i18n from "../../../components/i18n/i18n";
 
 const categoryIcon = {
   1: require("../../../assets/home.png"),
@@ -266,8 +267,8 @@ const Landlord = () => {
             Toast.show({
               type: "error",
               position: "bottom",
-              text1: "Ошибка",
-              text2: "Слишком большой файл",
+              text1: "Error",
+              text2: i18n.t("bigFile"),
               visibilityTime: 3000,
               autoHide: true,
               topOffset: 30,
@@ -452,7 +453,7 @@ const Landlord = () => {
         >
           <View style={{ marginBottom: 20 }}>
             <CustomText style={{ marginBottom: 10, fontSize: 18 }}>
-              Загрузите фото
+              {i18n.t("addImage")}
             </CustomText>
             <PickImage
               onImageSelected={handleImageSelected}
@@ -475,10 +476,10 @@ const Landlord = () => {
                   />
                   <View>
                     <CustomText style={{ fontSize: 16, textAlign: "center" }}>
-                      {route?.params?.id ? "Изменить" : "Добавить"}
+                      {route?.params?.id ? i18n.t("edit") : i18n.t("add")}
                     </CustomText>
                     <CustomText style={{ textAlign: "center", fontSize: 16 }}>
-                      изображение
+                      {i18n.t("image")}
                     </CustomText>
                   </View>
                 </TouchableOpacity>
@@ -500,8 +501,8 @@ const Landlord = () => {
                 const imageUri =
                   typeof image === "string"
                     ? image
-                    : typeof image.ImageUrl === "string"
-                    ? `${API_URL}/${image.ImageUrl}`
+                    : typeof image?.ImageUrl === "string"
+                    ? `${API_URL}/${image?.ImageUrl}`
                     : "";
 
                 return (
@@ -585,7 +586,7 @@ const Landlord = () => {
             </View>
           ))}
           <Image
-            source={{ uri: categories[0].icon }}
+            source={{ uri: categories[0]?.icon }}
             style={{ width: 30, height: 30 }}
           />
           <View style={{ marginBottom: 20 }}>
@@ -599,13 +600,13 @@ const Landlord = () => {
             >
               <View style={{ flex: 1 }}>
                 <CustomText style={{ marginBottom: 10, fontSize: 18 }}>
-                  Местоположение (широта)
+                  {i18n.t("location")} ({i18n.t("latitude")})
                 </CustomText>
                 <View>
                   <Controller
                     control={control}
                     name="Latitude"
-                    rules={{ required: "Это поле обязательно для заполнения" }}
+                    rules={{ required: i18n.t("required") }}
                     render={({ field: { onChange, onBlur, value } }) => (
                       <TextInput
                         style={{
@@ -637,13 +638,13 @@ const Landlord = () => {
 
               <View style={{ flex: 1 }}>
                 <CustomText style={{ marginBottom: 10, fontSize: 18 }}>
-                  Местоположение (долгота)
+                  {i18n.t("location")} ({i18n.t("longitude")})
                 </CustomText>
                 <View>
                   <Controller
                     control={control}
                     name="Longitude"
-                    rules={{ required: "Это поле обязательно для заполнения" }}
+                    rules={{ required: i18n.t("required") }}
                     render={({ field: { onChange, onBlur, value } }) => (
                       <TextInput
                         style={{
@@ -691,17 +692,17 @@ const Landlord = () => {
             )} */}
           </View>
           <SelectionSection
-            title="Категории"
-            placeholder="Выбрать категории"
+            title={i18n.t("categories")}
+            placeholder={i18n.t("place_categories")}
             selectedValue={getCategoryNameById(
               selectedCategory,
-              "Выбрать категории"
+              i18n.t("place_categories")
             )}
             onPress={() => openActionSheet("category")}
           />
           <SelectionSection
-            title="Удобства"
-            placeholder="Выбрать удобства"
+            title={i18n.t("amenities")}
+            placeholder={i18n.t("place_amenities")}
             selectedValue={
               firstSelectedAmenity ? firstSelectedAmenity.Value : ""
             }
@@ -709,8 +710,8 @@ const Landlord = () => {
           />
 
           <SelectionSection
-            title="Порядок проживания"
-            placeholder="Выбрать порядок проживания"
+            title={i18n.t("rules")}
+            placeholder={i18n.t("place_rules")}
             selectedValue={firstSelectedRules ? firstSelectedRules.Value : ""}
             onPress={() => openActionSheet("rules")}
           />
@@ -723,20 +724,20 @@ const Landlord = () => {
             }}
           >
             <SelectionSection
-              title=" Время въезда"
-              placeholder="Выбрать время въезда"
+              title={i18n.t("entryTime")}
+              placeholder={i18n.t("entryTime")}
               selectedValue={getCheckInOutNameById(
                 selectedCheckIn,
-                "Время въезда"
+                i18n.t("entryTime")
               )}
               onPress={() => openActionSheet("checkIn")}
             />
             <SelectionSection
-              title="Время выезда"
-              placeholder="Выбрать время выезда"
+              title={i18n.t("departureTime")}
+              placeholder={i18n.t("departureTime")}
               selectedValue={getCheckInOutNameById(
                 selectedCheckOut,
-                "Время выезда"
+                i18n.t("departureTime")
               )}
               onPress={() => openActionSheet("checkOut")}
             />
@@ -758,7 +759,7 @@ const Landlord = () => {
                 textAlign: "center",
               }}
             >
-              Замки
+              {i18n.t("locks")}
             </CustomText>
           </TouchableOpacity>
         )}
@@ -784,7 +785,7 @@ const Landlord = () => {
                   textAlign: "center",
                 }}
               >
-                Сохранить
+                {i18n.t("save")}
               </CustomText>
             </TouchableOpacity>
           )}
