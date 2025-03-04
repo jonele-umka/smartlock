@@ -76,7 +76,25 @@ const SignIn = () => {
 
   // const getUserInfo = async (token) => {
   //   if (!token) return;
+
+  // const getUserInfo = async (token) => {
+  //   if (!token) return;
   //   try {
+  //     const response = await fetch(
+  //       "https://www.googleapis.com/userinfo/v2/me",
+  //       {
+  //         headers: { Authorization: `Bearer ${token}` },
+  //       }
+  //     );
+
+  //     if (!response.ok) {
+  //       throw new Error("Failed to fetch user info");
+  //     }
+
+  //     const user = await response.json();
+
+  //     await AsyncStorage.setItem("@user", JSON.stringify(user));
+  //     setUserInfo(user);
   //     const response = await fetch(
   //       "https://www.googleapis.com/userinfo/v2/me",
   //       {
@@ -94,8 +112,10 @@ const SignIn = () => {
   //     setUserInfo(user);
   //   } catch (error) {
   //     console.error("Error fetching user info:", error);
+  //     console.error("Error fetching user info:", error);
   //   }
   // };
+
 
   const onSubmit = async (userData) => {
     setIsLoading(true);

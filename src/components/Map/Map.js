@@ -27,6 +27,7 @@ export default function Map({ location, accommodations }) {
             longitude: location?.longitude,
           },
           zoom: 13,
+          zoom: 13,
         },
         { duration: 1500 }
       );

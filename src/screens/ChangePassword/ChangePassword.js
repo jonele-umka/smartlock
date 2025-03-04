@@ -27,12 +27,15 @@ const ChangePassword = () => {
 
   const [loading, setLoading] = useState(false);
 
+  const [loading, setLoading] = useState(false);
+
   const token = useSelector((state) => state.auth.token);
 
   const [confirmError, setConfirmError] = useState("");
   const [oldError, setOldError] = useState("");
 
   const handleChangePassword = async () => {
+    setLoading(true);
     setLoading(true);
     try {
       const CurrentPassword = getValues("CurrentPassword");
@@ -66,15 +69,22 @@ const ChangePassword = () => {
         setLoading(false);
 
         // await AsyncStorage.removeItem("password");
+        setLoading(false);
+
+        // await AsyncStorage.removeItem("password");
         await AsyncStorage.setItem("password", NewPasswordConfirm);
 
         navigation.navigate("Главная страница");
       } else {
         setLoading(false);
 
+        setLoading(false);
+
         console.log("Ошибка", "Не удалось изменить пароль.");
       }
     } catch (error) {
+      setLoading(false);
+
       setLoading(false);
 
       console.error("Не удалось изменить пароль.", error);

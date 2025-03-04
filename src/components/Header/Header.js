@@ -14,6 +14,14 @@ const Header = () => {
     (notification) => !notification.IsRead
   );
 
+  const navigation = useNavigation();
+  const notifications = useSelector(
+    (state) => state.notifications.notifications
+  );
+  const unreadNotifications = notifications.filter(
+    (notification) => !notification.IsRead
+  );
+
   return (
     <View
       style={{

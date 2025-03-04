@@ -78,7 +78,7 @@ const HomeScreen = ({ navigation }) => {
         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
       }
     >
-      <SafeAreaWrapper>
+      <SafeAreaWrapper style={{ paddingBottom: 100 }}>
         <Header />
         <Search />
         {/* <Button

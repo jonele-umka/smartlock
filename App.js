@@ -102,6 +102,7 @@ const App = () => {
         <StatusBar style="light" translucent={true} />
         <Navigator />
         <NotificationWebSocket />
+        <NotificationWebSocket />
         <Toast />
       </SafeAreaProvider>
     </Provider>

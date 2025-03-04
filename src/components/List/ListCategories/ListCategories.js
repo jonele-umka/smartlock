@@ -6,7 +6,9 @@ import {
   StyleSheet,
   TouchableOpacity,
   Image,
+  Image,
 } from "react-native";
+import CustomText from "../../CustomText/CustomText";
 import CustomText from "../../CustomText/CustomText";
 
 const ListCategories = ({ items }) => {
@@ -50,6 +52,24 @@ const ListCategories = ({ items }) => {
             {item.title}
           </CustomText>
         </View>
+        <View
+          style={{ flexDirection: "row", columnGap: 10, alignItems: "center" }}
+        >
+          <View
+            style={{ padding: 5, backgroundColor: "#fff", borderRadius: 10 }}
+          >
+            <Image source={item.image} style={{ width: 20, height: 20 }} />
+          </View>
+          <CustomText
+            style={[
+              styles.cardTitle,
+              activeIndex === index && { color: "#fff" },
+              //  isDarkModeEnabled && { color: "#fff" }
+            ]}
+          >
+            {item.title}
+          </CustomText>
+        </View>
       </TouchableOpacity>
     );
   };
@@ -61,6 +81,10 @@ const ListCategories = ({ items }) => {
   return (
     <View>
       <FlatList
+        contentContainerStyle={{
+          paddingHorizontal: 10,
+          marginVertical: 30,
+        }}
         contentContainerStyle={{
           paddingHorizontal: 10,
           marginVertical: 30,
@@ -79,9 +103,14 @@ const ListCategories = ({ items }) => {
 const styles = StyleSheet.create({
   cardContainer: {
     backgroundColor: "#f7f7f7",
+    backgroundColor: "#f7f7f7",
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 10,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 10,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,

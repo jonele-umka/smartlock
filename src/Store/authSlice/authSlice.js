@@ -26,6 +26,7 @@ export const loginUser = createAsyncThunk(
 
       const data = await response.json();
 
+
       const token = data?.token;
       const owner = data?.user?.Role;
       const login = userData?.Email;
@@ -244,10 +245,14 @@ const authSlice = createSlice({
     error: null,
     token: null,
     avatar: null,
+    avatar: null,
     userName: "",
     userProfile: null,
     owner: null,
+    userProfile: null,
+    owner: null,
   },
+  reducers: {},
   reducers: {},
   extraReducers: (builder) => {
     builder
@@ -300,6 +305,7 @@ const authSlice = createSlice({
         state.loading = false;
         state.token = null;
         state.userName = "";
+        state.owner = null;
         state.owner = null;
       })
       .addCase(logoutUser.rejected, (state, action) => {
