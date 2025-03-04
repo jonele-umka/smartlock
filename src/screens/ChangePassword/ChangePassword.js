@@ -27,8 +27,6 @@ const ChangePassword = () => {
 
   const [loading, setLoading] = useState(false);
 
-  const [loading, setLoading] = useState(false);
-
   const token = useSelector((state) => state.auth.token);
 
   const [confirmError, setConfirmError] = useState("");

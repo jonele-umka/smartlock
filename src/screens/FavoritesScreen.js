@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import React, { useEffect, useState } from "react";
 import {
   ScrollView,
   View,
@@ -43,7 +42,6 @@ const FavoritesScreen = () => {
   }, [dispatch, token]);
 
   if (status === "loading") {
-  if (status === "loading") {
     return (
       <View
         style={{
@@ -57,6 +55,7 @@ const FavoritesScreen = () => {
       </View>
     );
   }
+
   return (
     <ScrollView
       style={{
@@ -199,9 +198,6 @@ const FavoritesScreen = () => {
                           flexDirection: "row",
                           alignItems: "center",
                           columnGap: 5,
-                          flexDirection: "row",
-                          alignItems: "center",
-                          columnGap: 5,
                         }}
                       >
                         <Fontisto
@@ -216,12 +212,7 @@ const FavoritesScreen = () => {
 
                     <View>
                       <CustomText
-                    </View>
-
-                    <View>
-                      <CustomText
                         style={{
-                          fontSize: 16,
                           fontSize: 16,
                           fontWeight: 500,
                           color: "#fff",
@@ -242,7 +233,6 @@ const FavoritesScreen = () => {
                 </ImageBackground>
               </TouchableOpacity>
             ))}
-        </View>
         </View>
       </SafeAreaWrapper>
     </ScrollView>

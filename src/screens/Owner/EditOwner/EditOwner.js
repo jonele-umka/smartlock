@@ -54,8 +54,8 @@ const EditOwner = () => {
       }
 
       const result = await response.json();
-      setData(result?.Profile?.Passport);
-
+      console.log(result?.Profile?.Profile?.Passport)
+      setData(result?.Profile?.Profile?.Passport);
       setLoading(false);
     } catch (error) {
       setLoading(false);
@@ -69,16 +69,17 @@ const EditOwner = () => {
 
   useEffect(() => {
     if (data) {
+      console.log(data?.Name);
       setValue("Name", data?.Name);
       setValue("Surname", data?.Surname);
       setValue("Patronymic", data?.Patronymic);
       setValue("Nationality", data?.Nationality);
-      setValue("DateOfBirth", data?.DateOfBirth);
+      setValue("DateOfBirth", FormatDatePassport(data?.DateOfBirth));
       setValue("DocumentNumber", data?.DocumentNumber);
-      setValue("DateOfExpiry", data?.DateOfExpiry);
+      setValue("DateOfExpiry", FormatDatePassport(data?.DateOfExpiry));
       setValue("PlaceOfBirth", data?.PlaceOfBirth);
       setValue("Authority", data?.Authority);
-      setValue("DateOfIssue", data?.DateOfIssue);
+      setValue("DateOfIssue", FormatDatePassport(data?.DateOfIssue));
       setValue("PIN", data?.PIN);
       setValue("IDPassportType", data?.IDPassportType);
     }
@@ -150,7 +151,7 @@ const EditOwner = () => {
               <Controller
                 control={control}
                 name={field.name}
-                rules={{ required: `Заполните поле ${field.label}` }}
+                rules={{ required: `${i18n.t("required")} ${field.label}` }}
                 render={({ field: { onChange, onBlur, value } }) => {
                   if (field.name === "IDPassportType") {
                     return (
@@ -218,7 +219,7 @@ const EditOwner = () => {
                 backgroundColor: "#4B5DFF",
               }}
             >
-              <Text
+              <CustomText
                 style={{
                   color: "#fff",
                   textAlign: "center",
@@ -226,7 +227,7 @@ const EditOwner = () => {
                 }}
               >
                 {i18n.t("save")}
-              </Text>
+              </CustomText>
             </TouchableOpacity>
           )}
         </View>

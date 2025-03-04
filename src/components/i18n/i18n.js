@@ -635,7 +635,7 @@ const translations = {
 };
 
 const i18n = {
-  locale: Localization.locale, // По умолчанию ставит системный язык
+  locale: Localization.locale,
   t: (key) =>
     translations[i18n.locale]?.[key] || translations["ru"][key] || key,
   setLocale: (newLocale) => {
@@ -643,7 +643,6 @@ const i18n = {
   },
 };
 
-// При запуске загружаем язык из AsyncStorage
 (async () => {
   const storedLanguage = await AsyncStorage.getItem("language");
   if (storedLanguage) {

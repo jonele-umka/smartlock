@@ -26,7 +26,6 @@ export const loginUser = createAsyncThunk(
 
       const data = await response.json();
 
-
       const token = data?.token;
       const owner = data?.user?.Role;
       const login = userData?.Email;

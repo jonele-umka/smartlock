@@ -153,7 +153,7 @@ const Application = ({ application, status }) => {
           >
             <CustomText>{i18n.t("price")}: </CustomText>
             <CustomText style={{ fontWeight: "500" }}>
-              {application?.TotalSum} сом
+              {application?.TotalSum} {i18n.t('som')}
             </CustomText>
           </View>
           <View

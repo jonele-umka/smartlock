@@ -320,7 +320,7 @@ const ObjectDetails = () => {
                     textDecorationLine: "line-through",
                   }}
                 >
-                  {objectDetails?.Price || "Нет цены"} сом
+                  {objectDetails?.Price || "Нет цены"} {i18n.t("som")}
                 </CustomText>
                 <CustomText
                   style={{
@@ -338,7 +338,7 @@ const ObjectDetails = () => {
                 <CustomText
                   style={{ fontSize: 28, fontWeight: 500, color: "#4B5DFF" }}
                 >
-                  {objectDetails?.Price || "Нет цены"} сом
+                  {objectDetails?.Price || "Нет цены"} {i18n.t("som")}
                 </CustomText>
                 <CustomText style={{ fontSize: 18, color: "#4B5DFF" }}>
                   {" "}
@@ -351,7 +351,7 @@ const ObjectDetails = () => {
                 <CustomText
                   style={{ fontSize: 28, fontWeight: 500, color: "#4B5DFF" }}
                 >
-                  {objectDetails?.DiscountPrice || "Нет цены"} сом
+                  {objectDetails?.DiscountPrice || "Нет цены"} {i18n.t("som")}
                 </CustomText>
                 <CustomText style={{ fontSize: 18, color: "#4B5DFF" }}>
                   {" "}
@@ -418,7 +418,7 @@ const ObjectDetails = () => {
                 name="home-outline"
                 style={{ color: "#000", fontSize: 20 }}
               />
-{console.log(objectDetails?.Category) }
+              {console.log(objectDetails?.Category)}
               <CustomText style={{ fontSize: 16, fontWeight: 500 }}>
                 {objectDetails?.Category.NameEn || "Нет категории"}
               </CustomText>

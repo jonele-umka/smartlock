@@ -15,12 +15,12 @@ import {
   useRoute,
 } from "@react-navigation/core";
 import PickImage from "../../components/PickImage/PickImage";
-import ActionSheet from "react-native-actions-sheet";
+// import ActionSheet from "react-native-actions-sheet";
 import { useDispatch, useSelector } from "react-redux";
 import { Controller, useForm } from "react-hook-form";
-import Entypo from "react-native-vector-icons/Entypo";
+// import Entypo from "react-native-vector-icons/Entypo";
 import CustomText from "../../components/CustomText/CustomText";
-import CustomPicker from "../../components/CustomPicker/CustomPicker";
+// import CustomPicker from "../../components/CustomPicker/CustomPicker";
 import SafeAreaWrapper from "../../components/SafeAreaWrapper/SafeAreaWrapper";
 import { getUserProfile } from "../../Store/authSlice/authSlice";
 import i18n from "../../components/i18n/i18n";
@@ -46,7 +46,7 @@ const EditProfile = () => {
   const token = useSelector((state) => state.auth.token);
   // const owner = useSelector((state) => state.auth.owner);
   const userProfile = useSelector((state) => state.auth.userProfile);
-  const avatar = userProfile?.Avatar;
+  const avatar = userProfile?.Profile?.Avatar;
   const IDPassportPhotoFront = userProfile?.Passport?.IDPassportPhotoFront;
   const IDPassportPhotoBack = userProfile?.Passport?.IDPassportPhotoBack;
   const IDPassportPhotoWithClient =
@@ -56,7 +56,7 @@ const EditProfile = () => {
   const InternationalPassportPhotoWithClient =
     userProfile?.Passport?.InternationalPassportPhotoWithClient;
   // const [passportType, setPassportType] = useState("ID");
-
+  console.log(userProfile);
   useEffect(() => {
     dispatch(getUserProfile(token));
   }, [dispatch, token]);
@@ -139,11 +139,11 @@ const EditProfile = () => {
       actionSheetRef.current?.hide();
     }
   }, [isActionSheetVisible]);
-
+  console.log(userProfile?.Profile?.PhoneNumber);
   useEffect(() => {
-    setValue("Nickname", userProfile?.Nickname || "");
-    setValue("Biography", userProfile?.Biography || "");
-    setValue("PhoneNumber", userProfile?.PhoneNumber || "");
+    setValue("Nickname", userProfile?.Profile?.Nickname || "");
+    // setValue("Biography", userProfile?.Profile?.Biography || "");
+    setValue("PhoneNumber", userProfile?.Profile?.PhoneNumber || "");
   }, [userProfile, setValue]);
 
   const handleProfileUpdate = async () => {
@@ -204,7 +204,7 @@ const EditProfile = () => {
 
         const timestamp = new Date().getTime();
 
-        if (result.Profile.Avatar) {
+        if (result.Profile?.Avatar) {
           setAvatarImage(
             `${API_URL}/${result?.Profile?.Avatar}?timestamp=${timestamp}`
           );
@@ -453,7 +453,7 @@ const EditProfile = () => {
                         onChangeText={(text) => onChange(text)}
                       />
                     )}
-                    name="phoneNumber"
+                    name="PhoneNumber"
                     defaultValue=""
                   />
                 </View>

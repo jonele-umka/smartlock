@@ -67,12 +67,15 @@ const ProfileScreen = () => {
 
   const loadProfileData = () => {
     const timestamp = new Date().getTime();
-    if (!userProfile?.Avatar) {
+
+    if (!userProfile?.Profile?.Avatar) {
       setAvatarImage(
         "https://static.vecteezy.com/system/resources/previews/019/896/008/original/male-user-avatar-icon-in-flat-design-style-person-signs-illustration-png.png"
       );
     } else {
-      setAvatarImage(`${API_URL}/${userProfile.Avatar}?timestamp=${timestamp}`);
+      setAvatarImage(
+        `${API_URL}/${userProfile?.Profile?.Avatar}?timestamp=${timestamp}`
+      );
     }
   };
 
@@ -176,7 +179,7 @@ const ProfileScreen = () => {
             </View>
             <View>
               <CustomText style={styles.nickname}>
-                {userProfile?.Nickname || "User"}
+                {userProfile?.Profile?.Nickname || "User"}
               </CustomText>
               {/* <CustomText style={styles.biography}>
                 {userProfile?.Biography || "Description"}

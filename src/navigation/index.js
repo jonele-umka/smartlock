@@ -27,7 +27,6 @@ import EditLock from "../screens/LockScreen/EditLock/EditLock";
 import ForgotPassword from "../screens/Registration/ForgotPassword/ForgotPassword";
 import { loginUser } from "../Store/authSlice/authSlice";
 import VerifyCodeForgotPassword from "../screens/Registration/ForgotPassword/VerifyCodeForgotPassword";
-import VerifyCodeForgotPassword from "../screens/Registration/ForgotPassword/VerifyCodeForgotPassword";
 import CreateNewPassword from "../screens/Registration/ForgotPassword/CreateNewPassword";
 import CameraScreen from "../screens/CameraScreen/CameraScreen";
 import NotificationScreen from "../screens/Notification/NotificationScreen";
@@ -57,7 +56,6 @@ const Navigator = () => {
 
         if (userData.Email && userData.Password) {
           dispatch(loginUser(userData))
-            .unwrap()
             .unwrap()
             .then(() => {
               setInitialRoute("Главная страница");
