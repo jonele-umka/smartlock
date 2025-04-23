@@ -1,14 +1,9 @@
 import { CameraView, useCameraPermissions } from "expo-camera";
-import { useState } from "react";
-import {
-  Button,
-  Image,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { useState, useEffect } from "react";
+import { Image, TouchableOpacity, View } from "react-native";
 import { useNavigation } from "@react-navigation/core";
+import i18n from "../../../i18n/i18n";
+import CustomText from "../CustomText/CustomText";
 
 export default function Camera({ onImageCaptured, type }) {
   const navigation = useNavigation();
@@ -19,41 +14,43 @@ export default function Camera({ onImageCaptured, type }) {
   const [isButtonPressed, setIsButtonPressed] = useState(false);
   const [isFlashPressed, setIsFlashPressed] = useState(false);
 
+  useEffect(() => {
+    async function getPermission() {
+      if (!permission?.granted) {
+        const { granted } = await requestPermission();
+        if (!granted) {
+          console.warn("Доступ к камере не предоставлен.");
+        }
+      }
+    }
+    getPermission();
+  }, [permission]);
+
   if (!permission) {
-    // Camera permissions are still loading.
     return <View />;
   }
 
   if (!permission.granted) {
-    // Camera permissions are not granted yet.
     return (
       <View
         style={{
           flex: 1,
           justifyContent: "center",
+          alignItems: "center",
           backgroundColor: "#fff",
-          padding: 10,
         }}
       >
-        <Text style={{ textAlign: "center", marginBottom: 20, fontSize: 20 }}>
-          Нам нужно ваше разрешение, чтобы показать камеру
-        </Text>
-        <TouchableOpacity
-          style={{
-            backgroundColor: "#000",
-            paddingHorizontal: 10,
-            paddingVertical: 15,
-            borderRadius: 10,
-          }}
-          onPress={requestPermission}
-        >
-          <Text style={{ color: "#fff", textAlign: "center", fontSize: 18 }}>
-            Дать разрешение
-          </Text>
-        </TouchableOpacity>
+        {/* <Image
+          source={require("../../assets/no-camera.png")} // Иконка запрета камеры
+          style={{ width: 100, height: 100, marginBottom: 20 }}
+        /> */}
+        <CustomText style={{ fontSize: 18, textAlign: "center" }}>
+          {i18n.t("cameraPermissions")}
+        </CustomText>
       </View>
     );
   }
+
   const takePicture = async () => {
     if (cameraRef) {
       let photo = await cameraRef.takePictureAsync();
@@ -65,15 +62,13 @@ export default function Camera({ onImageCaptured, type }) {
   function toggleCameraFacing() {
     setFacing((current) => (current === "back" ? "front" : "back"));
   }
+
   const toggleFlash = () => {
-    setFlash((flash) => (flash === false ? true : false));
+    setFlash(!flash);
   };
+
   return (
-    <View
-      style={{
-        flex: 1,
-      }}
-    >
+    <View style={{ flex: 1 }}>
       <CameraView
         style={{ flex: 1 }}
         facing={facing}
@@ -106,8 +101,8 @@ export default function Camera({ onImageCaptured, type }) {
               />
             </TouchableOpacity>
             <TouchableOpacity
-              onPressIn={() => setIsButtonPressed(true)} // устанавливаем состояние при нажатии
-              onPressOut={() => setIsButtonPressed(false)} // сбрасываем состояние при отпускании
+              onPressIn={() => setIsButtonPressed(true)}
+              onPressOut={() => setIsButtonPressed(false)}
               onPress={takePicture}
             >
               <Image

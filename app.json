@@ -2,7 +2,7 @@
   "expo": {
     "name": "TogoLock",
     "slug": "togolock",
-    "version": "1.0.1",
+    "version": "1.0.5",
     "sdkVersion": "52.0.0",
     "runtimeVersion": {
       "policy": "appVersion"
@@ -17,7 +17,7 @@
     "userInterfaceStyle": "light",
     "ios": {
       "supportsTablet": true,
-      "buildNumber": "1.0.0",
+      "buildNumber": "1.0.2",
       "bundleIdentifier": "com.joneleumka.togolock",
       "splash": {
         "image": "./src/assets/apkIcons/splashImg.png",
@@ -25,18 +25,14 @@
       },
       "infoPlist": {
         "NSPhotoLibraryUsageDescription": "Разрешение на доступ к вашей галерее",
-        "NSCameraUsageDescription": "Разрешение на доступ к вашей камере",
+        "NSCameraUsageDescription": "Камера используется для загрузки фото паспорта, чтобы подтвердить вашу личность при бронировании",
         "NSFaceIDUsageDescription": "Allow TogoLock to use Face ID.",
         "CFBundleURLTypes": [
           {
-            "CFBundleURLSchemes": [
-              "com.joneleumka.togolock"
-            ]
+            "CFBundleURLSchemes": ["com.joneleumka.togolock"]
           },
           {
-            "CFBundleURLSchemes": [
-              "com.joneleumka.togolock"
-            ]
+            "CFBundleURLSchemes": ["com.joneleumka.togolock"]
           }
         ],
         "ITSAppUsesNonExemptEncryption": false
@@ -64,7 +60,7 @@
         "android.permission.CAMERA"
       ],
       "package": "com.joneleumka.togolock",
-      "versionCode": 1
+      "versionCode": 4
     },
     "web": {
       "favicon": "./src/assets/apkIcons/icon.png"

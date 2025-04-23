@@ -4,12 +4,12 @@ import {
   TextInput,
   SafeAreaView,
   ImageBackground,
-  Platform
+  Platform,
 } from "react-native";
 import React from "react";
 import { SafeAreaView as SafeAreaViewContext } from "react-native-safe-area-context";
 import { useForm, Controller } from "react-hook-form";
-import i18n from "../../components/i18n/i18n";
+import i18n from "../../../i18n/i18n";
 const AddCard = () => {
   const SafeAreaWrapper =
     Platform.OS === "android" ? SafeAreaViewContext : SafeAreaView;
@@ -25,7 +25,7 @@ const AddCard = () => {
       <View style={{ paddingVertical: 20, paddingHorizontal: 10 }}>
         <ImageBackground
           source={require("../../assets/card/card2.png")}
-          style={{ width: "100%" , height: 200, marginBottom: 20}}
+          style={{ width: "100%", height: 200, marginBottom: 20 }}
         />
         <View style={{ marginBottom: 20 }}>
           <Text style={{ color: "#b8b8b8", marginBottom: 10 }}>

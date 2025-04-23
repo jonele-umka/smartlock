@@ -12,7 +12,7 @@ import {
   removeFavorite,
 } from "../../Store/favoritesSlice/favoritesSlice";
 import Toast from "react-native-toast-message";
-import i18n from "../i18n/i18n";
+import i18n from "../../../i18n/i18n";
 
 const Objects = ({ items }) => {
   const navigation = useNavigation();

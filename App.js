@@ -1,10 +1,9 @@
-import React, { useEffect, useCallback, useState } from "react";
+import React, { useEffect, useCallback } from "react";
 import Navigator from "./src/navigation";
-import { Provider } from "react-redux";
+import { Provider, useDispatch } from "react-redux";
 import store from "./src/Store/store";
 import Toast from "react-native-toast-message";
 import { SafeAreaProvider } from "react-native-safe-area-context";
-import * as Localization from "expo-localization";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { StatusBar } from "react-native";
 import NotificationWebSocket from "./WebSocket/notificationWebSocket";
@@ -17,13 +16,17 @@ import {
   fetchCategory,
   fetchRules,
 } from "./src/Store/dictionarySlice/dictionarySlice";
-import i18n from "./src/components/i18n/i18n";
+import { setLanguage } from "./src/Store/languageSlice/languageSlice";
+import i18n from "./i18n/i18n";
+import { NavigationContainer } from "@react-navigation/native";
+import { useSelector } from "react-redux";
 
 SplashScreen.preventAutoHideAsync();
 
-const App = () => {
-  const [language, setLanguage] = useState("ru"); // Добавляем useState для хранения языка
-
+const AppContent = () => {
+  const dispatch = useDispatch();
+  const language = useSelector((state) => state.language.language); // Получаем язык из Redux
+  console.log(language);
   const [fontsLoaded, fontError] = useFonts({
     "IBMPlexSans-Regular": require("./src/assets/Fonts/IBM_Plex_Sans/IBMPlexSans-Regular.ttf"),
     "IBMPlexSans-Medium": require("./src/assets/Fonts/IBM_Plex_Sans/IBMPlexSans-Medium.ttf"),
@@ -42,35 +45,44 @@ const App = () => {
       try {
         const storedLanguage = await AsyncStorage.getItem("language");
         const selectedLanguage = storedLanguage || "ru";
+        dispatch(setLanguage(selectedLanguage));
+        i18n.setLocale(selectedLanguage);
 
-        Localization.locale = selectedLanguage; // Устанавливаем язык для expo-localization
-        i18n.locale = selectedLanguage; // Устанавливаем язык для i18n
-        setLanguage(selectedLanguage); // Обновляем useState
-
-        // Загружаем данные после установки языка
-        store.dispatch(fetchAmenities());
-        store.dispatch(fetchRules());
-        store.dispatch(fetchCategory());
+        dispatch(fetchAmenities());
+        dispatch(fetchRules());
+        dispatch(fetchCategory());
       } catch (error) {
         console.error("Ошибка при загрузке языка:", error);
       }
     };
 
     loadLanguage();
+  }, [dispatch]);
 
+  useEffect(() => {
     const registerForPushNotifications = async () => {
-      let token;
       const { status: existingStatus } =
         await Notifications.getPermissionsAsync();
       let finalStatus = existingStatus;
-      if (existingStatus !== "granted") {
+
+      const hasAlerted = await AsyncStorage.getItem(
+        "hasShownNotificationAlert"
+      );
+
+      if (!hasAlerted && existingStatus !== "granted") {
         const { status } = await Notifications.requestPermissionsAsync();
         finalStatus = status;
+
+        if (finalStatus !== "granted") {
+          alert("Не удалось получить разрешение на отправку уведомлений!");
+          await AsyncStorage.setItem("hasShownNotificationAlert", "true");
+        }
       }
+
       if (finalStatus !== "granted") {
-        alert("Не удалось получить разрешение на отправку уведомлений!");
         return;
       }
+
       try {
         const projectId =
           Constants?.expoConfig?.extra?.eas?.projectId ??
@@ -97,16 +109,22 @@ const App = () => {
   }
 
   return (
-    <Provider store={store}>
-      <SafeAreaProvider>
-        <StatusBar style="light" translucent={true} />
+    <SafeAreaProvider>
+      <StatusBar backgroundColor="#fff" barStyle="dark-content" />
+
+      <NavigationContainer>
         <Navigator />
-        <NotificationWebSocket />
-        <NotificationWebSocket />
-        <Toast />
-      </SafeAreaProvider>
-    </Provider>
+      </NavigationContainer>
+      <NotificationWebSocket />
+      <Toast />
+    </SafeAreaProvider>
   );
 };
+
+const App = () => (
+  <Provider store={store}>
+    <AppContent />
+  </Provider>
+);
 
 export default App;

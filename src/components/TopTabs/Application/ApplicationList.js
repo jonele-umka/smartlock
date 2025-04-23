@@ -1,11 +1,11 @@
 // ApplicationList.js
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { ActivityIndicator, View } from "react-native";
 import Application from "./Application";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchApplications } from "../../../Store/applicationsSlice/applicationsSlice";
 import CustomText from "../../CustomText/CustomText";
-import i18n from "../../i18n/i18n";
+import i18n from "../../../../i18n/i18n";
 
 const ApplicationList = ({ status }) => {
   const dispatch = useDispatch();

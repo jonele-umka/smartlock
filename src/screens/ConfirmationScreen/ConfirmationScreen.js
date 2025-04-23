@@ -16,7 +16,7 @@ import { useSelector } from "react-redux";
 import ListImages from "../../components/List/ListImages/ListImages";
 import Toast from "react-native-toast-message";
 import CustomText from "../../components/CustomText/CustomText";
-import i18n from "../../components/i18n/i18n";
+import i18n from "../../../i18n/i18n";
 
 const ConfirmationScreen = () => {
   const navigation = useNavigation();
@@ -28,10 +28,13 @@ const ConfirmationScreen = () => {
   // data
   const startDate = new Date(route?.params?.selectedDates.startDate);
   const endDate = new Date(route?.params?.selectedDates.endDate);
+
   const timeDifference = endDate - startDate;
   const days = Math.ceil(timeDifference / (1000 * 60 * 60 * 24));
 
-  const pricePerDay = route?.params?.discountPrice || route?.params?.price;
+  const discount = route?.params?.discountPrice;
+  const pricePerDay = discount > 0 ? discount : route?.params?.price;
+
   const totalSum = pricePerDay * days;
 
   // room and person
@@ -162,12 +165,8 @@ const ConfirmationScreen = () => {
 
   return (
     <ScrollView
-      style={{ backgroundColor: "#fff" }}
-      contentContainerStyle={{
-        paddingHorizontal: 10,
-        paddingTop: 20,
-        paddingBottom: 40,
-      }}
+      style={{ backgroundColor: "#fff", flex: 1 }}
+      contentContainerStyle={{ paddingHorizontal: 10, paddingVertical: 20 }}
     >
       <CustomText
         style={{
@@ -257,11 +256,14 @@ const ConfirmationScreen = () => {
               borderWidth: 1,
               borderColor: "#4B5DFF",
               borderRadius: 100,
-              paddingHorizontal: 15,
-              paddingVertical: 10,
+              // paddingHorizontal: 15,
+              // paddingVertical: 10,
             }}
           >
-            <TouchableOpacity onPress={decreaseQuantityPerson}>
+            <TouchableOpacity
+              style={{ padding: 10 }}
+              onPress={decreaseQuantityPerson}
+            >
               <CustomText style={{ color: "#616992", fontSize: 18 }}>
                 -
               </CustomText>
@@ -269,13 +271,16 @@ const ConfirmationScreen = () => {
 
             <View>
               <CustomText
-                style={{ fontSize: 16, color: "#616992", marginHorizontal: 15 }}
+                style={{ fontSize: 16, color: "#616992", marginHorizontal: 10 }}
               >
                 {quantityPerson}
               </CustomText>
             </View>
 
-            <TouchableOpacity onPress={increaseQuantityPerson}>
+            <TouchableOpacity
+              style={{ padding: 10 }}
+              onPress={increaseQuantityPerson}
+            >
               <CustomText style={{ color: "#616992", fontSize: 18 }}>
                 +
               </CustomText>
@@ -311,23 +316,29 @@ const ConfirmationScreen = () => {
               borderWidth: 1,
               borderColor: "#4B5DFF",
               borderRadius: 100,
-              paddingHorizontal: 15,
-              paddingVertical: 10,
+              // paddingHorizontal: 15,
+              // paddingVertical: 10,
             }}
           >
-            <TouchableOpacity onPress={decreaseQuantityRooms}>
+            <TouchableOpacity
+              style={{ padding: 10 }}
+              onPress={decreaseQuantityRooms}
+            >
               <Text style={{ color: "#616992", fontSize: 18 }}>-</Text>
             </TouchableOpacity>
 
             <View>
               <CustomText
-                style={{ fontSize: 16, color: "#616992", marginHorizontal: 15 }}
+                style={{ fontSize: 16, color: "#616992", marginHorizontal: 10 }}
               >
                 {quantityRooms}
               </CustomText>
             </View>
 
-            <TouchableOpacity onPress={increaseQuantityRooms}>
+            <TouchableOpacity
+              style={{ padding: 10 }}
+              onPress={increaseQuantityRooms}
+            >
               <CustomText style={{ color: "#616992", fontSize: 18 }}>
                 +
               </CustomText>
@@ -580,34 +591,20 @@ const ConfirmationScreen = () => {
           <CustomText
             style={{ fontSize: 16, color: "#616992", fontWeight: 500 }}
           >
-            К оплате:
+            {i18n.t("toPaid")}:
           </CustomText>
-          <View>
-            {route?.params?.discountPrice ? (
+
+          <View style={{ alignItems: "flex-end" }}>
+            <View style={{ flexDirection: "row", alignItems: "baseline" }}>
               <CustomText
-                style={{
-                  fontSize: 14,
-                  color: "#616992",
-                  textDecorationLine: "line-through",
-                  alignSelf: "flex-end",
-                }}
+                style={{ fontSize: 18, fontWeight: 500, color: "#4B5DFF" }}
               >
-                {route?.params?.price || "Нет цены"} с
+                {`${totalSum} KGS` || "Нет цены"}
               </CustomText>
-            ) : (
-              <CustomText
-                style={{ fontSize: 16, fontWeight: 500, color: "#594BFF" }}
-              >
-                {totalSum} с
+              <CustomText style={{ fontSize: 18, color: "#4B5DFF" }}>
+                /{i18n.t("night")}
               </CustomText>
-            )}
-            {route?.params?.discountPrice && (
-              <CustomText
-                style={{ fontSize: 20, fontWeight: 500, color: "#594BFF" }}
-              >
-                {totalSum} с
-              </CustomText>
-            )}
+            </View>
           </View>
         </View>
       </View>
@@ -637,7 +634,7 @@ const ConfirmationScreen = () => {
                 textAlign: "center",
               }}
             >
-              Забронировать
+              {i18n.t("book")}
             </CustomText>
           </TouchableOpacity>
         )}

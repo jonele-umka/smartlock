@@ -5,13 +5,12 @@ import { useSelector } from "react-redux";
 import { TouchableOpacity, ActivityIndicator, View } from "react-native";
 
 import { useNavigation } from "@react-navigation/core";
-import i18n from "../../components/i18n/i18n";
+import i18n from "../../../i18n/i18n";
 
 // import { API_URL } from "../../constants";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import CustomText from "../../components/CustomText/CustomText";
-import SafeAreaWrapper from "../../components/SafeAreaWrapper/SafeAreaWrapper";
 import CustomInput from "../../components/CustomInput/CustomInput";
 
 const ChangePassword = () => {

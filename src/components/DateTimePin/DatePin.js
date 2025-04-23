@@ -1,5 +1,12 @@
 import React, { useState } from "react";
-import { View, Modal, Pressable, TouchableOpacity, Text, Platform } from "react-native";
+import {
+  View,
+  Modal,
+  Pressable,
+  TouchableOpacity,
+  Text,
+  Platform,
+} from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { useForm } from "react-hook-form";
@@ -22,7 +29,7 @@ const DatePin = ({ onStartDateChange, onEndDateChange }) => {
     if (selectedDate) {
       setSelectedDate(selectedDate);
       setValue("date", selectedDate);
-      onStartDateChange(selectedDate.getTime()); // Передача выбранной даты в родительский компонент
+      onStartDateChange(selectedDate.getTime());
     }
   };
 
@@ -35,7 +42,7 @@ const DatePin = ({ onStartDateChange, onEndDateChange }) => {
     if (selectedTwoDate) {
       setSelectedTwoDate(selectedTwoDate);
       setValue("dateTwo", selectedTwoDate);
-      onEndDateChange(selectedTwoDate.getTime()); // Передача выбранной даты в родительский компонент
+      onEndDateChange(selectedTwoDate.getTime());
     }
   };
 

@@ -6,7 +6,7 @@ import { Controller, useForm } from "react-hook-form";
 import Toast from "react-native-toast-message";
 import CustomText from "../CustomText/CustomText";
 import CustomInput from "../CustomInput/CustomInput";
-import i18n from "../i18n/i18n";
+import i18n from "../../../i18n/i18n";
 
 const ReviewsInput = ({
   actionSheetReviewRef,
@@ -107,11 +107,11 @@ const ReviewsInput = ({
           control={control}
           name="Content"
           rules={{
-            required: "Поле объязателен к заполнению",
+            required: i18n.t("required"),
           }}
           render={({ field }) => (
             <CustomInput
-              placeholder={"Чистый, удобный ..."}
+              placeholder={i18n.t("placeInputReview")}
               placeholderTextColor="#616992"
               onChangeText={(value) => {
                 field.onChange(value);

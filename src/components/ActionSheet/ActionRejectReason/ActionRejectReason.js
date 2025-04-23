@@ -8,6 +8,7 @@ import {
 } from "react-native";
 import ActionSheet from "react-native-actions-sheet";
 import CustomText from "../../CustomText/CustomText";
+import i18n from "../../../../i18n/i18n";
 
 const ActionRejectReason = ({
   onReject,
@@ -40,7 +41,7 @@ const ActionRejectReason = ({
         <CustomText
           style={{ fontSize: 18, fontWeight: "500", marginBottom: 20 }}
         >
-          Причина отклонения
+          {i18n.t("cause")}
         </CustomText>
         <TextInput
           style={{
@@ -52,7 +53,7 @@ const ActionRejectReason = ({
             textAlignVertical: "top",
           }}
           multiline
-          placeholder="Введите причину..."
+          placeholder={i18n.t("enterReason")}
           value={rejectReason}
           onChangeText={setRejectReason}
         />

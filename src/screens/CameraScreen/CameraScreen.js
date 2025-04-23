@@ -1,19 +1,13 @@
 import React, { useEffect, useState } from "react";
 import Camera from "../../components/Camera/Camera";
-import {
-  Image,
-  Text,
-  View,
-  SafeAreaView,
-  Platform,
-  TouchableOpacity,
-} from "react-native";
-import { SafeAreaView as SafeAreaViewContext } from "react-native-safe-area-context";
+import { Image, View, TouchableOpacity } from "react-native";
+
 import { useNavigation, useRoute } from "@react-navigation/core";
+import SafeAreaWrapper from "../../components/SafeAreaWrapper/SafeAreaWrapper";
+import i18n from "../../../i18n/i18n";
+import CustomText from "../../components/CustomText/CustomText";
 
 const CameraScreen = () => {
-  const SafeAreaWrapper =
-    Platform.OS === "android" ? SafeAreaViewContext : SafeAreaView;
   const navigation = useNavigation();
   const route = useRoute();
   const [type, setType] = useState(route.params?.type);
@@ -65,7 +59,9 @@ const CameraScreen = () => {
               source={require("../../assets/camera-outline.png")}
               style={{ width: 25, height: 25 }}
             />
-            <Text style={styles.buttonText}>Переснять</Text>
+            <CustomText style={styles.buttonText}>
+              {i18n.t("reshoot")}
+            </CustomText>
           </TouchableOpacity>
           <TouchableOpacity
             style={{
@@ -82,7 +78,7 @@ const CameraScreen = () => {
               source={require("../../assets/check-mark.png")}
               style={{ width: 25, height: 25 }}
             />
-            <Text style={styles.buttonText}>Сохранить</Text>
+            <CustomText style={styles.buttonText}>{i18n.t("continue")}</CustomText>
           </TouchableOpacity>
         </View>
       </SafeAreaWrapper>

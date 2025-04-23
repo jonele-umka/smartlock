@@ -1,9 +1,7 @@
 import {
   View,
-  TextInput,
   TouchableOpacity,
   ScrollView,
-  Platform,
   Image,
   ActivityIndicator,
 } from "react-native";
@@ -14,9 +12,7 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigation, useRoute } from "@react-navigation/core";
-import * as Location from "expo-location";
 import PickImage from "../../../components/PickImage/PickImage";
-import SafeAreaWrapper from "../../../components/SafeAreaWrapper/SafeAreaWrapper";
 import ActionLandlord from "../../../components/ActionSheet/ActionLandlord/ActionLandlord";
 import CustomText from "../../../components/CustomText/CustomText";
 import { fetchMyAccommodations } from "../../../Store/accommodationSlice/accommodationSlice";
@@ -29,10 +25,9 @@ import {
   fetchCheckInOut,
   fetchRules,
 } from "../../../Store/dictionarySlice/dictionarySlice";
-import { editObjectFields } from "../../../assets/data/Fields";
 import CustomInput from "../../../components/CustomInput/CustomInput";
 import SelectionSection from "../../../components/ActionSheet/ActionLandlord/SelectedSection";
-import i18n from "../../../components/i18n/i18n";
+import i18n from "../../../../i18n/i18n";
 
 const categoryIcon = {
   1: require("../../../assets/home.png"),
@@ -62,8 +57,9 @@ const Landlord = () => {
   const [isActionSheetVisible, setIsActionSheetVisible] = useState(false);
 
   // list
-  const { amenities, rules, categories, checkInOut, status, error } =
-    useSelector((state) => state.dictionary);
+  const { amenities, rules, categories, checkInOut } = useSelector(
+    (state) => state.dictionary
+  );
 
   // select
   const [selectedAmenities, setSelectedAmenities] = useState([]);
@@ -77,7 +73,7 @@ const Landlord = () => {
   const [currentType, setCurrentType] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [coordinate, setCoordinate] = useState(null);
+  // const [coordinate, setCoordinate] = useState(null);
   // action
   const openActionSheet = (type) => {
     setCurrentType(type);
@@ -147,15 +143,15 @@ const Landlord = () => {
       setValue("Title", objectDetails?.Title);
       setValue("CategoryID", objectDetails?.CategoryID);
       setValue("LocationLabel", objectDetails?.LocationLabel);
-      if (objectDetails.Latitude && objectDetails.Longitude) {
-        const newCoordinate = {
-          latitude: parseFloat(objectDetails.Latitude),
-          longitude: parseFloat(objectDetails.Longitude),
-        };
-        setCoordinate(newCoordinate);
-        setValue("Latitude", objectDetails.Latitude);
-        setValue("Longitude", objectDetails.Longitude);
-      }
+      // if (objectDetails?.Latitude && objectDetails?.Longitude) {
+      //   const newCoordinate = {
+      //     latitude: parseFloat(objectDetails.Latitude),
+      //     longitude: parseFloat(objectDetails.Longitude),
+      //   };
+      //   setCoordinate(newCoordinate);
+      //   setValue("Latitude", objectDetails?.Latitude);
+      //   setValue("Longitude", objectDetails?.Longitude);
+      // }
       setValue("Description", objectDetails?.Description);
       setValue("PeopleQuantity", objectDetails?.PeopleQuantity);
       setValue("RoomsQuantity", objectDetails?.RoomsQuantity);
@@ -215,15 +211,20 @@ const Landlord = () => {
 
   // name
   const getCategoryNameById = (id, defaultText) => {
-    const item = categories.find((category) => category.ID === id);
+    const item = categories.find((category) => category.Id === id);
+
     return item ? item.Name : defaultText;
   };
   const firstSelectedAmenity = amenities.find((amenity) =>
-    selectedAmenities.includes(amenity.ID)
+    selectedAmenities.includes(amenity.Id)
   );
+  const amenityValue = firstSelectedAmenity
+    ? `${firstSelectedAmenity.Value}...`
+    : "";
   const firstSelectedRules = rules.find((rule) =>
-    selectedRules.includes(rule.ID)
+    selectedRules.includes(rule.Id)
   );
+  const rulesValue = firstSelectedRules ? `${firstSelectedRules.Value}...` : "";
   const getCheckInOutNameById = (id, defaultText) => {
     const item = checkInOut.find((checkInOut) => checkInOut.ID === id);
 
@@ -332,41 +333,118 @@ const Landlord = () => {
   };
   // map
 
-  const getCurrentLocation = async () => {
-    try {
-      const { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== "granted") {
-        Alert.alert("Ошибка", "Разрешите доступ к геолокации");
-        return;
-      }
+  // const getCurrentLocation = async () => {
+  //   try {
+  //     const { status } = await Location.requestForegroundPermissionsAsync();
+  //     if (status !== "granted") {
+  //       Alert.alert("Ошибка", "Разрешите доступ к геолокации");
+  //       return;
+  //     }
 
-      const location = await Location.getCurrentPositionAsync({});
-      const { latitude, longitude } = location.coords;
-      setCoordinate({ latitude, longitude });
-      setValue("Latitude", latitude.toString());
-      setValue("Longitude", longitude.toString());
-    } catch (error) {
-      console.error("Ошибка получения местоположения:", error);
-    }
-  };
+  //     const location = await Location.getCurrentPositionAsync({});
+  //     const { latitude, longitude } = location.coords;
+  //     setCoordinate({ latitude, longitude });
+  //     setValue("Latitude", latitude.toString());
+  //     setValue("Longitude", longitude.toString());
+  //   } catch (error) {
+  //     console.error("Ошибка получения местоположения:", error);
+  //   }
+  // };
 
-  useEffect(() => {
-    getCurrentLocation();
-  }, []);
+  // useEffect(() => {
+  //   getCurrentLocation();
+  // }, []);
 
-  const handleMapRegionChange = (newCoordinate) => {
-    setCoordinate(newCoordinate);
-    setValue("Latitude", newCoordinate.latitude.toString());
-    setValue("Longitude", newCoordinate.longitude.toString());
-  };
-  // Функция для отправки данных
+  // const handleMapRegionChange = (newCoordinate) => {
+  //   setCoordinate(newCoordinate);
+  //   setValue("Latitude", newCoordinate.latitude.toString());
+  //   setValue("Longitude", newCoordinate.longitude.toString());
+  // };
+
   const onSubmit = async (data) => {
+    if (
+      !selectedCategory ||
+      selectedCategory === null ||
+      selectedCategory === ""
+    ) {
+      Toast.show({
+        type: "error",
+        position: "bottom",
+        text1: i18n.t("error"),
+        text2: i18n.t("selectCategoryError"),
+        visibilityTime: 3000,
+        autoHide: true,
+        topOffset: 30,
+      });
+      return;
+    }
+    if (selectedAmenities.length === 0) {
+      Toast.show({
+        type: "error",
+        position: "bottom",
+        text1: i18n.t("error"),
+        text2: i18n.t("selectAmentiesError"),
+        visibilityTime: 3000,
+        autoHide: true,
+        topOffset: 30,
+      });
+      return;
+    }
+    if (selectedRules.length === 0) {
+      Toast.show({
+        type: "error",
+        position: "bottom",
+        text1: i18n.t("error"),
+        text2: i18n.t("selectRulesError"),
+        visibilityTime: 3000,
+        autoHide: true,
+        topOffset: 30,
+      });
+      return;
+    }
+    if (selectedCheckIn.length === 0) {
+      Toast.show({
+        type: "error",
+        position: "bottom",
+        text1: i18n.t("error"),
+        text2: i18n.t("selectCheckInError"),
+        visibilityTime: 3000,
+        autoHide: true,
+        topOffset: 30,
+      });
+      return;
+    }
+    if (selectedCheckOut.length === 0) {
+      Toast.show({
+        type: "error",
+        position: "bottom",
+        text1: i18n.t("error"),
+        text2: i18n.t("selectCheckOutError"),
+        visibilityTime: 3000,
+        autoHide: true,
+        topOffset: 30,
+      });
+      return;
+    }
+    if (selectedImages.length < 5) {
+      Toast.show({
+        type: "error",
+        position: "bottom",
+        text1: i18n.t("error"),
+        text2: i18n.t("minFiveImage"),
+        visibilityTime: 3000,
+        autoHide: true,
+        topOffset: 30,
+      });
+      return;
+    }
+
     const requestBody = {
       Title: data.Title,
       CategoryID: parseInt(selectedCategory),
       LocationLabel: data.LocationLabel,
-      Longitude: data.Longitude,
-      Latitude: data.Latitude,
+      // Longitude: data.Longitude,
+      // Latitude: data.Latitude,
       Description: data.Description,
       PeopleQuantity: parseInt(data?.PeopleQuantity),
       RoomsQuantity: parseInt(data?.RoomsQuantity),
@@ -407,7 +485,28 @@ const Landlord = () => {
         setIsLoading(false);
 
         if (imagesUploaded) {
-          navigation.navigate("Заявка на подтверждение");
+          if (method === "POST") {
+            navigation.navigate("Заявка на подтверждение");
+            // Toast.show({
+            //   type: "success",
+            //   position: "bottom",
+            //   text2: i18n.t("createObjectSuccess"),
+            //   visibilityTime: 3000,
+            //   autoHide: true,
+            //   topOffset: 30,
+            // });
+          } else {
+            navigation.navigate("Главная страница");
+            Toast.show({
+              type: "success",
+              position: "bottom",
+              text2: i18n.t("editObjectSuccess"),
+              visibilityTime: 3000,
+              autoHide: true,
+              topOffset: 30,
+            });
+          }
+
           dispatch(fetchMyAccommodations(token));
         }
       } else {
@@ -421,6 +520,7 @@ const Landlord = () => {
       setIsLoading(false);
     }
   };
+
   if (loading) {
     return (
       <View
@@ -440,241 +540,550 @@ const Landlord = () => {
       style={{
         backgroundColor: "#fff",
         flex: 1,
-        paddingHorizontal: 10,
       }}
       contentContainerStyle={{
-        paddingTop: 20,
-        paddingBottom: Platform.OS === "ios" ? 40 : 20,
+        paddingHorizontal: 10,
+        paddingVertical: 20,
       }}
     >
-      <SafeAreaWrapper>
-        <View
-          style={route.params?.id ? { marginBottom: 20 } : { marginBottom: 40 }}
-        >
-          <View style={{ marginBottom: 20 }}>
-            <CustomText style={{ marginBottom: 10, fontSize: 18 }}>
-              {i18n.t("addImage")}
-            </CustomText>
-            <PickImage
-              onImageSelected={handleImageSelected}
-              renderPicker={({ pickImage }) => (
-                <TouchableOpacity
-                  onPress={() => pickImage()}
-                  style={{
-                    flexDirection: "column",
-                    alignItems: "center",
-                    borderWidth: 1,
-                    borderColor: "#dee2f1",
-                    paddingVertical: 15,
-                    paddingHorizontal: 15,
-                    borderRadius: 10,
-                  }}
-                >
-                  <Ionicons
-                    name="camera"
-                    style={{ fontSize: 50, color: "#4B5DFF" }}
-                  />
-                  <View>
-                    <CustomText style={{ fontSize: 16, textAlign: "center" }}>
-                      {route?.params?.id ? i18n.t("edit") : i18n.t("add")}
-                    </CustomText>
-                    <CustomText style={{ textAlign: "center", fontSize: 16 }}>
-                      {i18n.t("image")}
-                    </CustomText>
-                  </View>
-                </TouchableOpacity>
-              )}
-            />
-          </View>
-          {selectedImages.length > 0 && (
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                flexWrap: "wrap",
-                columnGap: 20,
-                rowGap: 15,
-                marginBottom: 20,
-              }}
-            >
-              {selectedImages.map((image, index) => {
-                const imageUri =
-                  typeof image === "string"
-                    ? image
-                    : typeof image?.ImageUrl === "string"
-                    ? `${API_URL}/${image?.ImageUrl}`
-                    : "";
+      <View
+        style={route.params?.id ? { marginBottom: 20 } : { marginBottom: 40 }}
+      >
+        <View style={{ marginBottom: 20 }}>
+          <CustomText style={{ marginBottom: 10, fontSize: 18 }}>
+            {i18n.t("addImage")}
+          </CustomText>
+          <PickImage
+            onImageSelected={handleImageSelected}
+            renderPicker={({ pickImage }) => (
+              <TouchableOpacity
+                onPress={() => pickImage()}
+                style={{
+                  flexDirection: "column",
+                  alignItems: "center",
+                  borderWidth: 1,
+                  borderColor: "#dee2f1",
+                  paddingVertical: 15,
+                  paddingHorizontal: 15,
+                  borderRadius: 10,
+                }}
+              >
+                <Ionicons
+                  name="camera"
+                  style={{ fontSize: 50, color: "#4B5DFF" }}
+                />
+                <View>
+                  <CustomText style={{ fontSize: 16, textAlign: "center" }}>
+                    {route?.params?.id ? i18n.t("edit") : i18n.t("add")}
+                  </CustomText>
+                  <CustomText style={{ textAlign: "center", fontSize: 16 }}>
+                    {i18n.t("image")}
+                  </CustomText>
+                </View>
+              </TouchableOpacity>
+            )}
+          />
+        </View>
+        {selectedImages.length > 0 && (
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              flexWrap: "wrap",
+              columnGap: 20,
+              rowGap: 15,
+              marginBottom: 20,
+            }}
+          >
+            {selectedImages.map((image, index) => {
+              const imageUri =
+                typeof image === "string"
+                  ? image
+                  : typeof image?.ImageUrl === "string"
+                  ? `${API_URL}/${image?.ImageUrl}`
+                  : "";
 
-                return (
-                  <View key={index} style={{ position: "relative" }}>
-                    {imageUri ? (
-                      <Image
-                        source={{ uri: imageUri }}
-                        style={{
-                          width: 100,
-                          height: 100,
-                          borderRadius: 10,
-                        }}
-                      />
-                    ) : (
-                      <View
-                        style={{
-                          width: 100,
-                          height: 100,
-                          borderRadius: 10,
-                          backgroundColor: "#f0f0f0",
-                          justifyContent: "center",
-                          alignItems: "center",
-                        }}
-                      >
-                        <CustomText style={{ color: "#999" }}>
-                          No Image
-                        </CustomText>
-                      </View>
-                    )}
-                    <TouchableOpacity
-                      onPress={() => handleRemoveImage(index)}
+              return (
+                <View key={index} style={{ position: "relative" }}>
+                  {imageUri ? (
+                    <Image
+                      source={{ uri: imageUri }}
                       style={{
-                        position: "absolute",
-                        top: 5,
-                        right: 5,
-                        backgroundColor: "rgba(0, 0, 0, 0.5)",
-                        borderRadius: 15,
-                        padding: 5,
+                        width: 100,
+                        height: 100,
+                        borderRadius: 10,
+                      }}
+                    />
+                  ) : (
+                    <View
+                      style={{
+                        width: 100,
+                        height: 100,
+                        borderRadius: 10,
+                        backgroundColor: "#f0f0f0",
+                        justifyContent: "center",
+                        alignItems: "center",
                       }}
                     >
-                      <MaterialCommunityIcons
-                        name="close"
-                        size={20}
-                        color="#fff"
-                      />
-                    </TouchableOpacity>
-                  </View>
-                );
-              })}
-            </View>
-          )}
-          {editObjectFields.map((field, index) => (
-            <View key={index} style={{ marginBottom: 20 }}>
-              <CustomText style={{ marginBottom: 10, fontSize: 16 }}>
-                {field.label}
-              </CustomText>
-              <Controller
-                control={control}
-                name={field.name}
-                rules={field.rules}
-                render={({ field: { onChange, onBlur, value } }) => (
-                  <CustomInput
+                      <CustomText style={{ color: "#999" }}>
+                        No Image
+                      </CustomText>
+                    </View>
+                  )}
+                  <TouchableOpacity
+                    onPress={() => handleRemoveImage(index)}
                     style={{
-                      borderColor: errors[field.name] ? "red" : "#dee2f1",
+                      position: "absolute",
+                      top: 5,
+                      right: 5,
+                      backgroundColor: "rgba(0, 0, 0, 0.5)",
+                      borderRadius: 15,
+                      padding: 5,
                     }}
-                    onBlur={onBlur}
-                    onChange={onChange}
-                    value={value ? value.toString() : ""}
-                    placeholder={field.placeholder}
-                    keyboardType={field.keyboardType}
-                    multiline={field.multiline}
-                    numberOfLines={field.numberOfLines}
-                  />
-                )}
-              />
-              {errors[field.name] && (
+                  >
+                    <MaterialCommunityIcons
+                      name="close"
+                      size={20}
+                      color="#fff"
+                    />
+                  </TouchableOpacity>
+                </View>
+              );
+            })}
+          </View>
+        )}
+        <View style={{ flexDirection: "column", rowGap: 20, marginBottom: 20 }}>
+          {/* Title Field */}
+          <View>
+            <CustomText style={{ marginBottom: 10, fontSize: 16 }}>
+              {i18n.t("label_title")}
+            </CustomText>
+            <Controller
+              control={control}
+              name="Title"
+              rules={{ required: i18n.t("required") }}
+              render={({ field: { onChange, onBlur, value } }) => (
+                <CustomInput
+                  onBlur={onBlur}
+                  onChange={onChange}
+                  value={value ? value.toString() : ""}
+                  placeholder={i18n.t("placeholder_title")}
+                />
+              )}
+            />
+            {errors.Title && (
+              <CustomText style={{ color: "red", marginTop: 7 }}>
+                {errors.Title.message}
+              </CustomText>
+            )}
+          </View>
+
+          {/* Description Field */}
+          <View>
+            <CustomText style={{ marginBottom: 10, fontSize: 16 }}>
+              {i18n.t("label_description")}
+            </CustomText>
+            <Controller
+              control={control}
+              name="Description"
+              rules={{ required: i18n.t("required") }}
+              render={({ field: { onChange, onBlur, value } }) => (
+                <CustomInput
+                  style={{
+                    borderColor: "#dee2f1",
+                  }}
+                  onBlur={onBlur}
+                  onChange={onChange}
+                  value={value ? value.toString() : ""}
+                  placeholder={i18n.t("placeholder_description")}
+                  multiline
+                  numberOfLines={7}
+                  textAlignVertical="top"
+                />
+              )}
+            />
+            {errors.Description && (
+              <CustomText style={{ color: "red", marginTop: 7 }}>
+                {errors.Description.message}
+              </CustomText>
+            )}
+          </View>
+
+          {/* Location Field */}
+          <View>
+            <CustomText style={{ marginBottom: 10, fontSize: 16 }}>
+              {i18n.t("label_location")}
+            </CustomText>
+            <Controller
+              control={control}
+              name="LocationLabel"
+              rules={{ required: i18n.t("required") }}
+              render={({ field: { onChange, onBlur, value } }) => (
+                <CustomInput
+                  onBlur={onBlur}
+                  onChange={onChange}
+                  value={value ? value.toString() : ""}
+                  placeholder={i18n.t("placeholder_location")}
+                />
+              )}
+            />
+            {errors.LocationLabel && (
+              <CustomText style={{ color: "red", marginTop: 7 }}>
+                {errors.LocationLabel.message}
+              </CustomText>
+            )}
+          </View>
+
+          {/* Country Field */}
+          <View>
+            <CustomText style={{ marginBottom: 10, fontSize: 16 }}>
+              {i18n.t("label_country")}
+            </CustomText>
+            <Controller
+              control={control}
+              name="Country"
+              rules={{ required: i18n.t("required") }}
+              render={({ field: { onChange, onBlur, value } }) => (
+                <CustomInput
+                  onBlur={onBlur}
+                  onChange={onChange}
+                  value={value ? value.toString() : ""}
+                  placeholder={i18n.t("placeholder_country")}
+                />
+              )}
+            />
+            {errors.Country && (
+              <CustomText style={{ color: "red", marginTop: 7 }}>
+                {errors.Country.message}
+              </CustomText>
+            )}
+          </View>
+
+          {/* City Field */}
+          <View>
+            <CustomText style={{ marginBottom: 10, fontSize: 16 }}>
+              {i18n.t("label_city")}
+            </CustomText>
+            <Controller
+              control={control}
+              name="City"
+              rules={{ required: i18n.t("required") }}
+              render={({ field: { onChange, onBlur, value } }) => (
+                <CustomInput
+                  onBlur={onBlur}
+                  onChange={onChange}
+                  value={value ? value.toString() : ""}
+                  placeholder={i18n.t("placeholder_city")}
+                />
+              )}
+            />
+            {errors.City && (
+              <CustomText style={{ color: "red", marginTop: 7 }}>
+                {errors.City.message}
+              </CustomText>
+            )}
+          </View>
+
+          {/* Price Field */}
+          <View>
+            <CustomText style={{ marginBottom: 10, fontSize: 16 }}>
+              {i18n.t("label_price")}
+            </CustomText>
+            <Controller
+              control={control}
+              name="Price"
+              rules={{
+                required: i18n.t("required"),
+                validate: (value) =>
+                  parseFloat(value) >= 500 || i18n.t("error_min_price"),
+              }}
+              render={({ field: { onChange, onBlur, value } }) => (
+                <CustomInput
+                  onBlur={onBlur}
+                  onChangeText={(text) => {
+                    const numericValue = text.replace(/[^0-9.]/g, "");
+                    onChange(numericValue);
+                  }}
+                  value={value ? value.toString() : ""}
+                  placeholder={i18n.t("placeholder_price")}
+                  keyboardType="numeric"
+                />
+              )}
+            />
+            {errors.Price && (
+              <CustomText style={{ color: "red", marginTop: 7 }}>
+                {errors.Price.message}
+              </CustomText>
+            )}
+          </View>
+
+          {/* DiscountPrice Field */}
+          <View>
+            <CustomText style={{ marginBottom: 10, fontSize: 16 }}>
+              {i18n.t("label_discount_price")}
+            </CustomText>
+            <Controller
+              control={control}
+              name="DiscountPrice"
+              rules={{
+                validate: (value) =>
+                  parseFloat(value) >= 500 || i18n.t("error_min_price"),
+              }}
+              render={({ field: { onChange, onBlur, value } }) => (
+                <CustomInput
+                  onBlur={onBlur}
+                  onChangeText={(text) => {
+                    const numericValue = text.replace(/[^0-9.]/g, "");
+                    onChange(numericValue);
+                  }}
+                  value={value ? value.toString() : ""}
+                  placeholder={i18n.t("placeholder_discount_price")}
+                  keyboardType="numeric"
+                />
+              )}
+            />
+            {errors.DiscountPrice && (
+              <CustomText style={{ color: "red", marginTop: 7 }}>
+                {errors.DiscountPrice.message}
+              </CustomText>
+            )}
+          </View>
+
+          {/* PeopleQuantity Field */}
+          <View>
+            <CustomText style={{ marginBottom: 10, fontSize: 16 }}>
+              {i18n.t("label_people_quantity")}
+            </CustomText>
+            <Controller
+              control={control}
+              name="PeopleQuantity"
+              rules={{ required: i18n.t("required") }}
+              render={({ field: { onChange, onBlur, value } }) => (
+                <CustomInput
+                  onBlur={onBlur}
+                  onChangeText={(text) => {
+                    const numericValue = text.replace(/[^0-9.]/g, "");
+                    onChange(numericValue);
+                  }}
+                  value={value ? value.toString() : ""}
+                  placeholder={i18n.t("placeholder_people_quantity")}
+                  keyboardType="numeric"
+                />
+              )}
+            />
+            {errors.PeopleQuantity && (
+              <CustomText style={{ color: "red", marginTop: 7 }}>
+                {errors.PeopleQuantity.message}
+              </CustomText>
+            )}
+          </View>
+
+          {/* RoomsQuantity Field */}
+          <View>
+            <CustomText style={{ marginBottom: 10, fontSize: 16 }}>
+              {i18n.t("label_rooms_quantity")}
+            </CustomText>
+            <Controller
+              control={control}
+              name="RoomsQuantity"
+              rules={{ required: i18n.t("required") }}
+              render={({ field: { onChange, onBlur, value } }) => (
+                <CustomInput
+                  onBlur={onBlur}
+                  onChangeText={(text) => {
+                    const numericValue = text.replace(/[^0-9.]/g, "");
+                    onChange(numericValue);
+                  }}
+                  value={value ? value.toString() : ""}
+                  placeholder={i18n.t("placeholder_rooms_quantity")}
+                  keyboardType="numeric"
+                />
+              )}
+            />
+            {errors.RoomsQuantity && (
+              <CustomText style={{ color: "red", marginTop: 7 }}>
+                {errors.RoomsQuantity.message}
+              </CustomText>
+            )}
+          </View>
+
+          {/* Bedrooms Field */}
+          <View>
+            <CustomText style={{ marginBottom: 10, fontSize: 16 }}>
+              {i18n.t("label_bedrooms")}
+            </CustomText>
+            <Controller
+              control={control}
+              name="Bedrooms"
+              rules={{ required: i18n.t("required") }}
+              render={({ field: { onChange, onBlur, value } }) => (
+                <CustomInput
+                  onBlur={onBlur}
+                  onChangeText={(text) => {
+                    const numericValue = text.replace(/[^0-9.]/g, "");
+                    onChange(numericValue);
+                  }}
+                  value={value ? value.toString() : ""}
+                  placeholder={i18n.t("placeholder_bedrooms")}
+                  keyboardType="numeric"
+                />
+              )}
+            />
+            {errors.Bedrooms && (
+              <CustomText style={{ color: "red", marginTop: 7 }}>
+                {errors.Bedrooms.message}
+              </CustomText>
+            )}
+          </View>
+
+          {/* Bathrooms Field */}
+          <View>
+            <CustomText style={{ marginBottom: 10, fontSize: 16 }}>
+              {i18n.t("label_bathrooms")}
+            </CustomText>
+            <Controller
+              control={control}
+              name="Bathrooms"
+              rules={{ required: i18n.t("required") }}
+              render={({ field: { onChange, onBlur, value } }) => (
+                <CustomInput
+                  onBlur={onBlur}
+                  onChangeText={(text) => {
+                    const numericValue = text.replace(/[^0-9.]/g, "");
+                    onChange(numericValue);
+                  }}
+                  value={value ? value.toString() : ""}
+                  placeholder={i18n.t("placeholder_bathrooms")}
+                  keyboardType="numeric"
+                />
+              )}
+            />
+            {errors.Bathrooms && (
+              <CustomText style={{ color: "red", marginTop: 7 }}>
+                {errors.Bathrooms.message}
+              </CustomText>
+            )}
+          </View>
+
+          {/* Beds Field */}
+          <View>
+            <CustomText style={{ marginBottom: 10, fontSize: 16 }}>
+              {i18n.t("label_beds")}
+            </CustomText>
+            <Controller
+              control={control}
+              name="Beds"
+              rules={{ required: i18n.t("required") }}
+              render={({ field: { onChange, onBlur, value } }) => (
+                <CustomInput
+                  onBlur={onBlur}
+                  onChangeText={(text) => {
+                    const numericValue = text.replace(/[^0-9.]/g, "");
+                    onChange(numericValue);
+                  }}
+                  value={value ? value.toString() : ""}
+                  placeholder={i18n.t("placeholder_beds")}
+                  keyboardType="numeric"
+                />
+              )}
+            />
+            {errors.Beds && (
+              <CustomText style={{ color: "red", marginTop: 7 }}>
+                {errors.Beds.message}
+              </CustomText>
+            )}
+          </View>
+        </View>
+        {/* <Image
+          source={{ uri: categories[0]?.icon }}
+          style={{ width: 30, height: 30 }}
+        /> */}
+        {/* <View style={{ marginBottom: 20 }}>
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              columnGap: 10,
+            }}
+          >
+            <View style={{ flex: 1 }}>
+              <CustomText style={{ marginBottom: 10, fontSize: 18 }}>
+                {i18n.t("location")} ({i18n.t("latitude")})
+              </CustomText>
+              <View>
+                <Controller
+                  control={control}
+                  name="Latitude"
+                  rules={{ required: i18n.t("required") }}
+                  render={({ field: { onChange, onBlur, value } }) => (
+                    <TextInput
+                      style={{
+                        borderWidth: 1,
+                        paddingVertical: 10,
+                        paddingHorizontal: 10,
+                        borderRadius: 10,
+                        borderColor: errors.Latitude ? "red" : "#dee2f1",
+                        color: "#1C2863",
+                        fontSize: 14,
+                      }}
+                      onBlur={onBlur}
+                      onChangeText={onChange}
+                      value={value ? value.toString() : ""}
+                      underlineColorAndroid="transparent"
+                      placeholder="32.32423243"
+                      placeholderTextColor="#616992"
+                      keyboardType="numeric"
+                    />
+                  )}
+                />
+              </View>
+              {errors.Latitude && (
                 <CustomText style={{ color: "red", marginTop: 7 }}>
-                  {errors[field.name].message}
+                  {errors.Latitude.message}
                 </CustomText>
               )}
             </View>
-          ))}
-          <Image
-            source={{ uri: categories[0]?.icon }}
-            style={{ width: 30, height: 30 }}
-          />
-          <View style={{ marginBottom: 20 }}>
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                columnGap: 10,
-                marginBottom: 20,
-              }}
-            >
-              <View style={{ flex: 1 }}>
-                <CustomText style={{ marginBottom: 10, fontSize: 18 }}>
-                  {i18n.t("location")} ({i18n.t("latitude")})
-                </CustomText>
-                <View>
-                  <Controller
-                    control={control}
-                    name="Latitude"
-                    rules={{ required: i18n.t("required") }}
-                    render={({ field: { onChange, onBlur, value } }) => (
-                      <TextInput
-                        style={{
-                          borderWidth: 1,
-                          paddingVertical: 10,
-                          paddingHorizontal: 10,
-                          borderRadius: 10,
-                          borderColor: errors.LocationLabel ? "red" : "#dee2f1",
-                          color: "#1C2863",
-                          fontSize: 14,
-                        }}
-                        onBlur={onBlur}
-                        onChangeText={onChange}
-                        value={value}
-                        underlineColorAndroid="transparent"
-                        placeholder="32.32423243"
-                        placeholderTextColor="#616992"
-                        keyboardType="numeric"
-                      />
-                    )}
-                  />
-                </View>
-                {errors.Latitude && (
-                  <CustomText style={{ color: "red", marginTop: 7 }}>
-                    {errors.Latitude.message}
-                  </CustomText>
-                )}
-              </View>
 
-              <View style={{ flex: 1 }}>
-                <CustomText style={{ marginBottom: 10, fontSize: 18 }}>
-                  {i18n.t("location")} ({i18n.t("longitude")})
-                </CustomText>
-                <View>
-                  <Controller
-                    control={control}
-                    name="Longitude"
-                    rules={{ required: i18n.t("required") }}
-                    render={({ field: { onChange, onBlur, value } }) => (
-                      <TextInput
-                        style={{
-                          borderWidth: 1,
-                          paddingVertical: 10,
-                          paddingHorizontal: 10,
-                          borderRadius: 10,
-                          borderColor: errors.Longitude ? "red" : "#dee2f1",
-                          color: "#1C2863",
-                          fontSize: 14,
-                        }}
-                        onBlur={onBlur}
-                        onChangeText={onChange}
-                        value={value}
-                        underlineColorAndroid="transparent"
-                        placeholder="32.32423243"
-                        placeholderTextColor="#616992"
-                        keyboardType="numeric"
-                      />
-                    )}
-                  />
-                </View>
-                {errors.Longitude && (
-                  <CustomText style={{ color: "red", marginTop: 7 }}>
-                    {errors.Longitude.message}
-                  </CustomText>
-                )}
+            <View style={{ flex: 1 }}>
+              <CustomText style={{ marginBottom: 10, fontSize: 18 }}>
+                {i18n.t("location")} ({i18n.t("longitude")})
+              </CustomText>
+              <View>
+                <Controller
+                  control={control}
+                  name="Longitude"
+                  rules={{ required: i18n.t("required") }}
+                  render={({ field: { onChange, onBlur, value } }) => (
+                    <TextInput
+                      style={{
+                        borderWidth: 1,
+                        paddingVertical: 10,
+                        paddingHorizontal: 10,
+                        borderRadius: 10,
+                        borderColor: errors.Longitude ? "red" : "#dee2f1",
+                        color: "#1C2863",
+                        fontSize: 14,
+                      }}
+                      onBlur={onBlur}
+                      onChangeText={onChange}
+                      value={value ? value.toString() : ""}
+                      underlineColorAndroid="transparent"
+                      placeholder="32.32423243"
+                      placeholderTextColor="#616992"
+                      keyboardType="numeric"
+                    />
+                  )}
+                />
               </View>
+              {errors.Longitude && (
+                <CustomText style={{ color: "red", marginTop: 7 }}>
+                  {errors.Longitude.message}
+                </CustomText>
+              )}
             </View>
-            {/* {coordinate ? (
+          </View>
+        </View> */}
+        {/* {coordinate ? (
               <MapLandlord
                 coordinate={coordinate}
                 handleMapRegionChange={handleMapRegionChange}
@@ -690,7 +1099,8 @@ const Landlord = () => {
                 <CustomText>Загрузка местоположения...</CustomText>
               </View>
             )} */}
-          </View>
+
+        <View style={{ flex: 1, marginBottom: 20 }}>
           <SelectionSection
             title={i18n.t("categories")}
             placeholder={i18n.t("place_categories")}
@@ -700,29 +1110,110 @@ const Landlord = () => {
             )}
             onPress={() => openActionSheet("category")}
           />
+          {/* <Controller
+            control={control}
+            name="Categories"
+            rules={{ required: i18n.t("required") }}
+            render={() => (
+              <View>
+                <SelectionSection
+                  title={i18n.t("categories")}
+                  placeholder={i18n.t("place_categories")}
+                  selectedValue={getCategoryNameById(
+                    selectedCategory,
+                    i18n.t("place_categories")
+                  )}
+                  onPress={() => openActionSheet("category")}
+                />
+                {errors.Categories && (
+                  <CustomText style={{ color: "red", marginTop: 7 }}>
+                    {errors.Categories.message}
+                  </CustomText>
+                )}
+              </View>
+            )}
+          /> */}
+        </View>
+
+        <View style={{ flex: 1, marginBottom: 20 }}>
           <SelectionSection
             title={i18n.t("amenities")}
             placeholder={i18n.t("place_amenities")}
-            selectedValue={
-              firstSelectedAmenity ? firstSelectedAmenity.Value : ""
-            }
+            selectedValue={firstSelectedAmenity ? amenityValue : ""}
             onPress={() => openActionSheet("amenities")}
           />
+          {/* <Controller
+            control={control}
+            name="Facilities"
+            rules={{ required: i18n.t("required") }}
+            render={() => (
+              <View>
+                <SelectionSection
+                  title={i18n.t("amenities")}
+                  placeholder={i18n.t("place_amenities")}
+                  selectedValue={
+                    firstSelectedAmenity ? firstSelectedAmenity.Value : ""
+                  }
+                  onPress={() => openActionSheet("amenities")}
+                />
+                {errors.Facilities && (
+                  <CustomText style={{ color: "red", marginTop: 7 }}>
+                    {errors.Facilities.message}
+                  </CustomText>
+                )}
+              </View>
+            )}
+          /> */}
+        </View>
 
+        <View style={{ flex: 1, marginBottom: 20 }}>
           <SelectionSection
             title={i18n.t("rules")}
             placeholder={i18n.t("place_rules")}
-            selectedValue={firstSelectedRules ? firstSelectedRules.Value : ""}
+            selectedValue={firstSelectedRules ? rulesValue : ""}
             onPress={() => openActionSheet("rules")}
           />
+          {/* <Controller
+            control={control}
+            name="Rules"
+            rules={{ required: i18n.t("required") }}
+            render={() => (
+              <View>
+                <SelectionSection
+                  title={i18n.t("rules")}
+                  placeholder={i18n.t("place_rules")}
+                  selectedValue={
+                    firstSelectedRules ? firstSelectedRules.Value : ""
+                  }
+                  onPress={() => openActionSheet("rules")}
+                />
+                {errors.Rules && (
+                  <CustomText style={{ color: "red", marginTop: 7 }}>
+                    {errors.Rules.message}
+                  </CustomText>
+                )}
+              </View>
+            )}
+          /> */}
+        </View>
 
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              columnGap: 20,
-            }}
-          >
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            columnGap: 20,
+          }}
+        >
+          {/* <SelectionSection
+            title={i18n.t("entryTime")}
+            placeholder={i18n.t("entryTime")}
+            selectedValue={getCheckInOutNameById(
+              selectedCheckIn,
+              i18n.t("entryTime")
+            )}
+            onPress={() => openActionSheet("checkIn")}
+          /> */}
+          <View style={{ flex: 1 }}>
             <SelectionSection
               title={i18n.t("entryTime")}
               placeholder={i18n.t("entryTime")}
@@ -732,6 +1223,31 @@ const Landlord = () => {
               )}
               onPress={() => openActionSheet("checkIn")}
             />
+            {/* <Controller
+              control={control}
+              name="CheckInID"
+              rules={{ required: i18n.t("required") }}
+              render={() => (
+                <View>
+                  <SelectionSection
+                    title={i18n.t("entryTime")}
+                    placeholder={i18n.t("entryTime")}
+                    selectedValue={getCheckInOutNameById(
+                      selectedCheckIn,
+                      i18n.t("entryTime")
+                    )}
+                    onPress={() => openActionSheet("checkIn")}
+                  />
+                  {errors.CheckInID && (
+                    <CustomText style={{ color: "red", marginTop: 7 }}>
+                      {errors.CheckInID.message}
+                    </CustomText>
+                  )}
+                </View>
+              )}
+            /> */}
+          </View>
+          <View style={{ flex: 1 }}>
             <SelectionSection
               title={i18n.t("departureTime")}
               placeholder={i18n.t("departureTime")}
@@ -741,76 +1257,107 @@ const Landlord = () => {
               )}
               onPress={() => openActionSheet("checkOut")}
             />
+            {/* <Controller
+              control={control}
+              name="CheckOutID"
+              rules={{ required: i18n.t("required") }}
+              render={() => (
+                <View>
+                  <SelectionSection
+                    title={i18n.t("departureTime")}
+                    placeholder={i18n.t("departureTime")}
+                    selectedValue={getCheckInOutNameById(
+                      selectedCheckOut,
+                      i18n.t("departureTime")
+                    )}
+                    onPress={() => openActionSheet("checkOut")}
+                  />
+                  {errors.CheckOutID && (
+                    <CustomText style={{ color: "red", marginTop: 7 }}>
+                      {errors.CheckOutID.message}
+                    </CustomText>
+                  )}
+                </View>
+              )}
+            /> */}
           </View>
+          {/* <SelectionSection
+            title={i18n.t("departureTime")}
+            placeholder={i18n.t("departureTime")}
+            selectedValue={getCheckInOutNameById(
+              selectedCheckOut,
+              i18n.t("departureTime")
+            )}
+            onPress={() => openActionSheet("checkOut")}
+          /> */}
         </View>
-        {route.params?.id && (
-          <TouchableOpacity
-            onPress={() => {
-              navigation.navigate("Замок", { id: route.params?.id });
+      </View>
+      {route.params?.id && (
+        <TouchableOpacity
+          onPress={() => {
+            navigation.navigate("Замок", { id: route.params?.id });
+          }}
+          style={{ marginBottom: 20 }}
+        >
+          <CustomText
+            style={{
+              color: "#005fb8",
+              fontSize: 16,
+              marginTop: 10,
+              fontWeight: 500,
+              textAlign: "center",
             }}
-            style={{ marginBottom: 20 }}
+          >
+            {i18n.t("locks")}
+          </CustomText>
+        </TouchableOpacity>
+      )}
+      <View>
+        {isLoading ? (
+          <ActivityIndicator size="large" color={"#4B5DFF"} />
+        ) : (
+          <TouchableOpacity
+            style={{
+              padding: 15,
+              borderRadius: 10,
+              shadowColor: "#000",
+              backgroundColor: "#4B5DFF",
+            }}
+            onPress={handleSubmit(onSubmit)}
           >
             <CustomText
               style={{
-                color: "#005fb8",
-                fontSize: 16,
-                marginTop: 10,
+                color: "#fff",
+                fontSize: 18,
                 fontWeight: 500,
                 textAlign: "center",
               }}
             >
-              {i18n.t("locks")}
+              {i18n.t("save")}
             </CustomText>
           </TouchableOpacity>
         )}
-        <View>
-          {isLoading ? (
-            <ActivityIndicator size="large" color={"#4B5DFF"} />
-          ) : (
-            <TouchableOpacity
-              style={{
-                padding: 15,
-                borderRadius: 10,
-                shadowColor: "#000",
-                marginBottom: 30,
-                backgroundColor: "#4B5DFF",
-              }}
-              onPress={handleSubmit(onSubmit)}
-            >
-              <CustomText
-                style={{
-                  color: "#fff",
-                  fontSize: 18,
-                  fontWeight: 500,
-                  textAlign: "center",
-                }}
-              >
-                {i18n.t("save")}
-              </CustomText>
-            </TouchableOpacity>
-          )}
-        </View>
-        <ActionLandlord
-          actionSheetRef={actionSheetRef}
-          currentType={currentType}
-          setIsActionSheetVisible={setIsActionSheetVisible}
-          amenitiesList={amenities}
-          selectedAmenities={selectedAmenities}
-          rulesList={rules}
-          selectedRules={selectedRules}
-          categoryList={categories}
-          selectedCategory={selectedCategory}
-          checkInOutList={checkInOut}
-          selectedCheckIn={selectedCheckIn}
-          selectedCheckOut={selectedCheckOut}
-          categoryIcon={categoryIcon}
-          toggleAmenity={toggleAmenity}
-          toggleCategory={toggleCategory}
-          toggleRule={toggleRule}
-          toggleCheckIn={toggleCheckIn}
-          toggleCheckOut={toggleCheckOut}
-        />
-      </SafeAreaWrapper>
+      </View>
+      <ActionLandlord
+        actionSheetRef={actionSheetRef}
+        currentType={currentType}
+        setIsActionSheetVisible={setIsActionSheetVisible}
+        amenitiesList={amenities}
+        selectedAmenities={selectedAmenities}
+        rulesList={rules}
+        selectedRules={selectedRules}
+        categoryList={categories}
+        selectedCategory={selectedCategory}
+        checkInOutList={checkInOut}
+        selectedCheckIn={selectedCheckIn}
+        selectedCheckOut={selectedCheckOut}
+        categoryIcon={categoryIcon}
+        toggleAmenity={toggleAmenity}
+        toggleCategory={toggleCategory}
+        toggleRule={toggleRule}
+        toggleCheckIn={toggleCheckIn}
+        toggleCheckOut={toggleCheckOut}
+      />
     </ScrollView>
   );
 };

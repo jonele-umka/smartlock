@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   View,
@@ -12,11 +12,16 @@ import {
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import Ionicons from "react-native-vector-icons/Ionicons";
-import i18n from "../components/i18n/i18n";
+import i18n from "../../i18n/i18n";
 import { Dialog } from "@rneui/themed";
 import { getUserProfile, logoutUser } from "../Store/authSlice/authSlice";
 import CustomText from "../components/CustomText/CustomText";
 import SafeAreaWrapper from "../components/SafeAreaWrapper/SafeAreaWrapper";
+import {
+  clearSelectedAmenities,
+  fetchSearchResults,
+} from "../Store/searchSlice/searchSlice";
+import { fetchAmenities } from "../Store/dictionarySlice/dictionarySlice";
 
 const Link = ({ title, onPress, icon, disabled = false, isLast = false }) => (
   <TouchableOpacity
@@ -46,35 +51,53 @@ const ProfileScreen = () => {
   const navigation = useNavigation();
   const API_URL = process.env.API_URL;
   const [avatarImage, setAvatarImage] = useState(null);
-
   const userProfile = useSelector((state) => state.auth.userProfile);
-  const owner = useSelector((state) => state.auth.owner);
-
+  const statusOwner = useSelector((state) => state.auth.statusOwner);
+  const role = useSelector((state) => state.auth.role);
   const token = useSelector((state) => state.auth.token);
+  const loading = useSelector((state) => state.auth.loading);
   const [refreshing, setRefreshing] = useState(false);
   const [modal, setModal] = useState(false);
   const [isImageLoaded, setIsImageLoaded] = useState(false);
   const dispatch = useDispatch();
+  // const language = useSelector((state) => state.language.language);
+
+  // const route = useRoute();
+  // useEffect(() => {
+  //   if (route.params?.updated) {
+  //     dispatch(getUserProfile());
+  //   }
+  // }, [route.params]);
+
+  // useEffect(() => {
+  //   const checkPendingOwner = async () => {
+  //     const pending = await AsyncStorage.getItem("isPendingOwner");
+  //     setIsPendingOwner(pending === "true");
+  //   };
+  //   checkPendingOwner();
+  // }, []);
+
+  // useEffect(() => {
+  //   if (owner === "owner") {
+  //     AsyncStorage.removeItem("isPendingOwner");
+  //     setIsPendingOwner(false);
+  //   }
+  // }, [owner]);
+
   const handleImageLoad = () => {
     setIsImageLoaded(true);
-  };
-  const onRefresh = async () => {
-    setRefreshing(true);
-    await getUserProfile(token);
-    loadProfileData();
-    setRefreshing(false);
   };
 
   const loadProfileData = () => {
     const timestamp = new Date().getTime();
 
-    if (!userProfile?.Profile?.Avatar) {
+    if (userProfile?.Profile?.Avatar) {
       setAvatarImage(
-        "https://static.vecteezy.com/system/resources/previews/019/896/008/original/male-user-avatar-icon-in-flat-design-style-person-signs-illustration-png.png"
+        `${API_URL}/${userProfile?.Profile?.Avatar}?timestamp=${timestamp}`
       );
     } else {
       setAvatarImage(
-        `${API_URL}/${userProfile?.Profile?.Avatar}?timestamp=${timestamp}`
+        "https://static.vecteezy.com/system/resources/previews/019/896/008/original/male-user-avatar-icon-in-flat-design-style-person-signs-illustration-png.png"
       );
     }
   };
@@ -86,10 +109,6 @@ const ProfileScreen = () => {
     }, [dispatch, token])
   );
 
-  useEffect(() => {
-    dispatch(getUserProfile(token));
-  }, [dispatch, token]);
-
   const handleLogout = async () => {
     try {
       const response = await dispatch(logoutUser(token));
@@ -98,6 +117,9 @@ const ProfileScreen = () => {
           "https://static.vecteezy.com/system/resources/previews/019/896/008/original/male-user-avatar-icon-in-flat-design-style-person-signs-illustration-png.png"
         );
         navigation.navigate("Главная страница");
+        dispatch(fetchSearchResults({}));
+        dispatch(clearSelectedAmenities());
+        dispatch(fetchAmenities());
       } else {
         console.log("Не удалось выйти");
       }
@@ -110,15 +132,16 @@ const ProfileScreen = () => {
     if (token) {
       navigation.navigate("Редактировать профиль");
     } else {
-      console.log("Пользователь не авторизован");
+      alert("Пользователь не авторизован");
     }
   };
 
   const toggleModal = () => {
     setModal(!modal);
   };
+
   const links = [
-    token && {
+    {
       title: i18n.t("settings"),
       onPress: () => navigation.navigate("Настройки"),
       icon: "settings-outline",
@@ -131,24 +154,49 @@ const ProfileScreen = () => {
           icon: "logout",
         },
   ].filter(Boolean);
-
-  if (owner === "owner") {
-    if (Array.isArray(links)) {
-      links.unshift({
-        title: i18n.t("owner"),
-        onPress: () => navigation.navigate("Владелец"),
-        icon: "person-outline",
-      });
-    }
+ 
+  if (statusOwner === "approved") {
+    links.unshift({
+      title: i18n.t("owner"),
+      onPress: () => navigation.navigate("Владелец"),
+      icon: "person-outline",
+    });
+  } else if (statusOwner === "pending") {
+    links.unshift({
+      title: i18n.t("pending"),
+      onPress: () => navigation.navigate("Заявка на подтверждение"),
+      icon: "person-outline",
+    });
+  } else if (role === "client") {
+    links.unshift({
+      title: i18n.t("becomeOwner"),
+      onPress: () => navigation.navigate("Данные владельца"),
+      icon: "person-outline",
+    });
   }
-  if (owner === "client") {
-    if (Array.isArray(links)) {
-      links.unshift({
-        title: "Стать владельцем",
-        onPress: () => navigation.navigate("Стать владельцем"),
-        icon: "person-outline",
-      });
-    }
+
+  const onRefresh = () => {
+    setRefreshing(true);
+    dispatch(getUserProfile(token));
+    loadProfileData();
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 500);
+  };
+
+  if (loading) {
+    return (
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: "#fff",
+        }}
+      >
+        <ActivityIndicator size="large" color="#4B5DFF" />
+      </View>
+    );
   }
 
   return (

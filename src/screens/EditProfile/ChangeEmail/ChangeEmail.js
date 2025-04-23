@@ -1,9 +1,7 @@
 import React, { useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { useSelector } from "react-redux";
-
 import {
-  Text,
   TextInput,
   TouchableOpacity,
   ActivityIndicator,
@@ -12,12 +10,9 @@ import {
 } from "react-native";
 
 import { useNavigation } from "@react-navigation/core";
-import i18n from "../../../components/i18n/i18n";
-
+import i18n from "../../../../i18n/i18n";
 import Feather from "react-native-vector-icons/Feather";
-
 import CustomText from "../../../components/CustomText/CustomText";
-import SafeAreaWrapper from "../../../components/SafeAreaWrapper/SafeAreaWrapper";
 
 const ChangeEmail = () => {
   const {
@@ -71,107 +66,109 @@ const ChangeEmail = () => {
       }}
       keyboardShouldPersistTaps="handled"
     >
-      <SafeAreaWrapper>
-        <CustomText
-          style={{
-            fontSize: 40,
-            marginBottom: 30,
-            fontWeight: 600,
-          }}
-        >
-          {i18n.t("changeEmail")}
-        </CustomText>
+      <CustomText
+        style={{
+          fontSize: 18,
+          marginBottom: 30,
+          fontWeight: 600,
+        }}
+      >
+        {i18n.t("changeEmail")}
+      </CustomText>
+      <View>
         <View>
-          <View>
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                columnGap: 5,
-                paddingRight: 10,
-                paddingVertical: 10,
-                borderWidth: 1,
-                paddingHorizontal: 10,
-                borderRadius: 10,
-                borderColor: errors.Email ? "red" : "#dee2f1",
-              }}
-            >
-              <Feather name="mail" style={{ color: "#616992", fontSize: 20 }} />
-              <Controller
-                control={control}
-                name="Email"
-                rules={{
-                  required: i18n.t("fillInTheField"),
-                  pattern: {
-                    value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                    message: i18n.t("pleaseEnterAValidEmailAddress"),
-                  },
-                }}
-                render={({ field }) => (
-                  <TextInput
-                    placeholder={i18n.t("enterEmail")}
-                    placeholderTextColor="#616992"
-                    onChangeText={(value) => {
-                      field.onChange(value);
-                      setError("");
-                    }}
-                    value={field.value}
-                    style={{
-                      flex: 1,
-                      color: "#1C2863",
-                      fontSize: 14,
-                    }}
-                  />
-                )}
-              />
-            </View>
-            {errors.Email && (
-              <Text style={{ color: "red", fontSize: 12, marginTop: 7 }}>
-                {errors.Email.message}
-              </Text>
-            )}
-          </View>
-        </View>
-
-        {loading ? (
-          <ActivityIndicator
-            size="large"
-            style={{ marginTop: 40 }}
-            color={"#4B5DFF"}
-          />
-        ) : (
-          <TouchableOpacity
-            onPress={handleSubmit(onSubmit)}
+          <View
             style={{
-              elevation: 5,
-              shadowColor: "#000",
-              shadowOffset: { width: 0, height: 2 },
-              shadowOpacity: 0.2,
-              shadowRadius: 10,
-              marginTop: 30,
-              paddingVertical: 15,
-              textAlign: "center",
+              flexDirection: "row",
+              alignItems: "center",
+              columnGap: 5,
+              paddingRight: 10,
+              paddingVertical: 10,
+              borderWidth: 1,
+              paddingHorizontal: 10,
               borderRadius: 10,
-              backgroundColor: "#4B5DFF",
+              borderColor: errors.Email ? "red" : "#dee2f1",
             }}
           >
-            <CustomText
-              style={{
-                color: "#fff",
-                textAlign: "center",
-                fontSize: 20,
+            <Feather name="mail" style={{ color: "#616992", fontSize: 20 }} />
+            <Controller
+              control={control}
+              name="Email"
+              rules={{
+                required: i18n.t("required"),
+                pattern: {
+                  value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                  message: i18n.t("validEmail"),
+                },
               }}
-            >
-              {i18n.t("send")}
+              render={({ field }) => (
+                <TextInput
+                  placeholder={i18n.t("enterEmail")}
+                  placeholderTextColor="#616992"
+                  onChangeText={(value) => {
+                    const trimmedValue = value.trim();
+                    const formattedValue =
+                      trimmedValue.charAt(0).toLowerCase() +
+                      trimmedValue.slice(1);
+                    field.onChange(formattedValue);
+                    setError("");
+                  }}
+                  value={field.value}
+                  style={{
+                    flex: 1,
+                    color: "#1C2863",
+                    fontSize: 14,
+                  }}
+                />
+              )}
+            />
+          </View>
+          {errors.Email && (
+            <CustomText style={{ color: "red", fontSize: 12, marginTop: 7 }}>
+              {errors.Email.message}
             </CustomText>
-          </TouchableOpacity>
-        )}
-        {error == 400 && (
-          <Text style={{ color: "red", fontSize: 12, marginTop: 7 }}>
-            {i18n.t("validEmail")}
-          </Text>
-        )}
-      </SafeAreaWrapper>
+          )}
+        </View>
+      </View>
+
+      {loading ? (
+        <ActivityIndicator
+          size="large"
+          style={{ marginTop: 40 }}
+          color={"#4B5DFF"}
+        />
+      ) : (
+        <TouchableOpacity
+          onPress={handleSubmit(onSubmit)}
+          style={{
+            elevation: 5,
+            shadowColor: "#000",
+            shadowOffset: { width: 0, height: 2 },
+            shadowOpacity: 0.2,
+            shadowRadius: 10,
+            marginTop: 30,
+            paddingVertical: 15,
+            textAlign: "center",
+            borderRadius: 10,
+            backgroundColor: "#4B5DFF",
+          }}
+        >
+          <CustomText
+            style={{
+              color: "#fff",
+              textAlign: "center",
+              fontSize: 20,
+            }}
+          >
+            {i18n.t("send")}
+          </CustomText>
+        </TouchableOpacity>
+      )}
+      {error == 400 && (
+        <CustomText style={{ color: "red", fontSize: 12, marginTop: 7 }}>
+          {i18n.t("validEmail")}
+        </CustomText>
+      )}
     </ScrollView>
   );
 };

@@ -8,7 +8,7 @@ import {
   TextInput,
 } from "react-native";
 import React, { useState } from "react";
-import i18n from "../i18n/i18n";
+import i18n from "../../../i18n/i18n";
 import Ionicons from "react-native-vector-icons/Ionicons";
 
 const QuestionsInput = () => {
@@ -25,7 +25,6 @@ const QuestionsInput = () => {
             paddingVertical: 15,
             paddingHorizontal: 10,
             borderRadius: 10,
-            
           }}
           onPress={handleQuestions}
         >

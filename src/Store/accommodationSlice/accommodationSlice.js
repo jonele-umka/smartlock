@@ -5,14 +5,15 @@ const API_URL = process.env.API_URL;
 // Асинхронный thunk для получения всех данных
 export const fetchAccommodations = createAsyncThunk(
   "accommodations/fetchAccommodations",
-  async () => {
-    const response = await fetch(`${API_URL}/accommodation/get-all`);
-
+  async ({ page = 1, limit = 10 }) => {
+    const response = await fetch(
+      `${API_URL}/accommodation/get-all?limit=${limit}&page=${page}`
+    );
     if (!response.ok) {
       throw new Error("Network response was not ok");
     }
     const data = await response.json();
-    return data.Data;
+    return { data: data.Data, page };
   }
 );
 
@@ -43,7 +44,10 @@ const accommodationsSlice = createSlice({
     myStatus: "idle",
     error: null,
     myError: null,
+    hasMore: true,
+    page: 1,
   },
+
   reducers: {},
   extraReducers: (builder) => {
     builder
@@ -52,8 +56,20 @@ const accommodationsSlice = createSlice({
       })
       .addCase(fetchAccommodations.fulfilled, (state, action) => {
         state.status = "succeeded";
-        state.accommodations = action.payload;
+
+        if (action.payload.page === 1) {
+          state.accommodations = action.payload.data;
+        } else {
+          state.accommodations = [
+            ...state.accommodations,
+            ...action.payload.data,
+          ];
+        }
+
+        state.hasMore = action.payload.data.length === 10;
+        state.page = action.payload.page;
       })
+
       .addCase(fetchAccommodations.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.error.message;

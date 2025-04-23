@@ -1,11 +1,11 @@
 import React, { useRef, useState } from "react";
 import { FlatList, View, TouchableOpacity } from "react-native";
-import { useNavigation } from "@react-navigation/native";
+// import { useNavigation } from "@react-navigation/native";
 import ActionDescription from "../../ActionSheet/ActionDescription/ActionDescription";
 import CustomText from "../../CustomText/CustomText";
 import ReviewItem from "../../Reviews/ReviewItem";
 import Feather from "react-native-vector-icons/Feather";
-import i18n from "../../i18n/i18n";
+import i18n from "../../../../i18n/i18n";
 
 const ListReviews = ({
   reviewsData,
@@ -14,7 +14,6 @@ const ListReviews = ({
   canReview,
   toggleReviews,
 }) => {
-  const navigation = useNavigation();
   const [expandedReviewText, setExpandedReviewText] = useState("");
   const actionSheetReviewRef = useRef(null);
   const fromList = true;
@@ -63,7 +62,9 @@ const ListReviews = ({
             }}
           >
             <Feather name="plus" style={{ fontSize: 22, color: "#594BFF" }} />
-            <CustomText style={{ fontSize: 16 }}>Добавить отзыв</CustomText>
+            <CustomText style={{ fontSize: 16 }}>
+              {i18n.t("addReview")}
+            </CustomText>
           </TouchableOpacity>
         )}
         <FlatList

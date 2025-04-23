@@ -4,9 +4,9 @@ import {
   Image,
   ScrollView,
   TouchableOpacity,
-  Platform,
   ActivityIndicator,
   Alert,
+  Text,
 } from "react-native";
 import Fontisto from "react-native-vector-icons/Fontisto";
 import Ionicons from "react-native-vector-icons/Ionicons";
@@ -28,7 +28,7 @@ import CalendarReserv from "../../../components/Calendars/CalendarReserv/Calenda
 import ActionAddReview from "../../../components/ActionSheet/ActionAddReview/ActionAddReview";
 import ActionDescription from "../../../components/ActionSheet/ActionDescription/ActionDescription";
 import ListReviews from "../../../components/List/ListReviews/ListReviews";
-import i18n from "../../../components/i18n/i18n";
+import i18n from "../../../../i18n/i18n";
 
 const ObjectDetails = () => {
   const navigation = useNavigation();
@@ -37,6 +37,7 @@ const ObjectDetails = () => {
   const token = useSelector((state) => state.auth.token);
   const favorites = useSelector((state) => state.favorites.favorites || []);
   const dispatch = useDispatch();
+  const userProfile = useSelector((state) => state.auth.userProfile);
 
   // get data
   const [objectDetails, setObjectDetails] = useState(null);
@@ -46,9 +47,19 @@ const ObjectDetails = () => {
   const [calendar, setCalendar] = useState([]);
   const [loading, setLoading] = useState(true);
   const [canReview, setCanReview] = useState(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  // const [currentType, setCurrentType] = useState(null);
+  useEffect(() => {
+    // Пример получения статуса авторизации, можно использовать AsyncStorage или Redux для хранения статуса авторизации
+    const checkAuthentication = async () => {
+      // Получите данные о том, авторизован ли пользователь (например, из AsyncStorage)
+      const token = await AsyncStorage.getItem("token");
+      console.log(token);
+      setIsAuthenticated(!!token);
+    };
 
+    checkAuthentication();
+  }, []);
   // const [isActionSheetVisible, setIsActionSheetVisible] = useState(false);
 
   // // action
@@ -135,14 +146,10 @@ const ObjectDetails = () => {
     if (!descriptionExpanded && isLongDescription) {
       const shortenedDescription = words.slice(0, 20).join(" ");
       return (
-        <CustomText style={{ color: "#616992" }}>
-          {shortenedDescription}...
-        </CustomText>
+        <Text style={{ color: "#616992" }}>{shortenedDescription}...</Text>
       );
     } else {
-      return (
-        <CustomText style={{ color: "#616992" }}>{descriptionText}</CustomText>
-      );
+      return <Text style={{ color: "#616992" }}>{descriptionText}</Text>;
     }
   };
   // favorites
@@ -231,13 +238,8 @@ const ObjectDetails = () => {
 
   return (
     <ScrollView
-      style={{
-        backgroundColor: "#fff",
-        flex: 1,
-      }}
-      contentContainerStyle={{
-        paddingBottom: Platform.OS === "ios" ? 40 : 20,
-      }}
+      style={{ backgroundColor: "#fff", flex: 1 }}
+      contentContainerStyle={{ paddingBottom: 20 }}
     >
       <View style={{ position: "relative", height: 250 }}>
         {image && image.length > 0 && image[0].ImageUrl ? (
@@ -311,7 +313,8 @@ const ObjectDetails = () => {
           }}
         >
           <View>
-            {objectDetails?.DiscountPrice ? (
+            {objectDetails?.DiscountPrice !== "0" &&
+            objectDetails?.DiscountPrice ? (
               <View style={{ flexDirection: "row", alignItems: "baseline" }}>
                 <CustomText
                   style={{
@@ -320,16 +323,28 @@ const ObjectDetails = () => {
                     textDecorationLine: "line-through",
                   }}
                 >
-                  {objectDetails?.Price || "Нет цены"} {i18n.t("som")}
+                  {`${objectDetails?.Price} KGS` || "Нет цены"}
                 </CustomText>
+                <CustomText style={{ fontSize: 12, color: "red" }}>
+                  /{i18n.t("night")}
+                </CustomText>
+              </View>
+            ) : null}
+
+            {/* Отображение скидки, если она есть */}
+            {objectDetails?.DiscountPrice &&
+            objectDetails?.DiscountPrice !== "0" ? (
+              <View style={{ flexDirection: "row", alignItems: "baseline" }}>
                 <CustomText
                   style={{
-                    fontSize: 14,
-                    color: "red",
-                    textDecorationLine: "line-through",
+                    fontSize: 28,
+                    fontWeight: 500,
+                    color: "#4B5DFF",
                   }}
                 >
-                  {" "}
+                  {`${objectDetails?.DiscountPrice} KGS` || "Нет цены"}
+                </CustomText>
+                <CustomText style={{ fontSize: 18, color: "#4B5DFF" }}>
                   /{i18n.t("night")}
                 </CustomText>
               </View>
@@ -338,23 +353,9 @@ const ObjectDetails = () => {
                 <CustomText
                   style={{ fontSize: 28, fontWeight: 500, color: "#4B5DFF" }}
                 >
-                  {objectDetails?.Price || "Нет цены"} {i18n.t("som")}
+                  {`${objectDetails?.Price} KGS` || "Нет цены"}
                 </CustomText>
                 <CustomText style={{ fontSize: 18, color: "#4B5DFF" }}>
-                  {" "}
-                  /{i18n.t("night")}
-                </CustomText>
-              </View>
-            )}
-            {objectDetails?.DiscountPrice && (
-              <View style={{ flexDirection: "row", alignItems: "baseline" }}>
-                <CustomText
-                  style={{ fontSize: 28, fontWeight: 500, color: "#4B5DFF" }}
-                >
-                  {objectDetails?.DiscountPrice || "Нет цены"} {i18n.t("som")}
-                </CustomText>
-                <CustomText style={{ fontSize: 18, color: "#4B5DFF" }}>
-                  {" "}
                   /{i18n.t("night")}
                 </CustomText>
               </View>
@@ -418,7 +419,7 @@ const ObjectDetails = () => {
                 name="home-outline"
                 style={{ color: "#000", fontSize: 20 }}
               />
-              {console.log(objectDetails?.Category)}
+
               <CustomText style={{ fontSize: 16, fontWeight: 500 }}>
                 {objectDetails?.Category.NameEn || "Нет категории"}
               </CustomText>
@@ -625,7 +626,7 @@ const ObjectDetails = () => {
                     <CustomText style={{ fontSize: 16, color: "gray" }}>
                       {i18n.t("noReviewPossible")}
                     </CustomText>
-                  ) : (
+                  ) : isAuthenticated ? ( // Проверка авторизации
                     <TouchableOpacity onPress={toggleReviews}>
                       <CustomText
                         style={{
@@ -637,6 +638,10 @@ const ObjectDetails = () => {
                         {i18n.t("addFirstReview")}
                       </CustomText>
                     </TouchableOpacity>
+                  ) : (
+                    <CustomText style={{ fontSize: 16, color: "gray" }}>
+                      {i18n.t("pleaseLoginToReview")}
+                    </CustomText> // Сообщение для неавторизованных пользователей
                   )}
                 </View>
               </View>
@@ -670,19 +675,7 @@ const ObjectDetails = () => {
 
         <TouchableOpacity
           onPress={() => {
-            if (
-              !selectedDates ||
-              !selectedDates.startDate ||
-              !selectedDates.endDate
-            ) {
-              Alert.alert(
-                "Ошибка",
-                "Пожалуйста, выберите даты въезда и выезда."
-              );
-              return;
-            }
-
-            // Проверка токена
+            const isBookable = userProfile?.Profile?.ISBookable;
             if (!token) {
               Alert.alert(
                 "Необходима авторизация",
@@ -704,8 +697,37 @@ const ObjectDetails = () => {
               );
               return;
             }
+            if (
+              !selectedDates ||
+              !selectedDates.startDate ||
+              !selectedDates.endDate
+            ) {
+              Alert.alert(
+                "Ошибка",
+                "Пожалуйста, выберите даты въезда и выезда."
+              );
+              return;
+            }
+            if (!isBookable) {
+              Alert.alert(
+                "Ошибка",
+                "Для завершения бронирования, пожалуйста, загрузите фото паспорта.",
+                [
+                  {
+                    text: "Отмена",
+                    style: "cancel",
+                  },
+                  {
+                    text: "Перейти в профиль",
+                    onPress: () => {
+                      navigation.navigate("Редактировать профиль");
+                    },
+                  },
+                ]
+              );
+              return;
+            }
 
-            // Навигация на экран подтверждения брони
             navigation.navigate("Подтверждение брони", {
               title: objectDetails?.Title,
               discountPrice: objectDetails?.DiscountPrice,
@@ -749,15 +771,16 @@ const ObjectDetails = () => {
                 fontWeight: 500,
               }}
             >
-              Выбрать
+              {i18n.t("choose")}
             </CustomText>
-            {objectDetails?.DiscountPrice ? (
+            {objectDetails?.DiscountPrice &&
+            objectDetails?.DiscountPrice !== "0" ? (
               <CustomText
                 style={{
                   color: "#fff",
                 }}
               >
-                {objectDetails?.DiscountPrice}/ночь
+                {objectDetails?.DiscountPrice}/{i18n.t("night")}
               </CustomText>
             ) : (
               <CustomText
@@ -765,7 +788,7 @@ const ObjectDetails = () => {
                   color: "#fff",
                 }}
               >
-                {objectDetails?.Price}/ночь
+                {objectDetails?.Price}/{i18n.t("night")}
               </CustomText>
             )}
           </View>

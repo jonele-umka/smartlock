@@ -24,10 +24,18 @@ const searchSlice = createSlice({
   name: "search",
   initialState: {
     results: [],
+    selectedAmenities: [],
     status: "idle",
     error: null,
   },
-  reducers: {},
+  reducers: {
+    setSelectedAmenities: (state, action) => {
+      state.selectedAmenities = action.payload;
+    },
+    clearSelectedAmenities: (state) => {
+      state.selectedAmenities = [];
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchSearchResults.pending, (state) => {
@@ -44,4 +52,6 @@ const searchSlice = createSlice({
   },
 });
 
+export const { setSelectedAmenities, clearSelectedAmenities } =
+  searchSlice.actions;
 export default searchSlice.reducer;

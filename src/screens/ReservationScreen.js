@@ -12,7 +12,7 @@ import CustomText from "../components/CustomText/CustomText";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 
 import SimpleLineIcons from "react-native-vector-icons/SimpleLineIcons";
-import i18n from "../components/i18n/i18n";
+import i18n from "../../i18n/i18n";
 
 const ReservationScreen = () => {
   const token = useSelector((state) => state.auth.token);
@@ -44,15 +44,8 @@ const ReservationScreen = () => {
   }
   return (
     <ScrollView
-      style={{
-        flex: 1,
-        backgroundColor: "#fff",
-      }}
-      contentContainerStyle={{
-        paddingHorizontal: 10,
-        paddingTop: 20,
-        paddingBottom: 40,
-      }}
+      style={{ backgroundColor: "#fff", flex: 1 }}
+      contentContainerStyle={{ paddingHorizontal: 10, paddingVertical: 20 }}
       refreshControl={
         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
       }

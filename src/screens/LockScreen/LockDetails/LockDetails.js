@@ -5,17 +5,17 @@ import {
   ScrollView,
   TouchableOpacity,
 } from "react-native";
-import React, { Children, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import SafeAreaWrapper from "../../../components/SafeAreaWrapper/SafeAreaWrapper";
 import { useSelector } from "react-redux";
 import { useNavigation, useRoute } from "@react-navigation/core";
 import Lock from "../../../Locks/Lock/Lock";
-import Entypo from "react-native-vector-icons/Entypo";
+
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import { LinearGradient } from "expo-linear-gradient";
+
 import Toast from "react-native-toast-message";
 import CustomText from "../../../components/CustomText/CustomText";
-import i18n from "../../../components/i18n/i18n";
+import i18n from "../../../../i18n/i18n";
 
 const LockDetails = () => {
   const navigation = useNavigation();
@@ -131,7 +131,7 @@ const LockDetails = () => {
               <CustomText
                 style={{
                   fontWeight: 500,
-                  fontSize: 22,
+                  fontSize: 18,
                 }}
               >
                 Название замка:{" "}
@@ -162,7 +162,7 @@ const LockDetails = () => {
                 marginBottom: 15,
               }}
             >
-              Все пароли:
+              {i18n.t("all_passwords")}:
             </CustomText>
             <View style={{ marginBottom: 20 }}>
               <TouchableOpacity
@@ -188,7 +188,7 @@ const LockDetails = () => {
                     fontSize: 16,
                   }}
                 >
-                  Создать новый пароль
+                  {i18n.t("create_new_password")}
                 </CustomText>
               </TouchableOpacity>
             </View>
@@ -251,7 +251,7 @@ const LockDetails = () => {
                             }}
                           >
                             <CustomText style={{ fontSize: 16 }}>
-                              Название пин кода:
+                              {i18n.t("pin_name")}:
                             </CustomText>
                             <CustomText
                               style={{ fontWeight: "500", fontSize: 16 }}
@@ -268,7 +268,7 @@ const LockDetails = () => {
                             }}
                           >
                             <CustomText style={{ fontSize: 16 }}>
-                              Пароль:
+                              {i18n.t("password")}:
                             </CustomText>
                             <CustomText
                               style={{ fontWeight: "500", fontSize: 16 }}
@@ -286,7 +286,7 @@ const LockDetails = () => {
                               }}
                             >
                               <CustomText style={{ fontSize: 16 }}>
-                                Начало:
+                                {i18n.t("start")}:
                               </CustomText>
                               <CustomText
                                 style={{ fontWeight: "500", fontSize: 16 }}
@@ -314,7 +314,7 @@ const LockDetails = () => {
                               }}
                             >
                               <CustomText style={{ fontSize: 16 }}>
-                                Конец:
+                                {i18n.t("end")}:
                               </CustomText>
                               <CustomText
                                 style={{ fontWeight: "500", fontSize: 16 }}
@@ -355,7 +355,7 @@ const LockDetails = () => {
                                   fontWeight: "500",
                                 }}
                               >
-                                Удалить
+                                {i18n.t("delete")}
                               </CustomText>
                               <MaterialCommunityIcons
                                 name={"delete"}
@@ -368,7 +368,7 @@ const LockDetails = () => {
                     </View>
                   ))
               ) : (
-                <Text>Нет доступных паролей</Text>
+                <CustomText>{i18n.t("no_passwords_available")}</CustomText>
               )}
             </View>
           </View>

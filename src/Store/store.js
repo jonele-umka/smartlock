@@ -7,7 +7,7 @@ import searchSlice from "./searchSlice/searchSlice";
 import applicationsSlice from "./applicationsSlice/applicationsSlice";
 import reservationSlice from "./reservationSlice/reservationSlice";
 import dictionarySlice from "./dictionarySlice/dictionarySlice";
-
+import languageSlice from "./languageSlice/languageSlice";
 const store = configureStore({
   reducer: {
     auth: authReducer,
@@ -18,6 +18,7 @@ const store = configureStore({
     applications: applicationsSlice,
     reservation: reservationSlice,
     dictionary: dictionarySlice,
+    language: languageSlice,
   },
 });
 

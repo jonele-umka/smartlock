@@ -1,10 +1,10 @@
 import React from "react";
-import { Text, View } from "react-native";
+import { View } from "react-native";
 import { useSelector } from "react-redux";
 import Objects from "../../../components/ObjectsComponent/Objects";
 import { Skeleton } from "@rneui/themed";
 import CustomText from "../../../components/CustomText/CustomText";
-import i18n from "../../../components/i18n/i18n";
+import i18n from "../../../../i18n/i18n";
 
 const ObjectList = () => {
   const accommodations = useSelector(

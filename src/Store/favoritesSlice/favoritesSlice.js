@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import Toast from "react-native-toast-message";
-import i18n from "../../components/i18n/i18n";
+import i18n from "../../../i18n/i18n";
 
 const API_URL = process.env.API_URL;
 

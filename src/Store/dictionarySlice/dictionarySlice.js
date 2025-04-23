@@ -1,9 +1,9 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import i18n from "../../components/i18n/i18n";
+import i18n from "../../../i18n/i18n";
 
 const API_URL = process.env.API_URL;
-const getLanguageCode = (locale) => (locale === "ky-KG" ? "ky" : locale);
- 
+// const getLanguageCode = (locale) => (locale === "ky-KG" ? "ky" : locale);
+
 // Асинхронные действия для получения данных
 export const fetchAmenities = createAsyncThunk(
   "fetch/amenities",

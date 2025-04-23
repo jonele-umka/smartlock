@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import * as Notifications from "expo-notifications";
 
@@ -60,13 +60,12 @@ const NotificationWebSocket = () => {
       setWs(newWs);
     }
 
-    // Очистка при размонтировании компонента
     return () => {
       if (ws) {
         ws.close();
       }
     };
-  }, [token]); // Зависимость от токена
+  }, [token]);
 
   return null;
 };

@@ -1,18 +1,19 @@
 import React from "react";
 import { Text, View } from "react-native";
 import { Calendar } from "react-native-calendars";
+import i18n from "../../../../i18n/i18n";
 
 const MyCalendarReserv = ({ calendar }) => {
-    // Проверка, если календарь пустой
-    if (!calendar || !Array.isArray(calendar) || calendar.length === 0) {
-      return (
-        <View>
-          <Text style={{ marginTop: 10, fontSize: 16 }}>
-            Нет забронированных дат.
-          </Text>
-        </View>
-      );
-    }
+  // Проверка, если календарь пустой
+  if (!calendar || !Array.isArray(calendar) || calendar.length === 0) {
+    return (
+      <View>
+        <Text style={{ marginTop: 10, fontSize: 16 }}>
+          {i18n.t("noDatesBooked")}
+        </Text>
+      </View>
+    );
+  }
   const transformCalendarData = (calendarData) => {
     const unavailableDates = [];
 

@@ -13,14 +13,12 @@ function CarouselImage({ images }) {
 
   const width = Dimensions.get("window").width;
 
-
   return (
     <View style={{ flex: 1 }}>
       <Carousel
         loop
         width={width}
         height={300}
-        data={formattedImages}
         data={formattedImages}
         scrollAnimationDuration={1000}
         renderItem={({ index }) => (
@@ -53,7 +51,7 @@ function CarouselImage({ images }) {
                 imageIndex={selectedImageIndex}
                 visible={visible}
                 onRequestClose={() => setIsVisible(false)}
-              /> */}
+              />
             </View>
           </View>
         )}

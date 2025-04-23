@@ -1,10 +1,10 @@
-import { View, Image, TouchableOpacity, Text } from "react-native";
+import { View, TouchableOpacity, Image } from "react-native";
 import React from "react";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import { useNavigation } from "@react-navigation/core";
 import { Badge } from "@rneui/base";
 import { useSelector } from "react-redux";
-import CustomText from "../CustomText/CustomText";
+// import CustomText from "../CustomText/CustomText";
 const Header = () => {
   const navigation = useNavigation();
   const notifications = useSelector(
@@ -23,7 +23,10 @@ const Header = () => {
         paddingHorizontal: 10,
       }}
     >
-      <CustomText style={{ fontSize: 35 }}>TogoLock</CustomText>
+      <Image
+        style={{ width: 100, height: 40, objectFit: "contain" }}
+        source={require("../../assets/logo.png")}
+      />
       <TouchableOpacity onPress={() => navigation.navigate("Уведомления")}>
         <AntDesign
           name="bells"

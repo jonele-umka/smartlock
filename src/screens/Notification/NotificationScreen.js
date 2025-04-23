@@ -1,5 +1,11 @@
-import React, { useEffect } from "react";
-import { View, Text, ScrollView, ActivityIndicator } from "react-native";
+import React, { useEffect, useState } from "react";
+import {
+  View,
+  Text,
+  ScrollView,
+  ActivityIndicator,
+  RefreshControl,
+} from "react-native";
 
 import { useSelector, useDispatch } from "react-redux";
 import { useFocusEffect } from "@react-navigation/native";
@@ -9,11 +15,12 @@ import SafeAreaWrapper from "../../components/SafeAreaWrapper/SafeAreaWrapper";
 
 import CustomText from "../../components/CustomText/CustomText";
 import Notification from "../../components/Notification/Notification";
-import i18n from "../../components/i18n/i18n";
+import i18n from "../../../i18n/i18n";
 import Toast from "react-native-toast-message";
 
 const NotificationScreen = () => {
   const dispatch = useDispatch();
+  const [refreshing, setRefreshing] = useState(false);
 
   const API_URL = process.env.API_URL;
 
@@ -33,6 +40,13 @@ const NotificationScreen = () => {
     }, [dispatch, token])
   );
 
+  const onRefresh = () => {
+    setRefreshing(true);
+    dispatch(fetchNotifications(token));
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 500);
+  };
   const markNotificationAsRead = async (notificationId) => {
     try {
       const response = await fetch(
@@ -98,32 +112,36 @@ const NotificationScreen = () => {
   }
 
   return (
-    <ScrollView style={{ flex: 1, padding: 10, backgroundColor: "#fff" }}>
-      <SafeAreaWrapper style={{ flex: 1 }}>
-        <CustomText
-          style={{
-            fontSize: 30,
-            marginBottom: 20,
-            fontWeight: 600,
-          }}
-        >
-          {i18n.t("notifications")}
-        </CustomText>
-        <View style={{ flexDirection: "column", rowGap: 20 }}>
-          {notifications &&
-            notifications.length > 0 &&
-            notifications
-              .slice()
-              .reverse()
-              .map((notification) => (
-                <Notification
-                  key={notification.ID}
-                  notification={notification}
-                  markNotificationAsRead={markNotificationAsRead}
-                />
-              ))}
-        </View>
-      </SafeAreaWrapper>
+    <ScrollView
+      style={{ backgroundColor: "#fff", flex: 1 }}
+      contentContainerStyle={{ paddingHorizontal: 10, paddingVertical: 20 }}
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+      }
+    >
+      <CustomText
+        style={{
+          fontSize: 30,
+          marginBottom: 20,
+          fontWeight: 600,
+        }}
+      >
+        {i18n.t("notifications")}
+      </CustomText>
+      <View style={{ flexDirection: "column", rowGap: 20 }}>
+        {notifications &&
+          notifications.length > 0 &&
+          notifications
+            .slice()
+            .reverse()
+            .map((notification) => (
+              <Notification
+                key={notification.ID}
+                notification={notification}
+                markNotificationAsRead={markNotificationAsRead}
+              />
+            ))}
+      </View>
     </ScrollView>
   );
 };

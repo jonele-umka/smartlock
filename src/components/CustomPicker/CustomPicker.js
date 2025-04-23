@@ -1,8 +1,8 @@
 import { useState } from "react";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import { View, TouchableOpacity, StyleSheet } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import CustomText from "../CustomText/CustomText";
-import i18n from "../i18n/i18n";
+import i18n from "../../../i18n/i18n";
 
 const CustomPicker = ({ items, selectedValue, onValueChange, placeholder }) => {
   const [isPickerVisible, setIsPickerVisible] = useState(false);
@@ -24,19 +24,19 @@ const CustomPicker = ({ items, selectedValue, onValueChange, placeholder }) => {
       {isPickerVisible && (
         <View style={styles.pickerContainer}>
           <Picker
-            selectedValue={selectedValue}
+            selectedValue={String(selectedValue) || ""}
             onValueChange={(value) => {
               onValueChange(value);
               setIsPickerVisible(false);
             }}
             style={styles.picker}
           >
-            <Picker.Item label={placeholder} value={null} color="gray" />
+            <Picker.Item label={placeholder} value="" color="gray" />
             {items.map((item) => (
               <Picker.Item
-                key={item.value}
+                key={String(item.value)}
                 label={item.label}
-                value={item.value}
+                value={String(item.value)}
               />
             ))}
           </Picker>

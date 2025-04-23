@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Toast from "react-native-toast-message";
-import i18n from "../../components/i18n/i18n";
+import i18n from "../../../i18n/i18n";
 
 const API_URL = process.env.API_URL;
 
@@ -21,20 +21,19 @@ export const loginUser = createAsyncThunk(
         const responseDataError = await response.json();
         const errorMessage =
           responseDataError.error.Error || "Произошла ошибка";
+        console.log(errorMessage);
         return rejectWithValue(errorMessage);
       }
 
       const data = await response.json();
-
       const token = data?.token;
-      const owner = data?.user?.Role;
       const login = userData?.Email;
       const password = userData?.Password;
       await AsyncStorage.setItem("token", token);
       await AsyncStorage.setItem("login", login);
       await AsyncStorage.setItem("password", password);
-
-      return { token, owner };
+      await AsyncStorage.setItem("authType", "local");
+      return { token };
     } catch (error) {
       return rejectWithValue(error.toString());
     }
@@ -56,8 +55,8 @@ export const sendEmail = createAsyncThunk(
       if (!response.ok) {
         const responseDataError = await response.json();
         const errorMessage =
-          responseDataError.error.Message || "Произошла ошибка";
-        console.log(errorMessage);
+          responseDataError.error.Error || "Произошла ошибка";
+
         return rejectWithValue(errorMessage);
       }
       const responseData = await response.json();
@@ -83,7 +82,7 @@ export const verifyCode = createAsyncThunk(
         const responseDataError = await response.json();
 
         const errorMessage =
-          responseDataError.error.Message || "Произошла ошибка";
+          responseDataError.error.Error || "Произошла ошибка";
 
         return rejectWithValue(errorMessage);
       }
@@ -130,20 +129,22 @@ export const resendCode = createAsyncThunk(
 );
 export const loginGoogle = createAsyncThunk(
   "google-auth/login",
-  async ({ rejectWithValue }) => {
+  async ({ tokenGoogle, userInfo }, { rejectWithValue }) => {
     try {
-      const response = await fetch(`${API_URL}/google-auth/login`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      const response = await fetch(
+        `${API_URL}/google-auth/exchange-token?token=${tokenGoogle}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
       if (!response.ok) {
         const responseDataError = await response.json();
-
         const errorMessage =
-          responseDataError.error.Error || "Произошла ошибка";
+          responseDataError.error?.Error || "Произошла ошибка";
         Toast.show({
           type: "error",
           position: "bottom",
@@ -154,13 +155,21 @@ export const loginGoogle = createAsyncThunk(
         });
         return rejectWithValue(errorMessage);
       }
+
       const responseData = await response.json();
-      return responseData;
+      const token = responseData?.token;
+      // const user = responseData?.user || null;
+      console.log(responseData);
+      await AsyncStorage.setItem("token", token);
+      await AsyncStorage.setItem("authType", "google");
+
+      return { token, user: userInfo };
     } catch (error) {
-      return rejectWithValue(error);
+      return rejectWithValue(error.message);
     }
   }
 );
+
 export const logoutUser = createAsyncThunk(
   "auth/logout",
   async (token, { rejectWithValue }) => {
@@ -171,12 +180,13 @@ export const logoutUser = createAsyncThunk(
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
+        body: JSON.stringify({ refresh_token: token }),
       });
 
       if (!response.ok) {
         const responseDataError = await response.json();
-        const errorMessage =
-          responseDataError.error.Message || "Произошла ошибка";
+        const errorMessage = responseDataError.Error || "Произошла ошибка";
+
         Toast.show({
           type: "error",
           position: "bottom",
@@ -188,17 +198,20 @@ export const logoutUser = createAsyncThunk(
         });
         return rejectWithValue(errorMessage);
       }
+      if (response.ok) {
+        await AsyncStorage.removeItem("token");
+        await AsyncStorage.removeItem("login");
+        await AsyncStorage.removeItem("password");
+        await AsyncStorage.removeItem("googleAccessToken");
+        await AsyncStorage.removeItem("authType");
 
-      await AsyncStorage.removeItem("token");
-      await AsyncStorage.removeItem("login");
-      await AsyncStorage.removeItem("password");
-
-      return true;
+        return true;
+      }
     } catch (error) {
       Toast.show({
         type: "error",
         position: "bottom",
-        text1: "Ошибка",
+        text1: i18n.t("error"),
         text2: error.message,
         visibilityTime: 3000,
         autoHide: true,
@@ -228,9 +241,57 @@ export const getUserProfile = createAsyncThunk(
       }
 
       const data = await response.json();
-
-      return data.Profile;
+      return {
+        userProfile: data?.Profile,
+        statusOwner: data?.Profile?.status,
+        role: data?.Profile?.Role,
+      };
     } catch (error) {
+      return rejectWithValue(error.toString());
+    }
+  }
+);
+export const deleteAccount = createAsyncThunk(
+  "auth/deleteAccount",
+  async ({ token }, { rejectWithValue }) => {
+    try {
+      const response = await fetch(`${API_URL}/api/auth/delete_me`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        const errorMessage = data.error?.Error || "Произошла ошибка";
+        Toast.show({
+          type: "error",
+          position: "bottom",
+          text1: "Error",
+          text2: errorMessage,
+          visibilityTime: 3000,
+          autoHide: true,
+          topOffset: 30,
+        });
+        return rejectWithValue(errorMessage);
+      }
+
+      await AsyncStorage.multiRemove(["token", "login", "password"]);
+      Toast.show({
+        type: "success",
+        position: "bottom",
+        text2: i18n.t("successDelete"),
+        visibilityTime: 3000,
+        autoHide: true,
+        topOffset: 30,
+      });
+
+      return true;
+    } catch (error) {
+      console.error("Ошибка удаления аккаунта:", error);
       return rejectWithValue(error.toString());
     }
   }
@@ -244,14 +305,10 @@ const authSlice = createSlice({
     error: null,
     token: null,
     avatar: null,
-    avatar: null,
-    userName: "",
     userProfile: null,
-    owner: null,
-    userProfile: null,
-    owner: null,
+    statusOwner: null,
+    role: null,
   },
-  reducers: {},
   reducers: {},
   extraReducers: (builder) => {
     builder
@@ -261,7 +318,7 @@ const authSlice = createSlice({
       })
       .addCase(loginUser.fulfilled, (state, action) => {
         state.token = action.payload.token;
-        state.owner = action.payload.owner;
+        state.statusOwner = action.payload.statusOwner;
         state.loading = false;
       })
       .addCase(loginUser.rejected, (state, action) => {
@@ -303,9 +360,8 @@ const authSlice = createSlice({
       .addCase(logoutUser.fulfilled, (state) => {
         state.loading = false;
         state.token = null;
-        state.userName = "";
-        state.owner = null;
-        state.owner = null;
+        state.statusOwner = null;
+        state.userProfile = null;
       })
       .addCase(logoutUser.rejected, (state, action) => {
         state.loading = false;
@@ -316,10 +372,42 @@ const authSlice = createSlice({
         state.error = null;
       })
       .addCase(getUserProfile.fulfilled, (state, action) => {
-        state.userProfile = action.payload;
+        state.userProfile = action.payload.userProfile;
+        state.statusOwner = action.payload.statusOwner;
+        state.role = action.payload.role;
         state.loading = false;
       })
       .addCase(getUserProfile.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(loginGoogle.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(loginGoogle.fulfilled, (state, action) => {
+        state.loading = false;
+        state.token = action.payload.token;
+        // state.avatar = action.payload.user?.picture || null;
+        // state.userProfile = action.payload.user;
+      })
+
+      .addCase(loginGoogle.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(deleteAccount.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(deleteAccount.fulfilled, (state) => {
+        state.loading = false;
+        state.token = null;
+        state.userProfile = null;
+        state.statusOwner = null;
+        state.role = null;
+      })
+      .addCase(deleteAccount.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });

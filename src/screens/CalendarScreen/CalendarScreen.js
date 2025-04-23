@@ -4,7 +4,7 @@ import {
   SafeAreaView,
   TouchableOpacity,
   ScrollView,
-  Platform
+  Platform,
 } from "react-native";
 import React from "react";
 import CalendarsFrom from "../../components/Calendars/CalendarsFrom";
@@ -12,6 +12,7 @@ import CalendarsTo from "../../components/Calendars/CalendarsTo";
 import { useNavigation } from "@react-navigation/native";
 import { SafeAreaView as SafeAreaViewContext } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
+import i18n from "../../../i18n/i18n";
 const CalendarScreen = () => {
   const SafeAreaWrapper =
     Platform.OS === "android" ? SafeAreaViewContext : SafeAreaView;
@@ -59,7 +60,7 @@ const CalendarScreen = () => {
                   fontSize: 20,
                 }}
               >
-                Выбрать
+                {i18n.t("choose")}
               </Text>
             </LinearGradient>
           </TouchableOpacity>

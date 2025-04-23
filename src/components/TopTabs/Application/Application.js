@@ -6,7 +6,7 @@ import ActionRejectReason from "../../ActionSheet/ActionRejectReason/ActionRejec
 import CustomText from "../../CustomText/CustomText";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import SimpleLineIcons from "react-native-vector-icons/SimpleLineIcons";
-import i18n from "../../i18n/i18n";
+import i18n from "../../../../i18n/i18n";
 
 const Application = ({ application, status }) => {
   const [isRejectSheetVisible, setRejectSheetVisible] = useState(false);
@@ -153,7 +153,7 @@ const Application = ({ application, status }) => {
           >
             <CustomText>{i18n.t("price")}: </CustomText>
             <CustomText style={{ fontWeight: "500" }}>
-              {application?.TotalSum} {i18n.t('som')}
+              {application?.TotalSum} {i18n.t("som")}
             </CustomText>
           </View>
           <View

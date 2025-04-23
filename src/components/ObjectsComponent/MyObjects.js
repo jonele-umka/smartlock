@@ -1,4 +1,10 @@
-import { View, TouchableOpacity, ImageBackground, Text } from "react-native";
+import {
+  View,
+  TouchableOpacity,
+  ImageBackground,
+  Text,
+  StyleSheet,
+} from "react-native";
 import React from "react";
 import { useNavigation } from "@react-navigation/native";
 
@@ -8,7 +14,7 @@ import CustomText from "../CustomText/CustomText";
 import { useDispatch, useSelector } from "react-redux";
 import Toast from "react-native-toast-message";
 import { fetchMyAccommodations } from "../../Store/accommodationSlice/accommodationSlice";
-import i18n from "../i18n/i18n";
+import i18n from "../../../i18n/i18n";
 
 const MyObjects = ({ myAccommodation }) => {
   const dispatch = useDispatch();
@@ -198,107 +204,133 @@ const MyObjects = ({ myAccommodation }) => {
             : require("../../assets/noImg.png")
         }
       >
-        <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-          <TouchableOpacity
-            onPress={handleDelete}
-            style={{
-              borderRadius: 10,
-              marginLeft: 10,
-              backgroundColor: "red",
-              padding: 5,
-            }}
-          >
-            <MaterialCommunityIcons
-              name="delete"
-              style={{ fontSize: 25, color: "#fff" }}
-            />
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={isActive ? handleDeactivate : handleActivate}
-            style={{
-              borderRadius: 5,
-              alignSelf: "flex-end",
-              marginRight: 10,
-              backgroundColor: isActive ? "#fe3c53" : "#57d673",
-              padding: 5,
-            }}
-          >
-            {/* {i18n.t("night")} */}
-            <CustomText style={{ color: "#fff", fontWeight: 500 }}>
-              {isActive ? i18n.t("deactivate") : i18n.t("activate")}
-            </CustomText>
-          </TouchableOpacity>
-        </View>
-        <View
-          style={{
-            paddingHorizontal: 10,
-            paddingVertical: 10,
-            backgroundColor: "rgba(97, 105, 146, 0.8)",
-          }}
-        >
+        {myAccommodation?.Verification === "pending" && (
           <View
             style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignItems: "flex-end",
-              columnGap: 10,
+              ...StyleSheet.absoluteFillObject,
+              backgroundColor: "rgba(0, 0, 0, 0.5)",
+              justifyContent: "center",
+              alignItems: "center",
             }}
           >
-            <View style={{ flex: 1 }}>
-              <Text
-                style={{
-                  fontSize: 20,
-                  fontWeight: 500,
-                  color: "#fff",
-                  marginBottom: 5,
-                }}
-                numberOfLines={1}
-                ellipsizeMode="tail"
-              >
-                {myAccommodation?.Title}
-              </Text>
-              <View
-                style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                  columnGap: 5,
-                }}
-              >
-                <Fontisto
-                  name="map-marker-alt"
-                  style={{ color: "#f0f0f0", fontSize: 15 }}
-                />
+            <CustomText
+              style={{ color: "#fff", fontSize: 20, fontWeight: "bold" }}
+            >
+              {i18n.t("pending")}
+            </CustomText>
+          </View>
+        )}
+        {myAccommodation?.Verification === "verified" && (
+          <View
+            style={{ flexDirection: "row", justifyContent: "space-between" }}
+          >
+            <TouchableOpacity
+              onPress={handleDelete}
+              style={{
+                borderRadius: 10,
+                marginLeft: 10,
+                backgroundColor: "red",
+                padding: 5,
+              }}
+            >
+              <MaterialCommunityIcons
+                name="delete"
+                style={{ fontSize: 25, color: "#fff" }}
+              />
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={isActive ? handleDeactivate : handleActivate}
+              style={{
+                borderRadius: 5,
+                alignSelf: "flex-end",
+                marginRight: 10,
+                backgroundColor: isActive ? "#fe3c53" : "#57d673",
+                padding: 5,
+              }}
+            >
+              {/* {i18n.t("night")} */}
+              <CustomText style={{ color: "#fff", fontWeight: 500 }}>
+                {isActive ? i18n.t("deactivate") : i18n.t("activate")}
+              </CustomText>
+            </TouchableOpacity>
+          </View>
+        )}
+        {myAccommodation?.Verification === "verified" && (
+          <View
+            style={{
+              position: "absolute",
+              bottom: 0,
+              width: "100%",
+              paddingHorizontal: 10,
+              paddingVertical: 10,
+              height: 70,
+              backgroundColor: "rgba(97, 105, 146, 0.8)",
+            }}
+          >
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                alignItems: "flex-end",
+                columnGap: 10,
+              }}
+            >
+              <View style={{ flex: 1 }}>
                 <Text
-                  style={{ color: "#f0f0f0" }}
+                  style={{
+                    fontSize: 20,
+                    fontWeight: "500",
+                    color: "#fff",
+                    marginBottom: 5,
+                  }}
                   numberOfLines={1}
                   ellipsizeMode="tail"
                 >
-                  {myAccommodation.LocationLabel}
+                  {myAccommodation?.Title}
                 </Text>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    columnGap: 5,
+                  }}
+                >
+                  <Fontisto
+                    name="map-marker-alt"
+                    style={{ color: "#f0f0f0", fontSize: 15 }}
+                  />
+                  <Text
+                    style={{ color: "#f0f0f0" }}
+                    numberOfLines={1}
+                    ellipsizeMode="tail"
+                  >
+                    {myAccommodation.LocationLabel}
+                  </Text>
+                </View>
+              </View>
+
+              <View>
+                <CustomText
+                  style={{
+                    fontSize: 16,
+                    fontWeight: "500",
+                    color: "#fff",
+                  }}
+                >
+                  {myAccommodation.Price} c
+                </CustomText>
+                <CustomText
+                  style={{
+                    textAlign: "right",
+                    color: "#b8b8b8",
+                  }}
+                >
+                  {i18n.t("night")}
+                </CustomText>
               </View>
             </View>
-
-            <View>
-              <CustomText
-                style={{
-                  fontSize: 16,
-                  fontWeight: 500,
-                  color: "#fff",
-                }}
-              >
-                {myAccommodation.Price} c
-              </CustomText>
-              <CustomText
-                style={{
-                  textAlign: "right",
-                  color: "#b8b8b8",
-                }}
-              >
-                {i18n.t("night")}
-              </CustomText>
-            </View>
           </View>
-        </View>
+        )}
       </ImageBackground>
     </TouchableOpacity>
   );

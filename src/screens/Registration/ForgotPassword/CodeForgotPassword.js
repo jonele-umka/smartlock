@@ -6,85 +6,52 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   View,
-  Image,
 } from "react-native";
 
 import i18n from "../../../../i18n/i18n";
-import { useNavigation } from "@react-navigation/core";
-import { verifyCode } from "../../../Store/authSlice/authSlice";
+import { useNavigation, useRoute } from "@react-navigation/core";
 
 import CustomText from "../../../components/CustomText/CustomText";
 import { ScrollView } from "react-native";
-import Toast from "react-native-toast-message";
 
-const SignUpCode = () => {
+const CodeForgotPassword = () => {
   const {
     control,
     handleSubmit,
     reset,
     formState: { errors },
   } = useForm();
-  const dispatch = useDispatch();
+  const API_URL = process.env.API_URL;
   const navigation = useNavigation();
-  const loading = useSelector((state) => state.auth.loading);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [canResend, setCanResend] = useState(true);
-  const [timer, setTimer] = useState(60);
-  // const route = useRoute();
-  // const { email } = route.params;
-
+  const route = useRoute();
+  const { email } = route.params;
   const inputs = useRef([]);
-
-  useEffect(() => {
-    let interval;
-    if (!canResend) {
-      interval = setInterval(() => {
-        setTimer((prevTimer) => {
-          if (prevTimer <= 1) {
-            clearInterval(interval);
-            setCanResend(true);
-            return 60;
-          }
-          return prevTimer - 1;
-        });
-      }, 1000);
-    }
-    return () => clearInterval(interval);
-  }, [canResend]);
-
-  const resend = async () => {
-    try {
-      // await dispatch(resendCode(email));
-      setCanResend(false);
-    } catch (error) {
-      console.error("Ошибка при повторной отправке кода:", error);
-      setError(error.message);
-    }
-  };
 
   const onSubmit = async (data) => {
     const code = Object.values(data).join("");
-
+    setLoading(true);
     try {
-      const response = await dispatch(verifyCode(code));
+      const response = await fetch(
+        `${API_URL}/api/auth/verify_forgot_password/${code}`,
+        {
+          method: "GET",
+        }
+      );
 
-      if (response.type === "auth/verifyCode/fulfilled") {
+      if (response.ok) {
+        setLoading(false);
+        navigation.navigate("Создать новый пароль", { email: email });
         reset();
-        setError("");
-        navigation.navigate("Войти");
       } else {
-        setError(response.payload);
-        Toast.show({
-          type: "error",
-          position: "bottom",
-          text2: response.payload,
-          visibilityTime: 3000,
-          autoHide: true,
-          topOffset: 30,
-        });
+        setLoading(false);
+        const errorResponse = await response.json();
+        setError(errorResponse.error.Message || "Произошла ошибка");
       }
     } catch (error) {
-      console.error("Ошибка при входе:", error);
+      setLoading(false);
+      console.error("Ошибка при подтверждении изменения email:", error);
       setError(error.message);
     }
   };
@@ -99,14 +66,6 @@ const SignUpCode = () => {
       }}
       keyboardShouldPersistTaps="handled"
     >
-      <Image
-        source={require("../../../assets/apkIcons/logo.png")}
-        style={{
-          marginBottom: 80,
-          alignSelf: "center",
-          objectFit: "contain",
-        }}
-      />
       <CustomText
         style={{
           fontSize: 18,
@@ -162,37 +121,18 @@ const SignUpCode = () => {
           />
         ))}
       </View>
-      {/* {errors.code && (
-          <CustomText style={{ color: "red", fontSize: 12, marginTop: 7 }}>
-            {i18n.t("required")}
-          </CustomText>
-        )} */}
+
       {errors.code && (
         <CustomText style={{ color: "red", fontSize: 12, marginTop: 7 }}>
           {errors.code.message}
         </CustomText>
       )}
       {error === "exception:wrong-verification-code" && (
-        <CustomText style={{ color: "red", fontSize: 12, marginTop: 15 }}>
+        <CustomText style={{ color: "red", fontSize: 12, marginTop: 7  }}>
           {i18n.t("inCorrectPassword")}
         </CustomText>
       )}
-      {canResend ? (
-        <TouchableOpacity onPress={resend}>
-          <CustomText style={{ color: "#007bff", fontSize: 18, marginTop: 20 }}>
-            {i18n.t("resendCode")}
-          </CustomText>
-        </TouchableOpacity>
-      ) : (
-        <CustomText style={{ color: "#1C2863", marginTop: 20 }}>
-          {i18n.t("resending")} {timer} {i18n.t("seconds")}
-        </CustomText>
-      )}
-      {/* {error === "invalid activation code" && (
-          <CustomText style={{ color: "red", fontSize: 12, marginTop: 7 }}>
-            Неверный код
-          </CustomText>
-        )} */}
+
       {loading ? (
         <ActivityIndicator
           size="large"
@@ -230,4 +170,4 @@ const SignUpCode = () => {
   );
 };
 
-export default SignUpCode;
+export default CodeForgotPassword;

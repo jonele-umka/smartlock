@@ -7,7 +7,7 @@ import {
   Switch,
 } from "react-native";
 import React, { useState } from "react";
-import i18n from "../i18n/i18n";
+import i18n from "../../../i18n/i18n";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { LinearGradient } from "expo-linear-gradient";
 

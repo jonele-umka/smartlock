@@ -2,6 +2,7 @@ import { View, Text, Image } from "react-native";
 import React, { useEffect } from "react";
 import SafeAreaWrapper from "../../../components/SafeAreaWrapper/SafeAreaWrapper";
 import { useNavigation } from "@react-navigation/core";
+import i18n from "../../../../i18n/i18n";
 
 const Consideration = () => {
   const navigation = useNavigation();
@@ -13,7 +14,7 @@ const Consideration = () => {
 
     return () => clearTimeout(timer);
   }, [navigation]);
-  
+
   return (
     <SafeAreaWrapper
       style={{
@@ -38,7 +39,7 @@ const Consideration = () => {
             marginBottom: 10,
           }}
         >
-          Ваша заявка находится на рассмотрении
+          {i18n.t("considerationTitle")}
         </Text>
         <Text
           style={{
@@ -47,7 +48,7 @@ const Consideration = () => {
             textAlign: "center",
           }}
         >
-          Ожидайте ответ в ближайшее время
+          {i18n.t("expectResponse")}
         </Text>
       </View>
     </SafeAreaWrapper>

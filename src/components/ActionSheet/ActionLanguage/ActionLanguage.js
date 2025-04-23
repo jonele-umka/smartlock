@@ -1,44 +1,30 @@
-import React, { useRef } from "react";
+import React from "react";
 import { View, TouchableOpacity, Image } from "react-native";
 import ActionSheet from "react-native-actions-sheet";
 import Ionicons from "react-native-vector-icons/Ionicons";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import * as Localization from "expo-localization";
-import i18n from "../../i18n/i18n";
-import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import CustomText from "../../CustomText/CustomText";
 import {
   fetchAmenities,
   fetchCategory,
   fetchRules,
 } from "../../../Store/dictionarySlice/dictionarySlice";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { setLanguage } from "../../../Store/languageSlice/languageSlice";
 
-const ActionLanguage = ({ language, setLanguage }) => {
-  const actionSheetRef = useRef();
+const ActionLanguage = ({ actionSheetRef }) => {
   const dispatch = useDispatch();
 
   const changeLanguage = async (newLanguage) => {
-    try {
-      await AsyncStorage.setItem("language", newLanguage);
-      setLanguage(newLanguage);
-
-      // Обновляем глобальный язык
-      Localization.locale = newLanguage;
-      i18n.locale = newLanguage;
-
-      actionSheetRef.current?.hide();
-      dispatch(fetchAmenities());
-      dispatch(fetchRules());
-      dispatch(fetchCategory());
-    } catch (error) {
-      console.error("Ошибка при сохранении языка в AsyncStorage:", error);
-    }
+    dispatch(setLanguage(newLanguage));
+    actionSheetRef.current?.hide();
+    dispatch(fetchAmenities());
+    dispatch(fetchRules());
+    dispatch(fetchCategory());
   };
-
-  const showActionSheet = () => {
-    actionSheetRef.current?.show();
-  };
+  const language = useSelector((state) => state.language.language);
+  const shortLanguage = language.includes("-")
+    ? language.split("-")[0]
+    : language;
 
   return (
     <>
@@ -62,7 +48,12 @@ const ActionLanguage = ({ language, setLanguage }) => {
               }}
             >
               <Image
-                style={{ width: 30, height: 30, objectFit: "contain" }}
+                style={{
+                  width: 30,
+                  height: 30,
+                  borderRadius: 100,
+                  objectFit: "cover",
+                }}
                 source={require("../../../assets/Country/kyrgyzstan.png")}
               />
               <View
@@ -73,7 +64,7 @@ const ActionLanguage = ({ language, setLanguage }) => {
                 }}
               >
                 <CustomText>Кыргызча</CustomText>
-                {language === "ky" && (
+                {shortLanguage === "ky" && (
                   <Ionicons
                     name="checkmark"
                     style={{ color: "#4B5DFF", fontSize: 20 }}
@@ -92,7 +83,12 @@ const ActionLanguage = ({ language, setLanguage }) => {
               }}
             >
               <Image
-                style={{ width: 30, height: 30 }}
+                style={{
+                  width: 30,
+                  height: 30,
+                  borderRadius: 100,
+                  objectFit: "cover",
+                }}
                 source={require("../../../assets/Country/united-kingdom.png")}
               />
               <View
@@ -103,7 +99,7 @@ const ActionLanguage = ({ language, setLanguage }) => {
                 }}
               >
                 <CustomText>English</CustomText>
-                {language === "en" && (
+                {shortLanguage === "en" && (
                   <Ionicons
                     name="checkmark"
                     style={{ color: "#4B5DFF", fontSize: 20 }}
@@ -122,7 +118,12 @@ const ActionLanguage = ({ language, setLanguage }) => {
               }}
             >
               <Image
-                style={{ width: 30, height: 30 }}
+                style={{
+                  width: 30,
+                  height: 30,
+                  borderRadius: 100,
+                  objectFit: "cover",
+                }}
                 source={require("../../../assets/Country/russia.png")}
               />
               <View
@@ -133,7 +134,7 @@ const ActionLanguage = ({ language, setLanguage }) => {
                 }}
               >
                 <CustomText>Русский</CustomText>
-                {language === "ru" && (
+                {shortLanguage === "ru" && (
                   <Ionicons
                     name="checkmark"
                     style={{ color: "#4B5DFF", fontSize: 20 }}
@@ -144,37 +145,6 @@ const ActionLanguage = ({ language, setLanguage }) => {
           </TouchableOpacity>
         </View>
       </ActionSheet>
-
-      <TouchableOpacity
-        style={{
-          flexDirection: "row",
-          justifyContent: "space-between",
-          alignItems: "center",
-          paddingVertical: 15,
-        }}
-        onPress={showActionSheet}
-      >
-        <CustomText style={{ fontSize: 16 }}>{i18n.t("language")}</CustomText>
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}
-        >
-          {language === "ky" && (
-            <CustomText style={{ color: "grey" }}>Кыргызча</CustomText>
-          )}
-          {language === "en" && (
-            <CustomText style={{ color: "grey" }}>English</CustomText>
-          )}
-          {language === "ru" && (
-            <CustomText style={{ color: "grey" }}>Русский</CustomText>
-          )}
-
-          <Icon name={"chevron-right"} size={20} color={"#1C2863"} />
-        </View>
-      </TouchableOpacity>
     </>
   );
 };

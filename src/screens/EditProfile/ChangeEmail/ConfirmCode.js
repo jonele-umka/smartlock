@@ -1,20 +1,16 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useRef } from "react";
 import { useForm, Controller } from "react-hook-form";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import {
-  SafeAreaView,
-  Text,
   TextInput,
   TouchableOpacity,
   ActivityIndicator,
   View,
-  Platform,
 } from "react-native";
-import { SafeAreaView as SafeAreaViewContext } from "react-native-safe-area-context";
-import i18n from "../../../components/i18n/i18n";
-import { useNavigation, useRoute } from "@react-navigation/core";
-import { resendCode, verifyCode } from "../../../Store/authSlice/authSlice";
-import { LinearGradient } from "expo-linear-gradient";
+
+import i18n from "../../../../i18n/i18n";
+import { useNavigation } from "@react-navigation/core";
+
 import CustomText from "../../../components/CustomText/CustomText";
 import SafeAreaWrapper from "../../../components/SafeAreaWrapper/SafeAreaWrapper";
 
@@ -50,13 +46,16 @@ const ConfirmCode = () => {
       );
 
       if (response.ok) {
-        const result = await response.json();
         setLoading(false);
-        navigation.navigate("Настройки");
+        navigation.reset({
+          index: 0,
+          routes: [{ name: "Войти" }],
+        });
       } else {
         setLoading(false);
         const errorResponse = await response.json();
-        setError(errorResponse.error || "Произошла ошибка");
+
+        setError(errorResponse.error.Message || "Произошла ошибка");
       }
     } catch (error) {
       setLoading(false);
@@ -70,12 +69,12 @@ const ConfirmCode = () => {
       <View style={{ paddingHorizontal: 10, paddingVertical: 20 }}>
         <CustomText
           style={{
-            fontSize: 40,
+            fontSize: 18,
             marginBottom: 30,
             fontWeight: "600",
           }}
         >
-          {i18n.t("enterACode")}
+          {i18n.t("enterCodeEmail")}
         </CustomText>
         <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
           {[...Array(6)].map((_, index) => (
@@ -84,10 +83,10 @@ const ConfirmCode = () => {
               control={control}
               name={`code${index}`}
               rules={{
-                required: i18n.t("fillInTheField"),
+                required: i18n.t("required"),
                 pattern: {
                   value: /^[0-9]$/,
-                  message: i18n.t("pleaseEnterAValidCode"),
+                  message: i18n.t("required"),
                 },
               }}
               render={({ field: { onChange, onBlur, value } }) => (
@@ -123,21 +122,21 @@ const ConfirmCode = () => {
           ))}
         </View>
         {errors.code && (
-          <Text style={{ color: "red", fontSize: 12, marginTop: 7 }}>
+          <CustomText style={{ color: "red", fontSize: 12, marginTop: 7 }}>
             {errors.code.message}
-          </Text>
+          </CustomText>
         )}
         {error === "exception:wrong-verification-code" && (
-          <Text style={{ color: "red", fontSize: 12, marginTop: 15 }}>
-            {i18n.t("invalidPassword")}
-          </Text>
+          <CustomText style={{ color: "red", fontSize: 12, marginTop: 15 }}>
+            {i18n.t("inCorrectPassword")}
+          </CustomText>
         )}
 
-        {error === "invalid activation code" && (
-          <Text style={{ color: "red", fontSize: 12, marginTop: 7 }}>
+        {/* {error === "invalid activation code" && (
+          <CustomText style={{ color: "red", fontSize: 12, marginTop: 7 }}>
             {i18n.t("inСorrectCode")}
-          </Text>
-        )}
+          </CustomText>
+        )} */}
         {loading ? (
           <ActivityIndicator
             size="large"
@@ -160,15 +159,15 @@ const ConfirmCode = () => {
               paddingVertical: 15,
             }}
           >
-            <Text
+            <CustomText
               style={{
                 color: "#fff",
                 textAlign: "center",
                 fontSize: 20,
               }}
             >
-              Отправить
-            </Text>
+              {i18n.t("send")}
+            </CustomText>
           </TouchableOpacity>
         )}
       </View>

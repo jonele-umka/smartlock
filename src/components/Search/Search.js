@@ -103,10 +103,9 @@ import { useForm, Controller } from "react-hook-form";
 // import EvilIcons from "react-native-vector-icons/EvilIcons";
 import { fetchSearchResults } from "../../Store/searchSlice/searchSlice";
 import { useDispatch } from "react-redux";
-import SafeAreaWrapper from "../SafeAreaWrapper/SafeAreaWrapper";
 import FilterModal from "../Modal/FilterModal/FilterModal";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
-import i18n from "../i18n/i18n";
+import i18n from "../../../i18n/i18n";
 
 export default function Search() {
   const { control } = useForm();
@@ -132,7 +131,7 @@ export default function Search() {
   };
 
   return (
-    <SafeAreaWrapper>
+    <View>
       <View
         style={{
           flexDirection: "row",
@@ -142,7 +141,6 @@ export default function Search() {
           borderColor: "rgba(97, 105, 146, 0.2)",
           backgroundColor: "rgba(97, 105, 146, 0.040)",
           paddingHorizontal: 10,
-          marginHorizontal: 10,
           marginVertical: 20,
           borderRadius: 40,
           paddingVertical: 10,
@@ -189,6 +187,6 @@ export default function Search() {
         onClose={hideActionSheet}
         title={title}
       />
-    </SafeAreaWrapper>
+    </View>
   );
 }

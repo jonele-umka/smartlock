@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 
 import {
-  Text,
   TextInput,
   TouchableOpacity,
   ActivityIndicator,
@@ -10,9 +9,8 @@ import {
 } from "react-native";
 
 import { useNavigation } from "@react-navigation/core";
-import i18n from "../../../components/i18n/i18n";
+import i18n from "../../../../i18n/i18n";
 import Feather from "react-native-vector-icons/Feather";
-import { LinearGradient } from "expo-linear-gradient";
 import SafeAreaWrapper from "../../../components/SafeAreaWrapper/SafeAreaWrapper";
 import CustomText from "../../../components/CustomText/CustomText";
 
@@ -23,6 +21,7 @@ const ForgotPassword = () => {
   const {
     control,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm();
   const navigation = useNavigation();
@@ -44,14 +43,15 @@ const ForgotPassword = () => {
 
       if (!response.ok) {
         const responseDataError = await response.json();
+        console.log(responseDataError);
         const errorMessage = responseDataError.error.Code || "Произошла ошибка";
         setError(errorMessage);
         setLoading(false);
       }
       const responseData = await response.json();
-      navigation.navigate("Подтвердить код", { email: email.Email });
+      navigation.navigate("Код забыли пароль", { email: email.Email });
       setLoading(false);
-
+      reset();
       return responseData;
     } catch (error) {
       setLoading(false);
@@ -74,7 +74,7 @@ const ForgotPassword = () => {
       >
         <CustomText
           style={{
-            fontSize: 30,
+            fontSize: 18,
             marginBottom: 20,
 
             fontWeight: 600,
@@ -109,7 +109,7 @@ const ForgotPassword = () => {
                   required: i18n.t("fillInThisField"),
                   pattern: {
                     value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                    message: i18n.t("pleaseEnterAValidEmailAddress"),
+                    message: i18n.t("validEmail"),
                   },
                 }}
                 render={({ field }) => (
@@ -117,7 +117,11 @@ const ForgotPassword = () => {
                     placeholder={i18n.t("enterEmail")}
                     placeholderTextColor="#616992"
                     onChangeText={(value) => {
-                      field.onChange(value);
+                      const trimmedValue = value.trim();
+                      const formattedValue =
+                        trimmedValue.charAt(0).toLowerCase() +
+                        trimmedValue.slice(1);
+                      field.onChange(formattedValue);
                       setError("");
                     }}
                     value={field.value}
@@ -137,7 +141,7 @@ const ForgotPassword = () => {
             )}
             {error == 400 && (
               <CustomText style={{ color: "red", fontSize: 12, marginTop: 7 }}>
-                Некорректные данные
+                {i18n.t("invalidData")}
               </CustomText>
             )}
           </View>
@@ -172,7 +176,7 @@ const ForgotPassword = () => {
                 fontSize: 20,
               }}
             >
-              Отправить
+              {i18n.t("send")}
             </CustomText>
           </TouchableOpacity>
         )}

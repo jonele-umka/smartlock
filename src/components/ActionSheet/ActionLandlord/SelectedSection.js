@@ -5,7 +5,7 @@ import CustomText from "../../CustomText/CustomText";
 
 const SelectionSection = ({ title, placeholder, selectedValue, onPress }) => {
   return (
-    <View style={{ marginBottom: 20, flex: 1 }}>
+    <View style={{ flex: 1 }}>
       <CustomText style={{ marginBottom: 10, fontSize: 18 }}>
         {title}
       </CustomText>

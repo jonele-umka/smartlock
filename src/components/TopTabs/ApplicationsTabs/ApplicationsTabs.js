@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
 } from "react-native";
 import ApplicationList from "../Application/ApplicationList";
-import i18n from "../../i18n/i18n";
+import i18n from "../../../../i18n/i18n";
 
 export default function ApplicationsTabs() {
   const [activeTab, setActiveTab] = useState("first");
@@ -26,7 +26,7 @@ export default function ApplicationsTabs() {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
+    <View style={{ flex: 1, backgroundColor: "#fff" }}>
       <View
         style={{
           flexDirection: "row",
@@ -82,6 +82,6 @@ export default function ApplicationsTabs() {
       >
         {renderTabContent()}
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 }

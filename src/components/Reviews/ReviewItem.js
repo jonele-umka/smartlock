@@ -12,7 +12,7 @@ import Fontisto from "react-native-vector-icons/Fontisto";
 import CustomText from "../CustomText/CustomText";
 import { formatDate } from "../FormatDate/FormatDate";
 import { useSelector } from "react-redux";
-import i18n from "../i18n/i18n";
+import i18n from "../../../i18n/i18n";
 import { AirbnbRating } from "@rneui/base";
 
 const ReviewItem = ({
@@ -29,7 +29,7 @@ const ReviewItem = ({
   const [editedContent, setEditedContent] = useState(item.Content);
   const [loading, setLoading] = useState(false);
   const token = useSelector((state) => state.auth.token);
-console.log(item)
+  console.log(item);
   const handleEdit = () => {
     setIsEditing(true);
   };
@@ -172,62 +172,73 @@ console.log(item)
         )}
 
         {isFirstReview && canReview === 1 && (
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "flex-end",
-              columnGap: 10,
-              marginTop: 10,
-            }}
-          >
-            {loading ? (
-              <ActivityIndicator size="small" color="#4B5DFF" />
-            ) : isEditing ? (
-              <TouchableOpacity
-                onPress={handleSave}
-                style={{
-                  borderRadius: 5,
-                  backgroundColor: "rgba(180, 230, 180, 1)",
-                  padding: 5,
-                }}
-              >
-                <Ionicons
-                  name="checkmark"
-                  style={{ color: "rgba(19, 19, 19, 0.7)", fontSize: 22 }}
-                />
-              </TouchableOpacity>
-            ) : (
-              <TouchableOpacity
-                onPress={handleEdit}
-                style={{
-                  borderRadius: 5,
-                  backgroundColor: "rgba(220, 222, 243, 1)",
-                  padding: 5,
-                }}
-              >
-                <Ionicons
-                  name="pencil"
-                  style={{ color: "rgba(19, 19, 19, 0.7)", fontSize: 22 }}
-                />
-              </TouchableOpacity>
-            )}
-            {!loading && (
-              <TouchableOpacity
-                onPress={handleDelete}
-                style={{
-                  borderRadius: 5,
-                  backgroundColor: "rgba(245, 212, 221, 1)",
-                  padding: 5,
-                }}
-              >
-                <MaterialCommunityIcons
-                  name="delete"
-                  style={{ color: "rgba(19, 19, 19, 0.7)", fontSize: 22 }}
-                />
-              </TouchableOpacity>
-            )}
-          </View>
+          <>
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "flex-end",
+                columnGap: 10,
+                marginTop: 10,
+              }}
+            >
+              {loading ? (
+                <ActivityIndicator size="small" color="#4B5DFF" />
+              ) : isEditing ? (
+                <TouchableOpacity
+                  onPress={handleSave}
+                  style={{
+                    borderRadius: 5,
+                    backgroundColor: "rgba(180, 230, 180, 1)",
+                    padding: 5,
+                  }}
+                >
+                  <Ionicons
+                    name="checkmark"
+                    style={{ color: "rgba(19, 19, 19, 0.7)", fontSize: 22 }}
+                  />
+                </TouchableOpacity>
+              ) : (
+                <TouchableOpacity
+                  onPress={handleEdit}
+                  style={{
+                    borderRadius: 5,
+                    backgroundColor: "rgba(220, 222, 243, 1)",
+                    padding: 5,
+                  }}
+                >
+                  <Ionicons
+                    name="pencil"
+                    style={{ color: "rgba(19, 19, 19, 0.7)", fontSize: 22 }}
+                  />
+                </TouchableOpacity>
+              )}
+              {!loading && (
+                <TouchableOpacity
+                  onPress={handleDelete}
+                  style={{
+                    borderRadius: 5,
+                    backgroundColor: "rgba(245, 212, 221, 1)",
+                    padding: 5,
+                  }}
+                >
+                  <MaterialCommunityIcons
+                    name="delete"
+                    style={{ color: "rgba(19, 19, 19, 0.7)", fontSize: 22 }}
+                  />
+                </TouchableOpacity>
+              )}
+            </View>
+            <View
+              style={{
+                width: 10,
+                height: 10,
+                borderRadius: "100%",
+                backgroundColor: "green",
+                marginTop: 5,
+              }}
+            />
+          </>
         )}
       </View>
     </View>

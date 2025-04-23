@@ -3,6 +3,7 @@ import ReviewsInput from "../../ReviewsInput/ReviewsInput";
 import ActionSheet from "react-native-actions-sheet";
 import { Text, View } from "react-native";
 import CustomText from "../../CustomText/CustomText";
+import i18n from "../../../../i18n/i18n";
 
 const ActionAddReview = ({
   actionSheetReviewRef,
@@ -14,7 +15,7 @@ const ActionAddReview = ({
     <ActionSheet ref={actionSheetReviewRef}>
       <View style={{ paddingVertical: 20, paddingHorizontal: 10 }}>
         <CustomText style={{ fontSize: 22, fontWeight: 500, marginBottom: 20 }}>
-          Добавьте отзыв
+          {i18n.t("addReview")}
         </CustomText>
         <ReviewsInput
           actionSheetReviewRef={actionSheetReviewRef}

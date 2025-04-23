@@ -1,5 +1,6 @@
 import React from "react";
 import { Modal, View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import i18n from "../../../i18n/i18n";
 
 const CameraOrImages = ({
   isVisible,
@@ -17,13 +18,13 @@ const CameraOrImages = ({
       <View style={styles.modalContainer}>
         <View style={styles.modalContent}>
           <TouchableOpacity onPress={onPickCamera} style={styles.optionButton}>
-            <Text style={styles.optionText}>Открыть камеру</Text>
+            <Text style={styles.optionText}>{i18n.t("openCamera")}</Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={onPickGallery} style={styles.optionButton}>
-            <Text style={styles.optionText}>Выбрать из галереи</Text>
+            <Text style={styles.optionText}>{i18n.t("openGallery")}</Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={onClose} style={styles.optionButton}>
-            <Text style={styles.optionText}>Отмена</Text>
+            <Text style={styles.optionText}>{i18n.t("cancel")}</Text>
           </TouchableOpacity>
         </View>
       </View>

@@ -8,10 +8,9 @@ import Entypo from "react-native-vector-icons/Entypo";
 import { useNavigation } from "@react-navigation/core";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchMyAccommodations } from "../../../Store/accommodationSlice/accommodationSlice";
-import SafeAreaWrapper from "../../../components/SafeAreaWrapper/SafeAreaWrapper";
 import CustomText from "../../../components/CustomText/CustomText";
 import { RefreshControl } from "react-native";
-import i18n from "../../../components/i18n/i18n";
+import i18n from "../../../../i18n/i18n";
 
 const MyObjectsList = () => {
   const dispatch = useDispatch();
@@ -77,49 +76,50 @@ const MyObjectsList = () => {
         flex: 1,
         backgroundColor: "#fff",
       }}
-      contentContainerStyle={{ paddingVertical: 20, paddingHorizontal: 10 }}
+      contentContainerStyle={{
+        paddingHorizontal: 10,
+        paddingVertical: 20,
+      }}
       refreshControl={
         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
       }
     >
-      <SafeAreaWrapper style={{ flex: 1 }}>
-        <TouchableOpacity
-          onPress={() => {
-            navigation.navigate("Мой объект");
-          }}
-          style={{
-            flexDirection: "column",
-            alignItems: "center",
-            columnGap: 10,
-            borderWidth: 1,
-            borderColor: "#dee2f1",
-            paddingVertical: 15,
-            paddingHorizontal: 15,
-            borderRadius: 10,
-            marginBottom: 20,
-          }}
-        >
-          <Entypo name="plus" style={{ fontSize: 50, color: "#4B5DFF" }} />
-          <View>
-            <CustomText style={{ fontSize: 16, textAlign: "center" }}>
-              {i18n.t("addObject")}
-            </CustomText>
-          </View>
-        </TouchableOpacity>
-        <View style={{ flexDirection: "column", rowGap: 20 }}>
-          {myAccommodations &&
-            myAccommodations.length > 0 &&
-            myAccommodations
-              .slice()
-              .reverse()
-              .map((myAccommodation) => (
-                <MyObjects
-                  key={myAccommodation.Accommodation.ID}
-                  myAccommodation={myAccommodation.Accommodation}
-                />
-              ))}
+      <TouchableOpacity
+        onPress={() => {
+          navigation.navigate("Мой объект");
+        }}
+        style={{
+          flexDirection: "column",
+          alignItems: "center",
+          columnGap: 10,
+          borderWidth: 1,
+          borderColor: "#dee2f1",
+          paddingVertical: 15,
+          paddingHorizontal: 15,
+          borderRadius: 10,
+          marginBottom: 20,
+        }}
+      >
+        <Entypo name="plus" style={{ fontSize: 50, color: "#4B5DFF" }} />
+        <View>
+          <CustomText style={{ fontSize: 16, textAlign: "center" }}>
+            {i18n.t("addObject")}
+          </CustomText>
         </View>
-      </SafeAreaWrapper>
+      </TouchableOpacity>
+      <View style={{ flexDirection: "column", rowGap: 20 }}>
+        {myAccommodations &&
+          myAccommodations.length > 0 &&
+          myAccommodations
+            .slice()
+            .reverse()
+            .map((myAccommodation) => (
+              <MyObjects
+                key={myAccommodation.Accommodation.ID}
+                myAccommodation={myAccommodation.Accommodation}
+              />
+            ))}
+      </View>
     </ScrollView>
   );
 };

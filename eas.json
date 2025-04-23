@@ -1,12 +1,16 @@
 {
   "build": {
+    "preview": {
+      "developmentClient": false,
+      "distribution": "internal"
+    },
+    "development": {
+      "developmentClient": true,
+      "distribution": "internal"
+    },
     "production": {
-      "android": {
-        "buildType": "app-bundle"
-      },
-      "env": {
-        "API_URL": "https://smartback.microret.com"
-      }
+      "developmentClient": false,
+      "distribution": "store"
     }
   }
 }

@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { View, Alert } from "react-native";
 import { Calendar } from "react-native-calendars";
+import i18n from "../../../../i18n/i18n";
 
 const CalendarReserv = ({ onDatesSelected, calendar }) => {
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
 
-  // Если calendar равен null, используем пустой массив
   const calendarData = calendar || [];
 
   const transformCalendarData = (calendarData) => {
@@ -42,7 +42,7 @@ const CalendarReserv = ({ onDatesSelected, calendar }) => {
     for (let d = startDate; d <= endDate; d.setDate(d.getDate() + 1)) {
       const formattedDate = d.toISOString().split("T")[0];
       if (unavailableDates.includes(formattedDate)) {
-        return true; // Найдены заблокированные даты в диапазоне
+        return true;
       }
     }
     return false;
@@ -50,11 +50,10 @@ const CalendarReserv = ({ onDatesSelected, calendar }) => {
 
   const handleDayPress = (day) => {
     const date = day.dateString;
-    const today = new Date().toISOString().split("T")[0]; // Текущая дата в формате YYYY-MM-DD
+    const today = new Date().toISOString().split("T")[0];
 
-    // Проверка, если выбранная дата меньше сегодняшней
     if (date < today) {
-      Alert.alert("Ошибка", "Нельзя выбрать дату до сегодняшнего дня.");
+      Alert.alert(i18n.t("error"), i18n.t("errorDate"));
       return;
     }
 
@@ -66,12 +65,8 @@ const CalendarReserv = ({ onDatesSelected, calendar }) => {
       setStartDate(date);
       setEndDate(null);
     } else if (!endDate && date > startDate) {
-      // Проверяем, есть ли забронированные даты между startDate и выбранной датой
       if (checkForUnavailableDatesInRange(startDate, date)) {
-        Alert.alert(
-          "Ошибка",
-          "Выбранный диапазон содержит забронированные даты."
-        );
+        Alert.alert(i18n.t("error"), i18n.t("errorSelectDate"));
         setStartDate(null);
         setEndDate(null);
       } else {

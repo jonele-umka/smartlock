@@ -6,7 +6,9 @@ const SafeAreaWrapper = ({ children, style }) => {
   const WrapperComponent =
     Platform.OS === "android" ? SafeAreaViewContext : SafeAreaView;
 
-  return <WrapperComponent style={style}>{children}</WrapperComponent>;
+  return (
+    <WrapperComponent style={[{ flex: 1 }, style]}>{children}</WrapperComponent>
+  );
 };
 
 export default SafeAreaWrapper;
