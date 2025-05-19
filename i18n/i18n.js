@@ -16,7 +16,15 @@ const translations = {
     confirmCode: "Подтверждение кода",
     moreApplication: "Подробнее о заявке",
     consideration: "Заявка на подтверждение",
+    support: "Поддержка",
+    selectDateError: "Выберите дату въезда и выезда",
+    loadPhotoPassport:
+      "Для завершения бронирования, пожалуйста, загрузите фото паспорта",
+    goToProfile: "Перейти в профиль",
 
+    noDescription: "Описание отсуствует",
+    untitled: "Без названия",
+    noImage: "Изображений нет",
     guests: "Гости",
     add: "Добавить",
     edit: "Изменить",
@@ -69,6 +77,7 @@ const translations = {
     invalidData: "Некорректные данные",
     or: "или",
     continueGoogle: "Продолжить с Google",
+    cancel: "Отмена",
     // navbar
     home: "Главная",
     map: "Карта",
@@ -138,6 +147,7 @@ const translations = {
     uploadAllPhotosInternational:
       "Пожалуйста, загрузите все фотографии паспорта",
     selectSource: "Выберите источник изображения",
+    web: "Веб-сайт",
     // settings
     language: "Язык",
     changeEmail: "Изменить почту",
@@ -271,6 +281,8 @@ const translations = {
     enterReason: "Введите причину...",
     pleaseLoginToReview: "Пожалуйста, авторизуйтесь, чтобы оставить отзыв",
     choose: "Выбрать",
+    authRequired: "Необходима авторизация",
+    authContinue: "Пожалуйста, авторизуйтесь для продолжения",
     // confirmation
     haveChild: "Есть дети?",
     doYouHaveAnimals: "Есть животные?",
@@ -328,7 +340,15 @@ const translations = {
     confirmCode: "Confirm code",
     moreApplication: "More about the application",
     consideration: "Request for confirmation",
+    support: "Support",
+    selectDateError: "Select date for check-in and check-out",
+    loadPhotoPassport:
+      "Please upload a photo of your passport to complete your booking",
+    goToProfile: "Go to profile",
 
+    noDescription: "There is no description",
+    untitled: "Untitled",
+    noImage: "No image",
     guests: "Guests",
     add: "Add",
     edit: "Edit",
@@ -381,6 +401,7 @@ const translations = {
     invalidData: "Invalid data",
     or: "or",
     continueGoogle: "Continue with Google",
+    cancel: "Cancel",
     // navbar
     home: "Home",
     map: "Map",
@@ -447,6 +468,7 @@ const translations = {
     uploadAllPhotosId: "Upload all photos for ID passport",
     uploadAllPhotosInternational: "Please upload all passport photos",
     selectSource: "Select an image source",
+    web: "Website",
     // settings
     language: "Language",
     changeEmail: "Change Email",
@@ -456,6 +478,7 @@ const translations = {
     successDelete: "Account successfully deleted",
     errorDelete: "Error deleting account",
     waitForModerator: "Wait until the moderator removes you",
+
     // editData
 
     phoneNumber: "Phone number",
@@ -581,6 +604,8 @@ const translations = {
     enterReason: "Enter reason...",
     pleaseLoginToReview: "Please log in to leave a review",
     choose: "Choose",
+    authRequired: "Authorization required",
+    authContinue: "Please authenticate to continue",
     // confirmation
     haveChild: "Do you have children?",
     doYouHaveAnimals: "Are there any animals?",
@@ -632,7 +657,15 @@ const translations = {
     confirmCode: "Кодду ырастоо",
     moreApplication: "Колдонмо жөнүндө көбүрөөк маалымат",
     consideration: "Тастыктоо өтүнүчү",
+    support: "Колдоо",
+    selectDateError: "Кирүү жана чыгуу даталарыңызды тандаңыз",
+    loadPhotoPassport:
+      "Брондооңузду бүтүрүү үчүн паспортуңуздун сүрөтүн жүктөңүз",
+    goToProfile: "Профильге өтүү",
 
+    noDescription: "Сыпаттама жок",
+    untitled: "Аталышы жок",
+    noImage: "Сүрөттөр жок",
     guests: "Меймандар",
     add: "Кошуу",
     edit: "Түзөтүү",
@@ -686,6 +719,7 @@ const translations = {
     invalidData: "Туура эмес толтурулду",
     or: "же",
     continueGoogle: "Google менен кирүү",
+    cancel: "Жокко чыгаруу",
     // navbar
     home: "Негизги",
     map: "Карта",
@@ -753,6 +787,7 @@ const translations = {
     uploadAllPhotosInternational:
       "Эл аралык паспорт үчүн бардык сүрөттөрдү жүктөңүз",
     selectSource: "Сүрөт булагын тандоо",
+    web: "Веб-сайт",
     // settings
     language: "Тил",
     changeEmail: "Электрондук почтаны өзгөртүү",
@@ -887,6 +922,8 @@ const translations = {
     enterReason: "Себебин жазыңыз...",
     pleaseLoginToReview: "Сын-пикир калтыруу үчүн авторизация кылыңыз",
     choose: "Тандоо",
+    authRequired: "Аккаунтка кирүү талап кылынат",
+    authContinue: "Улантуу үчүн аккаунтка кириңиз",
     // confirmation
     haveChild: "Сиздин балдарыңыз барбы?",
     doYouHaveAnimals: "Жаныбарлар барбы?",

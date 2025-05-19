@@ -13,6 +13,7 @@ import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 
 import SimpleLineIcons from "react-native-vector-icons/SimpleLineIcons";
 import i18n from "../../i18n/i18n";
+import { formatFromISOToDisplay } from "../components/FormatDate/FormatDatePassport";
 
 const ReservationScreen = () => {
   const token = useSelector((state) => state.auth.token);
@@ -174,7 +175,7 @@ const ReservationScreen = () => {
                           {i18n.t("dateEntry")}:
                         </CustomText>
                         <CustomText style={{ fontWeight: 500, fontSize: 16 }}>
-                          {reservation?.StartDate}
+                          {formatFromISOToDisplay(reservation?.StartDate)}
                         </CustomText>
                       </View>
                     </View>
@@ -199,7 +200,7 @@ const ReservationScreen = () => {
                           <CustomText>{i18n.t("departureDate")}: </CustomText>
                         </CustomText>
                         <CustomText style={{ fontWeight: 500, fontSize: 16 }}>
-                          {reservation?.EndDate}
+                          {formatFromISOToDisplay(reservation?.EndDate)}
                         </CustomText>
                       </View>
                     </View>

@@ -3,7 +3,6 @@ import MapView, { Callout, Marker, PROVIDER_GOOGLE } from "react-native-maps";
 import {
   Modal,
   StyleSheet,
-  Text,
   View,
   TouchableOpacity,
   Platform,
@@ -12,6 +11,8 @@ import Entypo from "react-native-vector-icons/Entypo";
 import { ScrollView } from "react-native-actions-sheet";
 import ListImages from "../List/ListImages/ListImages";
 import { useNavigation } from "@react-navigation/native";
+import i18n from "../../../i18n/i18n";
+import CustomText from "../CustomText/CustomText";
 
 export default function Map({ location, accommodations }) {
   const mapRef = useRef(null);
@@ -43,7 +44,6 @@ export default function Map({ location, accommodations }) {
     setModalVisible(false);
     setSelectedAccommodation(null);
   };
-
   return (
     <View style={{ flex: 1 }}>
       <MapView
@@ -53,25 +53,32 @@ export default function Map({ location, accommodations }) {
         showsMyLocationButton
         ref={mapRef}
       >
-        {accommodations.map((accommodation) => (
-          <Marker
-            key={accommodation?.ID}
-            title={accommodation?.Title}
-            coordinate={{
-              latitude: parseFloat(accommodation?.Latitude),
-              longitude: parseFloat(accommodation?.Longitude),
-            }}
-            onPress={() => onMarkerSelected(accommodation)}
-          >
-            <Callout>
-              <View style={{ padding: 5 }}>
-                <Text style={{ fontSize: 16, flexWrap: "wrap" }}>
-                  {accommodation?.Title}
-                </Text>
-              </View>
-            </Callout>
-          </Marker>
-        ))}
+        {accommodations
+          .filter((accommodation) => {
+            const lat = parseFloat(accommodation?.Latitude);
+            const lng = parseFloat(accommodation?.Longitude);
+            return !isNaN(lat) && !isNaN(lng);
+          })
+          .map((accommodation) => {
+            const lat = parseFloat(accommodation.Latitude);
+            const lng = parseFloat(accommodation.Longitude);
+            return (
+              <Marker
+                key={accommodation?.ID}
+                title={accommodation?.Title}
+                coordinate={{ latitude: lat, longitude: lng }}
+                onPress={() => onMarkerSelected(accommodation)}
+              >
+                <Callout>
+                  <View style={{ padding: 5 }}>
+                    <CustomText style={{ fontSize: 16, flexWrap: "wrap" }}>
+                      {accommodation?.Title}
+                    </CustomText>
+                  </View>
+                </Callout>
+              </Marker>
+            );
+          })}
       </MapView>
 
       {selectedAccommodation && (
@@ -84,7 +91,7 @@ export default function Map({ location, accommodations }) {
           <View style={styles.modalContainer}>
             <View
               style={{
-                width: "90%",
+                width: "95%",
                 padding: 20,
                 backgroundColor: "#fff",
                 borderRadius: 10,
@@ -96,42 +103,47 @@ export default function Map({ location, accommodations }) {
               >
                 <Entypo name="cross" style={{ fontSize: 30 }} />
               </TouchableOpacity>
-              <Text style={{ fontSize: 22, fontWeight: 600, marginBottom: 20 }}>
+              <CustomText
+                style={{ fontSize: 22, fontWeight: 600, marginBottom: 20 }}
+              >
                 {selectedAccommodation?.Title || "Без названия"}
-              </Text>
+              </CustomText>
               {selectedAccommodation?.Images?.length > 0 ? (
                 <ListImages images={selectedAccommodation.Images} />
               ) : (
-                <Text>Изображений нет</Text>
+                <CustomText>{i18n.t("noImage")}</CustomText>
               )}
 
-              <View style={{ marginVertical: 10 }}>
-                <Text
+              <View style={{ marginVertical: 20 }}>
+                <CustomText
                   style={{ fontWeight: 500, fontSize: 18, marginBottom: 5 }}
                 >
-                  Описание:
-                </Text>
+                  {i18n.t("label_description")}:
+                </CustomText>
                 <ScrollView style={{ height: 200 }}>
-                  <Text>
+                  <CustomText>
                     {selectedAccommodation?.Description ||
-                      "Описание отсутствует"}
-                  </Text>
+                      i18n.t("noDescription")}
+                  </CustomText>
                 </ScrollView>
               </View>
               <View
                 style={{
                   flexDirection: "row",
+                  justifyContent: "space-between",
                   alignItems: "center",
                   columnGap: 5,
-                  marginBottom: 20,
+                  marginBottom: 30,
                 }}
               >
-                <Text style={{ fontWeight: 500, fontSize: 18 }}>Цена:</Text>
-                <Text style={{ fontSize: 18 }}>
+                <CustomText style={{ fontWeight: 500, fontSize: 18 }}>
+                  {i18n.t("price")}:
+                </CustomText>
+                <CustomText style={{ fontSize: 18 }}>
                   {selectedAccommodation?.Price
-                    ? `${selectedAccommodation.Price} сом/ночь`
+                    ? `${selectedAccommodation.Price} KGS/${i18n.t("night")}`
                     : "Цена не указана"}
-                </Text>
+                </CustomText>
               </View>
               <View>
                 <TouchableOpacity
@@ -148,11 +160,11 @@ export default function Map({ location, accommodations }) {
                     borderRadius: 10,
                   }}
                 >
-                  <Text
+                  <CustomText
                     style={{ fontSize: 18, color: "#fff", textAlign: "center" }}
                   >
-                    Бронировать
-                  </Text>
+                    {i18n.t("book")}
+                  </CustomText>
                 </TouchableOpacity>
               </View>
             </View>

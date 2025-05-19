@@ -7,9 +7,8 @@ import {
 } from "react-native";
 import React, { useEffect, useRef, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
-
+import * as Location from "expo-location";
 import Ionicons from "react-native-vector-icons/Ionicons";
-
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigation, useRoute } from "@react-navigation/core";
 import PickImage from "../../../components/PickImage/PickImage";
@@ -28,6 +27,7 @@ import {
 import CustomInput from "../../../components/CustomInput/CustomInput";
 import SelectionSection from "../../../components/ActionSheet/ActionLandlord/SelectedSection";
 import i18n from "../../../../i18n/i18n";
+import MapLandlord from "../../../components/Map/MapLandlord";
 
 const categoryIcon = {
   1: require("../../../assets/home.png"),
@@ -73,7 +73,7 @@ const Landlord = () => {
   const [currentType, setCurrentType] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [loading, setLoading] = useState(false);
-  // const [coordinate, setCoordinate] = useState(null);
+  const [coordinate, setCoordinate] = useState(null);
   // action
   const openActionSheet = (type) => {
     setCurrentType(type);
@@ -143,15 +143,15 @@ const Landlord = () => {
       setValue("Title", objectDetails?.Title);
       setValue("CategoryID", objectDetails?.CategoryID);
       setValue("LocationLabel", objectDetails?.LocationLabel);
-      // if (objectDetails?.Latitude && objectDetails?.Longitude) {
-      //   const newCoordinate = {
-      //     latitude: parseFloat(objectDetails.Latitude),
-      //     longitude: parseFloat(objectDetails.Longitude),
-      //   };
-      //   setCoordinate(newCoordinate);
-      //   setValue("Latitude", objectDetails?.Latitude);
-      //   setValue("Longitude", objectDetails?.Longitude);
-      // }
+      if (objectDetails?.Latitude && objectDetails?.Longitude) {
+        const newCoordinate = {
+          latitude: parseFloat(objectDetails?.Latitude),
+          longitude: parseFloat(objectDetails?.Longitude),
+        };
+        setCoordinate(newCoordinate);
+        setValue("Latitude", objectDetails?.Latitude);
+        setValue("Longitude", objectDetails?.Longitude);
+      }
       setValue("Description", objectDetails?.Description);
       setValue("PeopleQuantity", objectDetails?.PeopleQuantity);
       setValue("RoomsQuantity", objectDetails?.RoomsQuantity);
@@ -333,33 +333,33 @@ const Landlord = () => {
   };
   // map
 
-  // const getCurrentLocation = async () => {
-  //   try {
-  //     const { status } = await Location.requestForegroundPermissionsAsync();
-  //     if (status !== "granted") {
-  //       Alert.alert("Ошибка", "Разрешите доступ к геолокации");
-  //       return;
-  //     }
+  const getCurrentLocation = async () => {
+    try {
+      const { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== "granted") {
+        Alert.alert("Ошибка", "Разрешите доступ к геолокации");
+        return;
+      }
 
-  //     const location = await Location.getCurrentPositionAsync({});
-  //     const { latitude, longitude } = location.coords;
-  //     setCoordinate({ latitude, longitude });
-  //     setValue("Latitude", latitude.toString());
-  //     setValue("Longitude", longitude.toString());
-  //   } catch (error) {
-  //     console.error("Ошибка получения местоположения:", error);
-  //   }
-  // };
+      const location = await Location.getCurrentPositionAsync({});
+      const { latitude, longitude } = location.coords;
+      setCoordinate({ latitude, longitude });
+      setValue("Latitude", latitude.toString());
+      setValue("Longitude", longitude.toString());
+    } catch (error) {
+      console.error("Ошибка получения местоположения:", error);
+    }
+  };
 
-  // useEffect(() => {
-  //   getCurrentLocation();
-  // }, []);
+  useEffect(() => {
+    getCurrentLocation();
+  }, []);
 
-  // const handleMapRegionChange = (newCoordinate) => {
-  //   setCoordinate(newCoordinate);
-  //   setValue("Latitude", newCoordinate.latitude.toString());
-  //   setValue("Longitude", newCoordinate.longitude.toString());
-  // };
+  const handleMapRegionChange = (newCoordinate) => {
+    setCoordinate(newCoordinate);
+    setValue("Latitude", newCoordinate?.latitude.toString());
+    setValue("Longitude", newCoordinate?.longitude.toString());
+  };
 
   const onSubmit = async (data) => {
     if (
@@ -998,7 +998,7 @@ const Landlord = () => {
           source={{ uri: categories[0]?.icon }}
           style={{ width: 30, height: 30 }}
         /> */}
-        {/* <View style={{ marginBottom: 20 }}>
+        <View style={{ marginBottom: 20 }}>
           <View
             style={{
               flexDirection: "row",
@@ -1016,7 +1016,7 @@ const Landlord = () => {
                   name="Latitude"
                   rules={{ required: i18n.t("required") }}
                   render={({ field: { onChange, onBlur, value } }) => (
-                    <TextInput
+                    <CustomInput
                       style={{
                         borderWidth: 1,
                         paddingVertical: 10,
@@ -1054,7 +1054,7 @@ const Landlord = () => {
                   name="Longitude"
                   rules={{ required: i18n.t("required") }}
                   render={({ field: { onChange, onBlur, value } }) => (
-                    <TextInput
+                    <CustomInput
                       style={{
                         borderWidth: 1,
                         paddingVertical: 10,
@@ -1082,25 +1082,26 @@ const Landlord = () => {
               )}
             </View>
           </View>
-        </View> */}
-        {/* {coordinate ? (
-              <MapLandlord
-                coordinate={coordinate}
-                handleMapRegionChange={handleMapRegionChange}
-              />
-            ) : (
-              <View
-                style={{
-                  flex: 1,
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <CustomText>Загрузка местоположения...</CustomText>
-              </View>
-            )} */}
+        </View>
+        {coordinate ? (
+          <MapLandlord
+            coordinate={coordinate}
+            handleMapRegionChange={handleMapRegionChange}
+          />
+        ) : (
+          <View
+            style={{
+              flex: 1,
+              justifyContent: "center",
+              alignItems: "center",
+              marginBottom: 20,
+            }}
+          >
+            <ActivityIndicator size="large" color={"#4B5DFF"} />
+          </View>
+        )}
 
-        <View style={{ flex: 1, marginBottom: 20 }}>
+        <View style={{ flex: 1, marginBottom: 20, marginTop: 20 }}>
           <SelectionSection
             title={i18n.t("categories")}
             placeholder={i18n.t("place_categories")}

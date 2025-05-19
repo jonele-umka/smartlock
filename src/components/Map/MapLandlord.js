@@ -3,13 +3,14 @@ import { Platform } from "react-native";
 import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
 
 const MapLandlord = ({ coordinate, handleMapRegionChange }) => {
+  if (!coordinate) return null;
   return (
     <MapView
       provider={Platform.OS === "android" ? PROVIDER_GOOGLE : undefined}
       style={{ flex: 1, height: 200 }}
       region={{
-        latitude: coordinate ? coordinate.latitude : 37.78825,
-        longitude: coordinate ? coordinate.longitude : -122.4324,
+        latitude: coordinate ? coordinate?.latitude : 37.78825,
+        longitude: coordinate ? coordinate?.longitude : -122.4324,
         latitudeDelta: 0.1,
         longitudeDelta: 0.1,
       }}

@@ -146,6 +146,11 @@ const ProfileScreen = () => {
       onPress: () => navigation.navigate("Настройки"),
       icon: "settings-outline",
     },
+    {
+      title: i18n.t("support"),
+      onPress: () => navigation.navigate("Поддержка"),
+      icon: "help-circle-outline",
+    },
     token
       ? { title: i18n.t("logout"), onPress: toggleModal, icon: "logout" }
       : {
@@ -154,7 +159,7 @@ const ProfileScreen = () => {
           icon: "logout",
         },
   ].filter(Boolean);
- 
+
   if (statusOwner === "approved") {
     links.unshift({
       title: i18n.t("owner"),

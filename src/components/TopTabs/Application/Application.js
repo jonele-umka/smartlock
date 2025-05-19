@@ -7,6 +7,7 @@ import CustomText from "../../CustomText/CustomText";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import SimpleLineIcons from "react-native-vector-icons/SimpleLineIcons";
 import i18n from "../../../../i18n/i18n";
+import { formatFromISOToDisplay } from "../../FormatDate/FormatDatePassport";
 
 const Application = ({ application, status }) => {
   const [isRejectSheetVisible, setRejectSheetVisible] = useState(false);
@@ -165,7 +166,7 @@ const Application = ({ application, status }) => {
           >
             <CustomText>{i18n.t("dateEntry")}: </CustomText>
             <CustomText style={{ fontWeight: "500" }}>
-              {application?.StartDate}
+              {formatFromISOToDisplay(application?.StartDate)}
             </CustomText>
           </View>
           <View
@@ -177,7 +178,7 @@ const Application = ({ application, status }) => {
           >
             <CustomText>{i18n.t("departureDate")}: </CustomText>
             <CustomText style={{ fontWeight: "500" }}>
-              {application?.EndDate}
+              {formatFromISOToDisplay(application?.EndDate)}
             </CustomText>
           </View>
           <View

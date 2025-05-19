@@ -1,0 +1,129 @@
+import "dotenv/config";
+
+export default {
+  expo: {
+    name: "TogoLock",
+    slug: "togolock",
+    version: "1.0.9",
+    sdkVersion: "52.0.0",
+    runtimeVersion: {
+      policy: "appVersion",
+    },
+    orientation: "portrait",
+    scheme: "com.joneleumka.togolock",
+    icon: "./src/assets/apkIcons/icon.png",
+    splash: {
+      image: "./src/assets/apkIcons/splashImg.png",
+      resizeMode: "cover",
+    },
+    userInterfaceStyle: "light",
+    ios: {
+      supportsTablet: true,
+      buildNumber: "1.0.6",
+      bundleIdentifier: "com.joneleumka.togolock",
+      splash: {
+        image: "./src/assets/apkIcons/splashImg.png",
+        resizeMode: "cover",
+      },
+      infoPlist: {
+        NSPhotoLibraryUsageDescription: "Разрешение на доступ к вашей галерее",
+        NSCameraUsageDescription:
+          "Камера используется для загрузки фото паспорта, чтобы подтвердить вашу личность при бронировании",
+        NSFaceIDUsageDescription: "Allow TogoLock to use Face ID.",
+        CFBundleURLTypes: [
+          {
+            CFBundleURLSchemes: ["com.joneleumka.togolock"],
+          },
+        ],
+        ITSAppUsesNonExemptEncryption: false,
+      },
+    },
+    android: {
+      config: {
+        googleMaps: {
+          apiKey: process.env.GOOGLE_MAPS_API_KEY,
+        },
+      },
+      minSdkVersion: 21,
+      targetSdkVersion: 33,
+      adaptiveIcon: {
+        foregroundImage: "./src/assets/apkIcons/adaptive-icon.png",
+        backgroundColor: "#fff",
+      },
+      permissions: [
+        "android.permission.READ_EXTERNAL_STORAGE",
+        "android.permission.WRITE_EXTERNAL_STORAGE",
+        "android.permission.DOWNLOAD_WITHOUT_NOTIFICATION",
+        "android.permission.ACCESS_NETWORK_STATE",
+        "android.permission.USE_BIOMETRIC",
+        "android.permission.USE_FINGERPRINT",
+        "android.permission.RECORD_AUDIO",
+        "android.permission.ACCESS_COARSE_LOCATION",
+        "android.permission.ACCESS_FINE_LOCATION",
+        "android.permission.FOREGROUND_SERVICE",
+        "android.permission.SCHEDULE_EXACT_ALARM",
+        "android.permission.CAMERA",
+      ],
+      package: "com.joneleumka.togolock",
+      versionCode: 6,
+    },
+    web: {
+      favicon: "./src/assets/apkIcons/icon.png",
+    },
+    extra: {
+      googleMapsApiKey: process.env.GOOGLE_MAPS_API_KEY,
+      eas: {
+        projectId: "40d0d522-2374-4de5-9b85-3c24bff9c7c5",
+      },
+    },
+    plugins: [
+      [
+        "expo-local-authentication",
+        {
+          faceIDPermission: "Allow TogoLock to use Face ID.",
+        },
+      ],
+      [
+        "expo-image-picker",
+        {
+          photosPermission:
+            "The app accesses your photos to let you share them with your friends.",
+        },
+      ],
+      [
+        "expo-location",
+        {
+          locationAlwaysAndWhenInUsePermission:
+            "Allow TogoLock to use your location.",
+        },
+      ],
+      [
+        "expo-camera",
+        {
+          cameraPermission: "Allow TogoLock to access your camera",
+          microphonePermission: "Allow TogoLock to access your microphone",
+          recordAudioAndroid: true,
+        },
+      ],
+      [
+        "expo-notifications",
+        {
+          icon: "./src/assets/avatar.png",
+          color: "#ffffff",
+          defaultChannel: "default",
+        },
+      ],
+      [
+        "expo-build-properties",
+        {
+          ios: {
+            useFrameworks: "static",
+          },
+        },
+      ],
+      "expo-localization",
+      "expo-font",
+    ],
+    owner: "jonele_umka",
+  },
+};

@@ -17,6 +17,7 @@ import ListImages from "../../components/List/ListImages/ListImages";
 import Toast from "react-native-toast-message";
 import CustomText from "../../components/CustomText/CustomText";
 import i18n from "../../../i18n/i18n";
+import { formatFromISOToDisplay } from "../../components/FormatDate/FormatDatePassport";
 
 const ConfirmationScreen = () => {
   const navigation = useNavigation();
@@ -404,7 +405,7 @@ const ConfirmationScreen = () => {
               {i18n.t("dateEntry")}:
             </CustomText>
             <CustomText style={{ fontWeight: 500 }}>
-              {route?.params?.selectedDates.startDate}
+              {formatFromISOToDisplay(route?.params?.selectedDates.startDate)}
             </CustomText>
           </View>
           <View
@@ -417,7 +418,7 @@ const ConfirmationScreen = () => {
               {i18n.t("departureDate")}:
             </CustomText>
             <CustomText style={{ fontWeight: 500 }}>
-              {route?.params?.selectedDates.endDate}
+              {formatFromISOToDisplay(route?.params?.selectedDates.endDate)}
             </CustomText>
           </View>
           <View

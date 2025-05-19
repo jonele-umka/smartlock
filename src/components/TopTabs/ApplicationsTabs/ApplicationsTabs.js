@@ -1,11 +1,5 @@
 import React, { useState } from "react";
-import {
-  SafeAreaView,
-  ScrollView,
-  Text,
-  View,
-  TouchableOpacity,
-} from "react-native";
+import { ScrollView, Text, View, TouchableOpacity } from "react-native";
 import ApplicationList from "../Application/ApplicationList";
 import i18n from "../../../../i18n/i18n";
 

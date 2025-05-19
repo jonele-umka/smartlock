@@ -6,7 +6,6 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   Alert,
-  Text,
 } from "react-native";
 import Fontisto from "react-native-vector-icons/Fontisto";
 import Ionicons from "react-native-vector-icons/Ionicons";
@@ -29,6 +28,8 @@ import ActionAddReview from "../../../components/ActionSheet/ActionAddReview/Act
 import ActionDescription from "../../../components/ActionSheet/ActionDescription/ActionDescription";
 import ListReviews from "../../../components/List/ListReviews/ListReviews";
 import i18n from "../../../../i18n/i18n";
+import ExpandableText from "../../../components/ExpandableText/ExpandableText";
+import MapAddress from "../../../components/Map/MapAddress";
 
 const ObjectDetails = () => {
   const navigation = useNavigation();
@@ -50,9 +51,7 @@ const ObjectDetails = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
-    // Пример получения статуса авторизации, можно использовать AsyncStorage или Redux для хранения статуса авторизации
     const checkAuthentication = async () => {
-      // Получите данные о том, авторизован ли пользователь (например, из AsyncStorage)
       const token = await AsyncStorage.getItem("token");
       console.log(token);
       setIsAuthenticated(!!token);
@@ -132,26 +131,6 @@ const ObjectDetails = () => {
   const latitude = parseFloat(objectDetails?.Latitude);
   const longitude = parseFloat(objectDetails?.Longitude);
 
-  // more reviews
-  const [descriptionExpanded, setDescriptionExpanded] = useState(false);
-  const descriptionText = objectDetails?.Description || "";
-  const words = descriptionText.split(" ");
-  const isLongDescription = words.length > 20;
-
-  const toggleDescription = () => {
-    setDescriptionExpanded(!descriptionExpanded);
-  };
-
-  const renderDescription = () => {
-    if (!descriptionExpanded && isLongDescription) {
-      const shortenedDescription = words.slice(0, 20).join(" ");
-      return (
-        <Text style={{ color: "#616992" }}>{shortenedDescription}...</Text>
-      );
-    } else {
-      return <Text style={{ color: "#616992" }}>{descriptionText}</Text>;
-    }
-  };
   // favorites
   const [isFavorite, setIsFavorite] = useState(
     favorites.some((fav) => fav.AccommodationID === route.params?.id)
@@ -496,51 +475,31 @@ const ObjectDetails = () => {
           >
             {i18n.t("label_description")}
           </CustomText>
-          <CustomText>{renderDescription()}</CustomText>
-          {isLongDescription && !descriptionExpanded && (
-            <TouchableOpacity onPress={toggleDescription}>
-              <CustomText
-                style={{
-                  color: "#005fb8",
-                  fontSize: 16,
-                  marginTop: 10,
-                  fontWeight: 500,
-                }}
-              >
-                {i18n.t("showFullDescription")}
-              </CustomText>
-            </TouchableOpacity>
-          )}
-          {descriptionExpanded && (
-            <TouchableOpacity onPress={toggleDescription}>
-              <CustomText
-                style={{
-                  color: "#005fb8",
-                  fontSize: 16,
-                  marginTop: 10,
-                  fontWeight: 500,
-                }}
-              >
-                {i18n.t("hideDescription")}
-              </CustomText>
-            </TouchableOpacity>
-          )}
+          <ExpandableText
+            text={objectDetails?.Description || ""}
+            numberOfWords={20}
+            showMoreText={i18n.t("showFullDescription")}
+            showLessText={i18n.t("hideDescription")}
+          />
         </View>
-        <View style={{ marginTop: 40 }}>
-          <CustomText
-            style={{ fontSize: 18, fontWeight: 500, marginBottom: 10 }}
-          >
-            {i18n.t("facilities")}
-          </CustomText>
-          <ListFacilities facilitiesData={facilities} />
-        </View>
+
+        {facilities.length > 0 && facilities && (
+          <View style={{ marginTop: 40 }}>
+            <CustomText
+              style={{ fontSize: 18, fontWeight: 500, marginBottom: 10 }}
+            >
+              {i18n.t("facilities")}
+            </CustomText>
+            <ListFacilities facilitiesData={facilities} />
+          </View>
+        )}
         <View style={{ marginTop: 40 }}>
           <CustomText
             style={{ fontSize: 18, fontWeight: 500, marginBottom: 10 }}
           >
             {i18n.t("location")}
           </CustomText>
-          {/* <MapAddress latitude={latitude} longitude={longitude} /> */}
+          <MapAddress latitude={latitude} longitude={longitude} />
           <View>
             <View
               style={{
@@ -605,7 +564,7 @@ const ObjectDetails = () => {
               toggleReviews={toggleReviews}
             />
           ) : (
-            <View style={{ marginTop: 20 }}>
+            <View >
               <CustomText style={{ fontSize: 18, fontWeight: 500 }}>
                 {i18n.t("reviews")}
               </CustomText>
@@ -677,24 +636,20 @@ const ObjectDetails = () => {
           onPress={() => {
             const isBookable = userProfile?.Profile?.ISBookable;
             if (!token) {
-              Alert.alert(
-                "Необходима авторизация",
-                "Пожалуйста, авторизуйтесь для продолжения.",
-                [
-                  {
-                    text: "Отмена",
-                    style: "cancel",
+              Alert.alert(i18n.t("authRequired"), i18n.t("authContinue"), [
+                {
+                  text: i18n.t("cancel"),
+                  style: "cancel",
+                },
+                {
+                  text: i18n.t("login"),
+                  onPress: () => {
+                    navigation.navigate("Войти", {
+                      returnScreen: "Детали объекта",
+                    });
                   },
-                  {
-                    text: "Авторизоваться",
-                    onPress: () => {
-                      navigation.navigate("Войти", {
-                        returnScreen: "Детали объекта",
-                      });
-                    },
-                  },
-                ]
-              );
+                },
+              ]);
               return;
             }
             if (
@@ -702,29 +657,22 @@ const ObjectDetails = () => {
               !selectedDates.startDate ||
               !selectedDates.endDate
             ) {
-              Alert.alert(
-                "Ошибка",
-                "Пожалуйста, выберите даты въезда и выезда."
-              );
+              Alert.alert(i18n.t("error"), i18n.t("selectDateError"));
               return;
             }
             if (!isBookable) {
-              Alert.alert(
-                "Ошибка",
-                "Для завершения бронирования, пожалуйста, загрузите фото паспорта.",
-                [
-                  {
-                    text: "Отмена",
-                    style: "cancel",
+              Alert.alert(i18n.t("error"), i18n.t("loadPhotoPassport"), [
+                {
+                  text: i18n.t("cancel"),
+                  style: "cancel",
+                },
+                {
+                  text: i18n.t("goToProfile"),
+                  onPress: () => {
+                    navigation.navigate("Редактировать профиль");
                   },
-                  {
-                    text: "Перейти в профиль",
-                    onPress: () => {
-                      navigation.navigate("Редактировать профиль");
-                    },
-                  },
-                ]
-              );
+                },
+              ]);
               return;
             }
 

@@ -40,6 +40,8 @@ import LockDetails from "../screens/LockScreen/LockDetails/LockDetails";
 import Consideration from "../screens/Owner/Consideration/Consideration";
 import { useNavigation } from "@react-navigation/core";
 import i18n from "../../i18n/i18n";
+import Support from "../screens/Support/Support";
+ 
 
 const Stack = createStackNavigator();
 
@@ -96,7 +98,9 @@ const Navigator = () => {
             setInitialRoute("Войти");
           }
         } else if (authType === "google") {
-          const googleAccessToken = await AsyncStorage.getItem("googleAccessToken");
+          const googleAccessToken = await AsyncStorage.getItem(
+            "googleAccessToken"
+          );
 
           if (googleAccessToken) {
             dispatch(loginGoogle({ tokenGoogle: googleAccessToken }))
@@ -296,6 +300,11 @@ const Navigator = () => {
         name="Детали замка"
         component={LockDetails}
         options={() => ({ title: i18n.t("lock_details") })}
+      />
+      <Stack.Screen
+        name="Поддержка"
+        component={Support}
+        options={() => ({ title: i18n.t("support") })}
       />
     </Stack.Navigator>
   );

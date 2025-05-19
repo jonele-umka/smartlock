@@ -9,6 +9,7 @@ import HomeScreen from "../screens/HomeScreen";
 import FavoritesScreen from "../screens/FavoritesScreen";
 import ProfileScreen from "../screens/ProfileScreen";
 import ReservationScreen from "../screens/ReservationScreen";
+import MapScreen from "../screens/MapScreen";
 
 const Tab = createBottomTabNavigator();
 
@@ -49,6 +50,9 @@ const NavBar = () => {
                   style={{ width: size, height: size, tintColor: color }}
                 />
               );
+            case i18n.t("map"):
+              iconName = focused ? "map" : "map-outline";
+              break;
             case i18n.t("favorites"):
               iconName = focused ? "star" : "star-outline";
               break;
@@ -73,6 +77,7 @@ const NavBar = () => {
     >
       <Tab.Screen name={i18n.t("home")} component={HomeScreen} />
       <Tab.Screen name={i18n.t("reservation")} component={ReservationScreen} />
+      <Tab.Screen name={i18n.t("map")} component={MapScreen} />
       <Tab.Screen name={i18n.t("favorites")} component={FavoritesScreen} />
       <Tab.Screen name={i18n.t("profile")} component={ProfileScreen} />
     </Tab.Navigator>

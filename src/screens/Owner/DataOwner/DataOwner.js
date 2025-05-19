@@ -14,7 +14,11 @@ import CustomText from "../../../components/CustomText/CustomText";
 import Toast from "react-native-toast-message";
 // import { ownerFields } from "../../../assets/data/Fields";
 import CustomInput from "../../../components/CustomInput/CustomInput";
-import { FormatDatePassport } from "../../../components/FormatDate/FormatDatePassport";
+import {
+  convertToISODate,
+  FormatDatePassport,
+  formatFromISOToDisplay,
+} from "../../../components/FormatDate/FormatDatePassport";
 import CustomPicker from "../../../components/CustomPicker/CustomPicker";
 import i18n from "../../../../i18n/i18n";
 const DataOwner = () => {
@@ -73,31 +77,152 @@ const DataOwner = () => {
       setValue("Surname", data?.Surname);
       setValue("Patronymic", data?.Patronymic);
       setValue("Nationality", data?.Nationality);
-      setValue("DateOfBirth", FormatDatePassport(data?.DateOfBirth));
+      setValue("DateOfBirth", formatFromISOToDisplay(data?.DateOfBirth));
       setValue("DocumentNumber", data?.DocumentNumber);
-      setValue("DateOfExpiry", FormatDatePassport(data?.DateOfExpiry));
+      setValue("DateOfExpiry", formatFromISOToDisplay(data?.DateOfExpiry));
       setValue("PlaceOfBirth", data?.PlaceOfBirth);
       setValue("Authority", data?.Authority);
-      setValue("DateOfIssue", FormatDatePassport(data?.DateOfIssue));
+      setValue("DateOfIssue", formatFromISOToDisplay(data?.DateOfIssue));
       setValue("PIN", data?.PIN);
       setValue("IDPassportType", data?.IDPassportType);
     }
   }, [data]);
 
+  // const onSubmit = async (data) => {
+  //   setIsLoading(true);
+  //   const payload = {
+  //     ...data,
+  //     DateOfBirth: convertToISODate(data.DateOfBirth),
+  //     DateOfIssue: convertToISODate(data.DateOfIssue),
+  //     DateOfExpiry: convertToISODate(data.DateOfExpiry),
+  //   };
+
+  //   const today = new Date();
+  //   const birthDate = new Date(data.DateOfBirth);
+  //   const issueDate = new Date(data.DateOfIssue);
+  //   const expiryDate = new Date(data.DateOfExpiry);
+
+  //   const age = today.getFullYear() - birthDate.getFullYear();
+  //   const monthDiff = today.getMonth() - birthDate.getMonth();
+  //   const dayDiff = today.getDate() - birthDate.getDate();
+  //   const actualAge =
+  //     monthDiff > 0 || (monthDiff === 0 && dayDiff >= 0) ? age : age - 1;
+
+  //   if (birthDate > today) {
+  //     setError("DateOfBirth", {
+  //       type: "manual",
+  //       message: i18n.t("dateBirthFuture"),
+  //     });
+  //     setIsLoading(false);
+  //     return;
+  //   }
+
+  //   if (actualAge < 16) {
+  //     setError("DateOfBirth", {
+  //       type: "manual",
+  //       message: i18n.t("years18"),
+  //     });
+  //     setIsLoading(false);
+  //     return;
+  //   }
+
+  //   if (issueDate > today) {
+  //     setError("DateOfIssue", {
+  //       type: "manual",
+  //       message: i18n.t("dateIssueFuture"),
+  //     });
+  //     setIsLoading(false);
+  //     return;
+  //   }
+
+  //   const minIssueDate = new Date(birthDate);
+  //   minIssueDate.setFullYear(minIssueDate.getFullYear() + 16);
+
+  //   if (issueDate < minIssueDate) {
+  //     setError("DateOfIssue", {
+  //       type: "manual",
+  //       message: i18n.t("years16"),
+  //     });
+  //     setIsLoading(false);
+  //     return;
+  //   }
+
+  //   const expectedExpiryDate = new Date(issueDate);
+  //   expectedExpiryDate.setFullYear(expectedExpiryDate.getFullYear() + 10);
+
+  //   if (
+  //     expiryDate.getFullYear() !== expectedExpiryDate.getFullYear() ||
+  //     expiryDate.getMonth() !== expectedExpiryDate.getMonth() ||
+  //     expiryDate.getDate() !== expectedExpiryDate.getDate()
+  //   ) {
+  //     setError("DateOfExpiry", {
+  //       type: "manual",
+  //       message: i18n.t("years10"),
+  //     });
+  //     setIsLoading(false);
+  //     return;
+  //   }
+
+  //   try {
+  //     const response = await fetch(`${API_URL}/api/auth/be_owner`, {
+  //       method: "PATCH",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //         Authorization: `Bearer ${token}`,
+  //       },
+  //       body: JSON.stringify(payload),
+  //     });
+
+  //     const result = await response.json();
+
+  //     if (response.ok) {
+  //       setIsLoading(false);
+  //       if (owner === "owner") {
+  //         navigation.navigate("Главная страница");
+  //       } else {
+  //         navigation.navigate("Заявка на подтверждение");
+  //       }
+  //     } else {
+  //       setIsLoading(false);
+  //       Toast.show({
+  //         type: "error",
+  //         position: "bottom",
+  //         text1: i18n.t("error"),
+  //         text2: result.error.Error,
+  //         visibilityTime: 3000,
+  //         autoHide: true,
+  //       });
+  //     }
+  //   } catch (error) {
+  //     setIsLoading(false);
+  //     console.error("Ошибка:", error);
+  //   }
+  // };
   const onSubmit = async (data) => {
     setIsLoading(true);
 
+    // Преобразуем даты сразу для использования в валидации и отправке
+    const dateOfBirthISO = convertToISODate(data.DateOfBirth);
+    const dateOfIssueISO = convertToISODate(data.DateOfIssue);
+    const dateOfExpiryISO = convertToISODate(data.DateOfExpiry);
+
+    const birthDate = new Date(dateOfBirthISO);
+    const issueDate = new Date(dateOfIssueISO);
+    const expiryDate = new Date(dateOfExpiryISO);
     const today = new Date();
-    const birthDate = new Date(data.DateOfBirth);
-    const issueDate = new Date(data.DateOfIssue);
-    const expiryDate = new Date(data.DateOfExpiry);
 
-    const age = today.getFullYear() - birthDate.getFullYear();
-    const monthDiff = today.getMonth() - birthDate.getMonth();
-    const dayDiff = today.getDate() - birthDate.getDate();
-    const actualAge =
-      monthDiff > 0 || (monthDiff === 0 && dayDiff >= 0) ? age : age - 1;
+    const payload = {
+      ...data,
+      DateOfBirth: dateOfBirthISO,
+      DateOfIssue: dateOfIssueISO,
+      DateOfExpiry: dateOfExpiryISO,
+    };
 
+    // Для отладки:
+    console.log("birthDate:", birthDate.toISOString());
+    console.log("issueDate:", issueDate.toISOString());
+
+    // Проверка: дата рождения в будущем
     if (birthDate > today) {
       setError("DateOfBirth", {
         type: "manual",
@@ -106,6 +231,12 @@ const DataOwner = () => {
       setIsLoading(false);
       return;
     }
+
+    // Проверка: возраст < 16
+    const ageDiff = today.getFullYear() - birthDate.getFullYear();
+    const m = today.getMonth() - birthDate.getMonth();
+    const d = today.getDate() - birthDate.getDate();
+    const actualAge = m > 0 || (m === 0 && d >= 0) ? ageDiff : ageDiff - 1;
 
     if (actualAge < 16) {
       setError("DateOfBirth", {
@@ -116,6 +247,7 @@ const DataOwner = () => {
       return;
     }
 
+    // Проверка: дата выдачи в будущем
     if (issueDate > today) {
       setError("DateOfIssue", {
         type: "manual",
@@ -125,9 +257,9 @@ const DataOwner = () => {
       return;
     }
 
+    // Проверка: дата выдачи раньше, чем 16 лет после рождения
     const minIssueDate = new Date(birthDate);
     minIssueDate.setFullYear(minIssueDate.getFullYear() + 16);
-
     if (issueDate < minIssueDate) {
       setError("DateOfIssue", {
         type: "manual",
@@ -137,9 +269,9 @@ const DataOwner = () => {
       return;
     }
 
+    // Проверка: срок действия — ровно 10 лет после выдачи
     const expectedExpiryDate = new Date(issueDate);
     expectedExpiryDate.setFullYear(expectedExpiryDate.getFullYear() + 10);
-
     if (
       expiryDate.getFullYear() !== expectedExpiryDate.getFullYear() ||
       expiryDate.getMonth() !== expectedExpiryDate.getMonth() ||
@@ -160,7 +292,7 @@ const DataOwner = () => {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify(payload),
       });
 
       const result = await response.json();
@@ -178,7 +310,7 @@ const DataOwner = () => {
           type: "error",
           position: "bottom",
           text1: i18n.t("error"),
-          text2: result.error.Error,
+          text2: result.error?.Error || i18n.t("unexpectedError"),
           visibilityTime: 3000,
           autoHide: true,
         });
@@ -341,7 +473,7 @@ const DataOwner = () => {
                 <CustomInput
                   value={value}
                   onChange={(text) => onChange(FormatDatePassport(text))}
-                  placeholder="2000-10-02"
+                  placeholder="01-01-2000"
                   onBlur={onBlur}
                   keyboardType="numeric"
                 />
@@ -453,7 +585,7 @@ const DataOwner = () => {
                 <CustomInput
                   value={value}
                   onChange={(text) => onChange(FormatDatePassport(text))}
-                  placeholder="2016-07-07"
+                  placeholder="05-05-2016"
                   onBlur={onBlur}
                   keyboardType="numeric"
                 />
@@ -481,7 +613,7 @@ const DataOwner = () => {
                 <CustomInput
                   value={value}
                   onChange={(text) => onChange(FormatDatePassport(text))}
-                  placeholder="2026-07-07"
+                  placeholder="05-05-2026"
                   onBlur={onBlur}
                   keyboardType="numeric"
                 />
